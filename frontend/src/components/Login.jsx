@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+
 const Login = () => {
 
     const[role,setRole]=useState("");
@@ -11,19 +12,20 @@ const Login = () => {
     }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#4a4a4a]">
+    <div className="min-h-screen flex items-center justify-center ">
+      
       <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl w-96 shadow-lg">
-        <h1 className="text-white text-3xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-gray-800 text-3xl font-bold mb-6 text-center">Login</h1>
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           {/* Role Selection */}
           <div className="flex flex-col">
-            <label htmlFor="role" className="text-white mb-1 text-sm font-medium">
+            <label htmlFor="role" className="text-gray-800 mb-1 text-sm font-medium">
               Select Your Role
             </label>
             <select
               id="role"
               name="role"
-              className="p-2 rounded-md bg-transparent border border-gray-300 text-white focus:outline-none focus:border-[#fc8f00]"
+              className="p-2 rounded-md bg-transparent border border-gray-300 text-gray-700 focus:outline-none focus:border-[#fc8f00]"
               
             >
               <option value="Admin" className="text-black">Admin - SACL</option>
@@ -35,26 +37,26 @@ const Login = () => {
 
           {/* Email */}
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-white mb-1 text-sm font-medium">
+            <label htmlFor="email" className="text-gray-800 mb-1 text-sm font-medium">
               Email
             </label>
             <input
               type="email"
               id="email"
-              className="p-2 rounded-md bg-transparent border border-gray-300 text-white focus:outline-none focus:border-[#fc8f00]"
+              className="p-2 rounded-md bg-transparent border border-gray-300 text-gray-800 focus:outline-none focus:border-[#fc8f00]"
               onChange={(e)=>setEmail(e.target.value)}
             />
           </div>
 
           {/* Password */}
           <div className="flex flex-col">
-            <label htmlFor="password" className="text-white mb-1 text-sm font-medium">
+            <label htmlFor="password" className="text-gray-800 mb-1 text-sm font-medium">
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="p-2 rounded-md bg-transparent border border-gray-300 text-white focus:outline-none focus:border-[#fc8f00]"
+              className="p-2 rounded-md bg-transparent border border-gray-300 text-gray-800 focus:outline-none focus:border-[#fc8f00]"
               onChange={(e)=>setPassword(e.target.value)}
            />
           </div>
