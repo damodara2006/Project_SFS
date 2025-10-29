@@ -1,16 +1,17 @@
 import Login from "./components/Login"
-import SearchBar from "./components/SearchBar"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Register from "./components/Register"
 
 function App() {
 
   return (
-    <>
-    <div className="main-container flex flex-col content-center items-center gap-10 mt-20">
-
-      <SearchBar />
-      <Login />
-    </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />}/>
+      </Routes>
+    </BrowserRouter>
+  
   )
 }
 
