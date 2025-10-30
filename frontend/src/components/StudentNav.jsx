@@ -2,6 +2,7 @@ import { useState } from 'react'
 import SearchBar from '../components/SearchBar'
 import StudentSubmit from '../pages/student/Student_submitions'
 import TeamDetails from '../pages/student/TeamDetails'
+import ProblemSubmit from '../pages/student/ProblemSubmit'
 
 const StudentNav = () => {
   const [active, setActive] = useState('Problem Statements')
@@ -36,7 +37,9 @@ const StudentNav = () => {
               <>
                 <SearchBar />
                 {/* Put your Problem Statements content here */}
-                <div className="mt-4 p-4 bg-white rounded shadow">Problem statements list / content</div>
+                <div className="mt-4 p-4 bg-white rounded shadow">
+                  <ProblemSubmit/>
+                </div>
               </>
             )}
 
