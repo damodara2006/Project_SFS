@@ -12,10 +12,10 @@ const Footer = () => {
 
               {/* Icons go here */}
               <div className="flex justify-around w-full max-w-[250px] h-max mb-6">
-                <FaFacebook size={35}/>
-                <FaTwitter size={35}/>
-                <FaInstagram size={35}/>
-                <FaLinkedin size={35}/>
+                <FaFacebook size={35} className='hover:text-[#ff9100]'/>
+                <FaTwitter size={35} className='hover:text-[#ff9100]'/>
+                <FaInstagram size={35} className='hover:text-[#ff9100]'/>
+                <FaLinkedin size={35} className='hover:text-[#ff9100]'/>
               </div>
 
               {/* Copyright notice */}
