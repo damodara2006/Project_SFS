@@ -1,12 +1,15 @@
 import StudentNav from "../../components/StudentNav";
+import Student_submitions from "./Student_submitions";
 import TeamDetails from "./TeamDetails";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { FaGripLines } from "react-icons/fa";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SdDashboard = () => {
     const [shownav, setshownav] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <div className="min-w-screen min-h-screen border-4 flex flex-col">
@@ -31,6 +34,16 @@ const SdDashboard = () => {
                 {/* Team details always shown */}
                 <div className="mt-8">
                     <TeamDetails />
+
+                    {/* View Solutions button */}
+                    <div className="mt-4">
+                        <button
+                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                            onClick={() => navigate("/student/submissions")}
+                        >
+                            View Solutions
+                        </button>
+                    </div>
                 </div>
             </div>
 
