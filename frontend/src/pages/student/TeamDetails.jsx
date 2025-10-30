@@ -1,6 +1,5 @@
 import React from 'react'
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
+
 
 const TeamDetails = () => {
 
@@ -15,7 +14,6 @@ const TeamDetails = () => {
 
     return (
         <div>
-            <Header />
             <div>
                 <h1 className='text-center text-3xl font-bold'>Team Details</h1>
                 <div className='flex gap-16 m-8'>
@@ -69,7 +67,6 @@ const TeamDetails = () => {
                     </tbody>
                 </table>
             </div>
-            <Footer />
         </div>
     )
 }
