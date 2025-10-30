@@ -3,14 +3,14 @@ import Footer from "../components/Footer"
 
 const Home = () => {
   return (
-    <>
-    <div className="home-page flex flex-col content-center items-center gap-10 mt-20">
+    <div className="min-h-screen flex flex-col justify-between">
+      <main className="flex flex-col items-center gap-10 mt-20">
         <SearchBar />
+      </main>
+      <footer>
+        <Footer />
+      </footer>
     </div>
-    <section>
-        <Footer/>
-    </section>
-    </>
   )
 }
 
