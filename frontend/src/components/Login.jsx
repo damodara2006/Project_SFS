@@ -17,7 +17,7 @@ const Login = () => {
       <Header />
     <div className="min-h-screen flex items-center justify-center ">
       
-      <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl w-96 shadow-lg">
+      <div className="bg-white/10  p-10 rounded-3xl w-96 shadow-lg">
         <h1 className="text-gray-800 text-3xl font-bold mb-6 text-center">Login</h1>
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           {/* Role Selection */}
@@ -66,7 +66,7 @@ const Login = () => {
 
           {/* Forgot Password */}
           <div className="text-right">
-            <a href="#" className="text-[#fc8f00] text-sm hover:underline">
+            <a href="#" className="text-[#ff8a05] text-sm hover:underline">
               Forgot your password?
             </a>
           </div>
@@ -74,7 +74,7 @@ const Login = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="bg-[#fc8f00] text-white font-semibold py-2 rounded-md mt-2 hover:bg-[#e07c00] transition duration-200"
+            className="bg-[#ff8a05] text-white font-semibold py-2 rounded-md mt-2 hover:bg-[#e07c00] transition duration-200"
           >
             Submit
           </button>
