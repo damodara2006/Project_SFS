@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { z } from 'zod'
 
 const registerSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
+  email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 })
 
 const Register = () => {
-  const [form, setForm] = useState({ username: '', password: '' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
 
   const onChange = (e) => {
@@ -44,16 +44,17 @@ const Register = () => {
 
         <div className="mb-4">
           <input
-            name="username"
-            value={form.username}
+            name="email"
+            type="email"
+            value={form.email}
             onChange={onChange}
-            placeholder="Username"
+            placeholder="Email"
             className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
-            aria-invalid={!!errors.username}
+            aria-invalid={!!errors.email}
           />
-          {errors.username && (
+          {errors.email && (
             <div className="mt-2 text-sm text-[#fc8f00]" role="alert">
-              {errors.username}
+              {errors.email}
             </div>
           )}
         </div>
