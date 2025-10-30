@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-
+import Header from './Header'
+import Footer from './Footer';
 const Login = () => {
 
     const[role,setRole]=useState("");
@@ -12,6 +13,8 @@ const Login = () => {
     }
 
   return (
+    <div>
+      <Header />
     <div className="min-h-screen flex items-center justify-center ">
       
       <div className="bg-white/10 backdrop-blur-md p-10 rounded-3xl w-96 shadow-lg">
@@ -77,6 +80,8 @@ const Login = () => {
           </button>
         </form>
       </div>
+    </div>
+    <Footer />
     </div>
   );
 };
