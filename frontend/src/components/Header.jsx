@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import sakthi from "../assets/Pasted image.png"
 import profile from "../assets/profile.png"
 import skathiauto from "../assets/sakthi_auto.png"
 
@@ -10,24 +9,104 @@ const Header = () => {
     SetActive(name);
   }
 
-  return (
-    <div className='fixed h-20 min-w-screen bg-[#494949] font-roboto text-md'>
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navItems = ["Home", "About us", "Problem Statement", "FAQ", "Profile"];
 
-      <nav className='flex items-center justify-between w-[100%] h-full'>
-        <div className=' flex ml-14  w-[20%]'><img src={skathiauto} alt="Sakthi groups" className='w-32 rounded-sm h-14' /></div>
-        <div className='w-[80%]  h-full mr-10'>
-          <ul className='flex  items-center h-[100%] justify-between w-[100%] right-0 text-white'>
-            <li className={` w-full   flex items-center justify-center cursor-pointer  h-[100%]  after:bottom-0 hover:text-orange-400 after:content-['']  mr-2  font-semibold transition-all ${Active == 'Home' ? 'scale-105  after:absolute border-b-2 after:block after:border-b-2 after:bottom-0  after:w-full after:border-orange-400 text-orange-400 after:bg-orange-400 after:z-50' : ""} `} onClick={()=>handle_active("Home")} >Home</li>
-            <li className={` w-full  flex items-center justify-center cursor-pointer  h-[100%]  after:bottom-0 hover:text-orange-400 after:content-['']  mr-2 font-semibold transition-all ${Active == 'About us' ? 'scale-105  after:absolute border-b-2 after:block after:border-b-2 after:bottom-0  after:w-full after:border-orange-400 text-orange-400 after:bg-orange-400 after:z-50' : ""} `} onClick={() => handle_active("About us")} >About Us</li>
-            <li className={` w-full  flex items-center justify-center cursor-pointer  h-[100%]  after:bottom-0 hover:text-orange-400 after:content-['']  mr-2 font-semibold transition-all ${Active == 'Problem Statement' ? ' scale-105  after:absolute border-b-2 after:block after:border-b-2 after:bottom-0  after:w-full after:border-orange-400 text-orange-400 after:bg-orange-400 after:z-50' : ""} `} onClick={() => handle_active("Problem Statement")} >Problem Statement</li>
-            <li className={` w-full  flex items-center justify-center cursor-pointer  h-[100%]  after:bottom-0 hover:text-orange-400 after:content-['']  mr-2 font-semibold transition-all ${Active == 'FAQ' ? 'scale-105  after:absolute border-b-2 after:block after:border-b-2 after:bottom-0  after:w-full after:border-orange-400 text-orange-400 after:bg-orange-400 after:z-50' : ""} `} onClick={() => handle_active("FAQ")} >FAQ</li>
-            <li className={` w-full  flex items-center justify-center cursor-pointer  h-[100%]  after:bottom-0 hover:text-orange-400 after:content-['']  mr-2 font-semibold transition-all ${Active == 'Profile' ? 'scale-105  after:absolute border-b-2 after:block after:border-b-2 after:bottom-0  after:w-full after:border-orange-400 text-orange-400 after:bg-orange-400 after:z-50' : ""} `} onClick={() => handle_active("Profile")} >Profile</li>
-           
-            {/* <img src={profile} className='w-10 h-10 mr-5 e-110 transition-all duration-100 ml-5' alt="profile" /> */}
-          </ul>
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#494949] text-white font-roboto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-20 flex items-center justify-between">
+          {/* Left: Logo */}
+          <div className="flex items-center space-x-4">
+            <img src={skathiauto} alt="Sakthi groups" className="w-32 h-14 rounded-sm" />
+            <span className="hidden md:block font-semibold text-lg tracking-wide">Sakthi Auto</span>
+          </div>
+
+          {/* Center: Navigation (desktop) */}
+          <nav className="hidden md:flex flex-1 justify-center">
+            <ul className="flex items-center space-x-2 w-full max-w-3xl justify-center">
+              {navItems.map((item) => (
+                <li
+                  key={item}
+                  onClick={() => handle_active(item)}
+                  className={
+                    `relative px-4 py-2 cursor-pointer text-sm font-semibold rounded-md transition-all transform select-none ` +
+                    (Active === item
+                      ? "text-orange-400 scale-105 border-b-2 border-orange-400"
+                      : "hover:text-orange-400 hover:scale-105")
+                  }
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Right: profile + mobile toggle */}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => handle_active("Profile")}
+              className="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-md hover:brightness-110 transition"
+              aria-label="Open profile"
+            >
+              <img src={profile} alt="profile" className="w-10 h-10 rounded-full ring-1 ring-white/20" />
+            </button>
+
+            {/* Mobile menu toggle */}
+            <button
+              className="md:hidden p-2 rounded-md hover:bg-white/5 transition"
+              onClick={() => setMobileOpen((s) => !s)}
+              aria-label="Toggle menu"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
-      </nav>
-    </div> 
+      </div>
+
+      {/* Mobile drawer */}
+      <div
+        className={`md:hidden absolute left-0 right-0 bg-[#494949] border-t border-white/5 overflow-hidden transition-all ${
+          mobileOpen ? "max-h-96 py-3" : "max-h-0"
+        }`}
+      >
+        <ul className="flex flex-col gap-1 px-4">
+          {navItems.map((item) => (
+            <li
+              key={item + "-mobile"}
+              onClick={() => {
+                handle_active(item);
+                setMobileOpen(false);
+              }}
+              className={
+                `w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ` +
+                (Active === item ? "text-orange-400 bg-white/5" : "hover:text-orange-400 hover:bg-white/3")
+              }
+            >
+              {item}
+            </li>
+          ))}
+          <li className="px-3 pt-2">
+            <button
+              onClick={() => {
+                handle_active("Profile");
+                setMobileOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-white/5 transition"
+            >
+              <img src={profile} alt="profile" className="w-9 h-9 rounded-full ring-1 ring-white/20" />
+              <span className="text-sm font-semibold">Profile</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </header>
   )
 }
 
