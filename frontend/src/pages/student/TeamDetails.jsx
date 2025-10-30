@@ -13,59 +13,77 @@ const TeamDetails = () => {
     ];
 
     return (
-        <div>
-            <div>
-                <h1 className='text-center text-3xl font-bold'>Team Details</h1>
-                <div className='flex gap-16 m-8'>
-                    <div className='border-2 h-40 w-60'>
-                        <span className='font-bold text-2xl'>Team Name</span>
-                        <br />
-                        <span className='font-bold text-xl'>Alpha Coders</span>
+        <div className="min-h-screen bg-white/50 p-6">
+            <div className="max-w-7xl mx-auto">
+                <header className="mb-8">
+                    <h1 className="text-center text-3xl font-extrabold text-gray-900">Team Details</h1>
+                </header>
+
+                {/* Team meta */}
+                <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10">
+                    {[
+                        { label: "Team Name", value: "Alpha Coders" },
+                        { label: "Team Leader", value: "Aarav Mehta" },
+                        { label: "Team Id", value: "SFS25001" },
+                        { label: "College Name", value: "Knowledge Institute of Technology" },
+                        { label: "Mentor Name", value: "Mr.Praveen K AP/CSE" },
+                    ].map((item) => (
+                        <div
+                            key={item.label}
+                            className="flex flex-col justify-center border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition"
+                        >
+                            <span className="text-sm font-medium text-gray-500 uppercase">{item.label}</span>
+                            <span className="mt-2 text-lg font-semibold text-gray-800">{item.value}</span>
+                        </div>
+                    ))}
+                </section>
+
+                {/* Members */}
+                <section>
+                    <h2 className="text-2xl text-center font-bold text-gray-900 mb-4">Member Details</h2>
+
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+                            <thead className="bg-gray-100 border-b border-gray-200">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Member Role</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Member Name</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Member Email</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Member Phone</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Member Gender</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {member.map((m) => {
+                                    const initials = m.name
+                                        .split(' ')
+                                        .map(part => part[0])
+                                        .join('')
+                                        .slice(0, 2)
+                                        .toUpperCase();
+                                    return (
+                                        <tr key={m.id} className="hover:bg-gray-50 transition">
+                                            <td className="px-6 py-4 align-middle text-sm text-gray-700">{m.role}</td>
+                                            <td className="px-6 py-4 align-middle">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-700">
+                                                        {initials}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-sm font-medium text-gray-900">{m.name}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 align-middle text-sm text-gray-600">{m.email}</td>
+                                            <td className="px-6 py-4 align-middle text-sm text-gray-600">{m.phone}</td>
+                                            <td className="px-6 py-4 align-middle text-sm text-gray-600">{m.gender}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
                     </div>
-                    <div className='border-2 h-40 w-60'>
-                        <span className='font-bold text-2xl'>Team Leader</span>
-                        <br />
-                        <span className='font-bold text-xl'>Aarav Mehta</span>
-                    </div>
-                    <div className='border-2 h-40 w-60'>
-                        <span className='font-bold text-2xl'>Team Id</span>
-                        <br />
-                        <span className='font-bold text-xl'>SFS25001</span>
-                    </div>
-                    <div className='border-2 h-40 w-60'>
-                        <span className='font-bold text-2xl'>College Name</span>
-                        <br />
-                        <span className='font-bold text-xl'>Knowledge Institute of Technology</span>
-                    </div>
-                    <div className='border-2 h-40 w-60'>
-                        <span className='font-bold text-2xl'>Mentor Name</span>
-                        <br />
-                        <span className='font-bold text-xl'>Mr.Praveen K AP/CSE</span>
-                    </div>
-                </div>
-                <h1 className='text-3xl text-center font-bold'>Member Details</h1>
-                <table className='border-2 w-[80%] mx-auto mt-8 text-center'>
-                    <thead className='bg-gray-300 p-2 border-2 m-2 '>
-                        <tr className='mt-2'>
-                            <th>Member Role</th>
-                            <th>Member Name</th>
-                            <th>Member Email</th>
-                            <th>Member Phone</th>
-                            <th>Member Gender</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {member.map((m) => (
-                            <tr key={m.id}>
-                                <td>{m.role}</td>
-                                <td>{m.name}</td>
-                                <td>{m.email}</td>
-                                <td>{m.phone}</td>
-                                <td>{m.gender}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                </section>
             </div>
         </div>
     )
