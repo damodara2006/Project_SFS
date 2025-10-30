@@ -178,7 +178,7 @@ const Upload = () => {
                                         key={i}
                                         className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:shadow-sm transition bg-white"
                                     >
-                                        <div className="w-16 h-12 flex-shrink-0 rounded-md overflow-hidden bg-gray-50 flex items-center justify-center">
+                                        <div className="w-16 h-12 shrink-0 rounded-md overflow-hidden bg-gray-50 flex items-center justify-center">
                                             {f.type && f.type.startsWith('image/') ? (
                                                 <img src={previews[i]} alt={f.name} className="object-cover w-full h-full" />
                                             ) : (
@@ -215,7 +215,7 @@ const Upload = () => {
                             <div className="mt-4">
                                 <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
                                     <div
-                                        className="h-3 bg-gradient-to-r from-orange-400 to-orange-600 transition-width"
+                                        className="h-3 bg-linear-to-r from-orange-400 to-orange-600 transition-width"
                                         style={{ width: `${progress}%` }}
                                     />
                                 </div>

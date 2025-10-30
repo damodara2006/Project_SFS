@@ -5,7 +5,7 @@ import Home from "./pages/Home"
 import SdDashboard from './pages/student/SdDashboard';
 import Student_submitions from "./pages/student/Student_submitions";
 import Upload from './pages/student/Upload';
-
+import Student_submitions from "./pages/student/Student_submitions";
 function App() {
 
   return (
@@ -17,6 +17,8 @@ function App() {
         <Route path="/student" element={<SdDashboard />} />
         <Route path="/student/submissions" element={<Student_submitions />} />
         <Route path="/student/upload" element={<Upload />} />
+        <Route path="/student/submitions" element={<Student_submitions />} />
+
       </Routes>
     </BrowserRouter>
   
