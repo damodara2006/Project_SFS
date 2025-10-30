@@ -6,7 +6,7 @@ const TeamDetails = () => {
     { id: 2, role: "Frontend Developer", name: "Priya Sharma", email: "priya.sharma@example.com", phone: "+91 99887 65432", gender: "Female" },
     { id: 3, role: "Backend Developer", name: "Rohan Das", email: "rohan.das@example.com", phone: "+91 91234 56789", gender: "Male" },
     { id: 4, role: "UI/UX Designer", name: "Neha Verma", email: "neha.verma@example.com", phone: "+91 97654 32109", gender: "Female" },
-    { id: 5, role: "Data Analyst", name: "Aditya Nair", email: "aditya.nair@example.com", phone: "+91 98567 89012", gender: "Male" },
+    { id: 5, role: "FullStack Developer", name: "Aditya", email: "aditya@example.com", phone: "+91 98567 89012", gender: "Male" },
     { id: 6, role: "QA Engineer", name: "Kavya Reddy", email: "kavya.reddy@example.com", phone: "+91 93456 78901", gender: "Female" },
   ];
 
