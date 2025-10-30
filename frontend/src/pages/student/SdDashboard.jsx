@@ -3,8 +3,8 @@ import TeamDetails from "./TeamDetails";
 
 const SdDashboard = () => {
     return <div>
-        {/* <TeamDetails/> */}
-        <StudentNav />
+        <TeamDetails/>
+        {/* <StudentNav /> */}
     </div>;
 }
 
