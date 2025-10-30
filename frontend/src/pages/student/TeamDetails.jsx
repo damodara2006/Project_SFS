@@ -11,10 +11,10 @@ const TeamDetails = () => {
   ];
 
     return (
-        <div className="min-h-screen bg-white/50 p-6">
+        <div className="min-h-screen bg-white/50 p-6 ">
             <div className="max-w-7xl mx-auto">
                 <header className="mb-8">
-                    <h1 className="text-center text-3xl font-extrabold text-gray-900">Team Details</h1>
+                    <h1 className="text-center text-3xl font-extrabold text-gray-900 mt-8">Team Details</h1>
                 </header>
 
                 {/* Team meta */}
@@ -28,7 +28,8 @@ const TeamDetails = () => {
                     ].map((item) => (
                         <div
                             key={item.label}
-                            className="flex flex-col justify-center border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition"
+                            className="flex flex-col justify-center border border-gray-200 rounded-lg p-4 bg-white shadow-[4px_4px_8px_#fc9300]/20 hover:shadow-[6px_6px_10px_#fc9300]/60 transition-transform transform hover:-translate-y-1 duration-300"
+
                         >
                             <span className="text-sm font-medium text-gray-500 uppercase">{item.label}</span>
                             <span className="mt-2 text-lg font-semibold text-gray-800">{item.value}</span>
