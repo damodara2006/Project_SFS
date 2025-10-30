@@ -19,7 +19,6 @@ const Header = () => {
           {/* Left: Logo */}
           <div className="flex items-center space-x-4">
             <img src={skathiauto} alt="Sakthi groups" className="w-32 h-14 rounded-sm" />
-            <span className="hidden md:block font-semibold text-lg tracking-wide">Sakthi Auto</span>
           </div>
 
           {/* Center: Navigation (desktop) */}
