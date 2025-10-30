@@ -21,7 +21,7 @@ const SearchBar = () => {
           type="text" placeholder="Search..."
           className="w-88 h-10 focus:outline-gray-200 bg-white backdrop-blur-xl p-2 rounded-3xl shadow-lg "
           onChange={onChange()} />
-        <button type="submit" className="bg-[#fc8f00] text-white font-semibold py-2 rounded-md mx-4 p-4" onClick={handleSearch}>Search</button>
+        <button type="submit" className="bg-[#fc8f00] text-white font-semibold py-2 rounded-md mx-4 p-4 hover:bg-amber-600" onClick={handleSearch}>Search</button>
       </div>
     </>
   )
