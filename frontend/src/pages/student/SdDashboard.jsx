@@ -1,5 +1,9 @@
+import TeamDetails from "./TeamDetails";
+
 const SdDashboard = () => {
-    return <div>Student Dashboard</div>;
+    return <div>
+        <TeamDetails/>
+    </div>;
 }
 
 export default SdDashboard;
