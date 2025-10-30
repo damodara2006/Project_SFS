@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TeamDetails = () => {
   const members = [
     { id: 1, role: "Team Lead", name: "Aarav Mehta", email: "aarav.mehta@example.com", phone: "+91 98765 43210", gender: "Male" },
@@ -52,7 +50,7 @@ const TeamDetails = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {member.map((m) => {
+                                {members.map((m) => {
                                     const initials = m.name
                                         .split(' ')
                                         .map(part => part[0])
