@@ -6,14 +6,13 @@ import { FaGripLines } from "react-icons/fa";
 import { useState } from "react";
 
 const SdDashboard = () => {
-    // const[shownav, setshownav] = useState(false)
     const [shownav, setshownav] = useState(false);
 
     return (
-        <div className="min-w-screen min-h-screen border-4">
+        <div className="min-w-screen min-h-screen border-4 flex flex-col">
             <Header />
 
-            <div className="pt-6 relative">
+            <div className="pt-6 relative flex-1">
                 {/* toggle button for nav */}
                 <span
                     className="absolute top-4 right-6 text-white text-2xl cursor-pointer z-40"
@@ -35,7 +34,7 @@ const SdDashboard = () => {
                 </div>
             </div>
 
-            <div className="bottom-0 w-full fixed">
+            <div className="w-full">
                 <Footer />
             </div>
         </div>
