@@ -1,8 +1,10 @@
+import StudentNav from "../../components/StudentNav";
 import TeamDetails from "./TeamDetails";
 
 const SdDashboard = () => {
     return <div>
-        <TeamDetails/>
+        {/* <TeamDetails/> */}
+        <StudentNav />
     </div>;
 }
 
