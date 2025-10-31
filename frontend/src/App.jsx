@@ -20,17 +20,17 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header/>
+      <Header />
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />}/>
+        <Route path="/register" element={<Register />} />
         <Route path="/student" element={<SdDashboard />} />
         <Route path="/spoc" element={<SpocDashboard />} />
         <Route path="/spoc/profile" element={<SPOCProfile />} />
         <Route path="/student/submit-solution" element={<Upload />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   )
 }
