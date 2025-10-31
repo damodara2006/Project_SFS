@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /* Hardcoded problem data */
 const sampleProblems = [
@@ -60,6 +61,7 @@ const ProblemStudent = () => {
     const [problems] = useState(sampleProblems);
     const [selected, setSelected] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
 
     const openModal = (problem) => {
         setSelected(problem);
@@ -70,7 +72,11 @@ const ProblemStudent = () => {
         setIsOpen(false);
         setSelected(null);
     };
-
+    
+    const handleSubmit = () => {
+        // Logic to handle submission of solution
+        navigate("/student/submit-solution", { state: { problemId: selected.id } });
+    }
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">Problems</h2>
@@ -134,7 +140,13 @@ const ProblemStudent = () => {
                                 {selected.resources}
                             </a>
                         </div>
-                        <div className="mt-6 flex justify-end">
+                        <div className="mt-6 flex justify-end gap-3">
+                            <button
+                                onClick={handleSubmit}
+                                className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white"
+                            >
+                                Submit
+                            </button>
                             <button
                                 onClick={closeModal}
                                 className="rounded px-3 py-1 text-sm font-medium bg-[#4a4a4a] text-[#ffffff]"
