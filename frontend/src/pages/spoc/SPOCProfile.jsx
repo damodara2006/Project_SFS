@@ -22,7 +22,7 @@ const SPOCProfile = () => {
   };
 
   return (
-    <div className="mt-20 w-full flex justify-center px-4 mt-10 mb-10">
+    <div className="w-full flex justify-center px-4 mt-10 mb-10">
       <div className="max-w-4xl w-full">
         <header className="mb-6 text-center mt-4">
           <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#fc8f00] to-[#ffb347]">
