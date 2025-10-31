@@ -59,43 +59,43 @@ const DashboardWithSide = () => {
         className="fixed left-5 top-1/2 -translate-y-1/2 bg-[#494949] text-white rounded-2xl shadow-xl flex flex-col items-center py-6 z-20"
       >
         <nav className="w-full">
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-4 px-2 mx-auto">
             <li>
               <button
                 onClick={() => setActiveView('dashboard')}
-                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${
-                  activeView === 'dashboard' ? 'bg-gray-700' : 'hover: bg-white text-gray-800 '
+                className={`flex items-center w-full p-3 pl-4 rounded-lg transition-all duration-300 ${
+                  activeView === 'dashboard' ? 'bg-white text-gray-700 hover:bg-white hover:text-gray-700 ' : 'hover:bg-white hover:text-gray-700 text-white '
                 }`}
               >
-                <FaUsers className="text-xl mx-auto" />
+                <FaUsers className="text-xl" />
                 {isSidebarExpanded && (
-                  <span className="ml-3 text-sm font-medium">Dashboard</span>
+                  <span className="text-sm text-center font-medium mx-5">Dashboard</span>
                 )}
               </button>
             </li>
             <li>
               <button
                 onClick={() => setActiveView('problems')}
-                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${
-                  activeView === 'problems' ? 'bg-gray-700' : 'hover:bg-gray-700'
+                className={`flex items-center w-full p-3 pl-4 rounded-lg transition-all duration-300 ${
+                  activeView === 'problems' ? 'text-gray-700 bg-white hover:bg-white hover:text-gray-700 ' : 'hover:bg-white hover:text-gray-700 text-white '
                 }`}
               >
-                <FaClipboardList className="text-xl mx-auto" />
+                <FaClipboardList className="text-xl" />
                 {isSidebarExpanded && (
-                  <span className="ml-3 text-sm font-medium">Problems</span>
+                  <span className=" text-sm font-medium mx-5">Problems</span>
                 )}
               </button>
             </li>
             <li>
               <button
                 onClick={() => setActiveView('profile')}
-                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${
-                  activeView === 'profile' ? 'bg-gray-700' : 'hover:bg-gray-700'
+                className={`flex items-center w-full p-3 pl-4 rounded-lg transition-all duration-300 ${
+                  activeView === 'profile' ? 'text-gray-700 bg-white hover:bg-white hover:text-gray-700 ': 'hover:bg-white hover:text-gray-700 text-white '
                 }`}
               >
-                <FaUser className="text-xl mx-auto" />
+                <FaUser className="text-xl" />
                 {isSidebarExpanded && (
-                  <span className="ml-3 text-sm font-medium">Profile</span>
+                  <span className="text-sm font-medium mx-5">Profile</span>
                 )}
               </button>
             </li>
