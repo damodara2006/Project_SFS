@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import SearchBar from '../components/SearchBar'
 import Student_submitions from '../pages/student/Student_submitions'
 import TeamDetails from '../pages/student/TeamDetails'
@@ -8,6 +9,13 @@ const StudentNav = () => {
   const [active, setActive] = useState('Problem Statements')
 
   const tabs = ['Problem Statements', 'My Submission', 'Team Details']
+
+  const variants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  }
+
   return (
     <div className="min-h-screen flex pt-20">
       <main className="flex-1 p-6">
@@ -33,27 +41,54 @@ const StudentNav = () => {
 
           {/* Content area */}
           <div className="mb-6">
-            {active === 'Problem Statements' && (
-              <>
-                <SearchBar />
-                {/* Put your Problem Statements content here */}
-                <div className="mt-4 p-4 bg-white rounded shadow">
-                  <ProblemSubmit/>
-                </div>
-              </>
-            )}
+            <AnimatePresence mode="wait">
+              {active === 'Problem Statements' && (
+                <motion.div
+                  key="problem-statements"
+                  variants={variants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3 }}
+                >
+                  <SearchBar />
+                  {/* Put your Problem Statements content here */}
+                  <div className="mt-4 p-4 bg-white rounded shadow">
+                    <ProblemSubmit />
+                  </div>
+                </motion.div>
+              )}
 
-            {active === 'My Submission' && (
-              <div className="mt-4">
-                <Student_submitions />
-              </div>
-            )}
+              {active === 'My Submission' && (
+                <motion.div
+                  key="my-submission"
+                  variants={variants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="mt-4">
+                    <Student_submitions />
+                  </div>
+                </motion.div>
+              )}
 
-            {active === 'Team Details' && (
-              <div className="mt-4">
-                <TeamDetails />
-              </div>
-            )}
+              {active === 'Team Details' && (
+                <motion.div
+                  key="team-details"
+                  variants={variants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="mt-4">
+                    <TeamDetails />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </main>
