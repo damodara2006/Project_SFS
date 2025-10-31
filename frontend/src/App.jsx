@@ -11,7 +11,7 @@ import Upload from "./pages/student/Upload"
 
 // SPOC Imports
 import SpocDashboard from "./pages/spoc/SpocDashboard";
-
+import SPOCProfile from "./pages/spoc/SPOCProfile";
 
 // Admin Imports
 
@@ -27,6 +27,7 @@ function App() {
         <Route path="/register" element={<Register />}/>
         <Route path="/student" element={<SdDashboard />} />
         <Route path="/spoc" element={<SpocDashboard />} />
+        <Route path="/spoc/profile" element={<SPOCProfile />} />
         <Route path="/student/submit-solution" element={<Upload />} />
       </Routes>
       <Footer/>
