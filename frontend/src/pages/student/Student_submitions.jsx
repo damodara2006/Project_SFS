@@ -18,16 +18,7 @@ function useSubmissions() {
       { id: 's1', title: 'Two Sum', submittedAt: Date.now() - 1000 * 60 * 60 * 24, status: 'Accepted', feedback: 'Well done!' },
       { id: 's2', title: 'Reverse Linked List', submittedAt: Date.now() - 1000 * 60 * 60 * 48, status: 'Rejected', feedback: 'Edge cases failing' },
       { id: 's3', title: 'Binary Search', submittedAt: Date.now() - 1000 * 60 * 60 * 72, status: 'Pending', feedback: null },
-      { id: 's4', title: 'Merge Sort', submittedAt: Date.now() - 1000 * 60 * 60 * 96, status: 'Accepted', feedback: 'Optimal solution' },
-      { id: 's5', title: 'Graph Traversal', submittedAt: Date.now() - 1000 * 60 * 60 * 120, status: 'Rejected', feedback: 'Timeouts on large inputs' },
-      { id: 's6', title: 'Dynamic Programming - Knapsack', submittedAt: Date.now() - 1000 * 60 * 60 * 150, status: 'Pending', feedback: null },
-      { id: 's7', title: 'String Permutations', submittedAt: Date.now() - 1000 * 60 * 60 * 180, status: 'Accepted', feedback: 'Good complexity' },
-      { id: 's8', title: 'Topological Sort', submittedAt: Date.now() - 1000 * 60 * 60 * 210, status: 'Rejected', feedback: 'Incorrect ordering' },
-      { id: 's9', title: 'LRU Cache', submittedAt: Date.now() - 1000 * 60 * 60 * 240, status: 'Pending', feedback: null },
-      { id: 's10', title: 'Median of Two Sorted Arrays', submittedAt: Date.now() - 1000 * 60 * 60 * 270, status: 'Accepted', feedback: 'Clean solution' },
-      { id: 's11', title: 'Longest Increasing Subsequence', submittedAt: Date.now() - 1000 * 60 * 60 * 300, status: 'Rejected', feedback: 'Wrong DP transitions' },
-      { id: 's12', title: 'Trie Implementation', submittedAt: Date.now() - 1000 * 60 * 60 * 330, status: 'Pending', feedback: null },
-      { id: 's13', title: 'Kth Smallest Element', submittedAt: Date.now() - 1000 * 60 * 60 * 360, status: 'Accepted', feedback: 'Well optimized' }
+      { id: 's4', title: 'Merge Sort', submittedAt: Date.now() - 1000 * 60 * 60 * 96, status: 'Accepted', feedback: 'Optimal solution' }
     ]
 
     // Simulate async load (no API call; using dummy data)

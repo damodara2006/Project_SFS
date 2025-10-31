@@ -1,27 +1,55 @@
 import { useState } from "react";
 
-/* Hardcoded submission data */
-const sampleSubmissions = [
+/* Hardcoded problem data */
+const sampleProblems = [
     {
         id: "P-001",
         title: "Two Sum",
-        date: "2025-09-01",
-        status: "Accepted",
-        details: "Return indices of the two numbers such that they add up to a specific target.",
+        posted: "2025-09-01",
+        difficulty: "Easy",
+        statement: "Return indices of the two numbers such that they add up to a specific target.",
     },
     {
         id: "P-002",
         title: "Reverse Linked List",
-        date: "2025-09-05",
-        status: "Pending",
-        details: "Reverse a singly linked list iteratively and recursively.",
+        posted: "2025-09-05",
+        difficulty: "Medium",
+        statement: "Reverse a singly linked list iteratively and recursively.",
     },
     {
         id: "P-003",
         title: "Path Sum",
-        date: "2025-09-10",
-        status: "Rejected",
-        details: "Determine if the tree has a root-to-leaf path summing to given value.",
+        posted: "2025-09-10",
+        difficulty: "Hard",
+        statement: "Determine if the tree has a root-to-leaf path summing to given value.",
+    },
+    {
+        id: "P-004",
+        title: "Valid Parentheses",
+        posted: "2025-09-12",
+        difficulty: "Easy",
+        statement: "Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input is valid.",
+    },
+    {
+        id: "P-005",
+        title: "Merge Intervals",
+        posted: "2025-09-15",
+        difficulty: "Medium",
+        statement: "Given a collection of intervals, merge all overlapping intervals and return the result.",
+    },
+    {
+        id: "P-006",
+        title: "Word Ladder",
+        posted: "2025-09-18",
+        difficulty: "Hard",
+        statement: "Given two words and a dictionary, find the length of shortest transformation sequence from beginWord to endWord.",
+    },
+    {
+        id: "P-007",
+        title: "LRU Cache",
+        posted: "2025-09-20",
+        difficulty: "Hard",
+        statement: "Design and implement a data structure for Least Recently Used (LRU) cache with get and put operations in O(1) time.",
     },
 ];
 
@@ -47,26 +75,26 @@ const Modal = ({ open, onClose, title, children }) => {
     );
 };
 
-const statusClass = (status) => {
-    switch (status) {
-        case "Accepted":
-            return "bg-[#4a4a4a] text-[#ffffff]";
-        case "Pending":
-            return "bg-[#fc8f00] text-[#ffffff]";
-        case "Rejected":
-            return "bg-[#ffffff] text-[#4a4a4a] border border-[#4a4a4a]";
+const difficultyClass = (difficulty) => {
+    switch (difficulty) {
+        case "Easy":
+            return "bg-green-600 text-white";
+        case "Medium":
+            return "bg-yellow-600 text-white";
+        case "Hard":
+            return "bg-red-600 text-white";
         default:
-            return "bg-[#ffffff] text-[#4a4a4a]";
+            return "bg-gray-100 text-[#4a4a4a]";
     }
 };
 
-const ProblemSubmit = () => {
-    const [submissions] = useState(sampleSubmissions);
+const ProblemStudent = () => {
+    const [problems] = useState(sampleProblems);
     const [selected, setSelected] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    const openModal = (submission) => {
-        setSelected(submission);
+    const openModal = (problem) => {
+        setSelected(problem);
         setIsOpen(true);
     };
 
@@ -77,7 +105,7 @@ const ProblemSubmit = () => {
 
     return (
         <div>
-            <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">My Submissions</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">Problems</h2>
 
             <div className="overflow-x-auto rounded border">
                 <table className="min-w-full divide-y">
@@ -85,29 +113,29 @@ const ProblemSubmit = () => {
                         <tr>
                             <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Title</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium">Posted</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium">Difficulty</th>
                             <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y bg-white">
-                        {submissions.map((s) => (
-                            <tr key={s.id}>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{s.id}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{s.title}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{s.date}</td>
+                        {problems.map((p) => (
+                            <tr key={p.id}>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.id}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.title}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.posted}</td>
                                 <td className="px-4 py-3">
                                     <span
-                                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${statusClass(
-                                            s.status
+                                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${difficultyClass(
+                                            p.difficulty
                                         )}`}
                                     >
-                                        {s.status}
+                                        {p.difficulty}
                                     </span>
                                 </td>
                                 <td className="px-4 py-3 text-right">
                                     <button
-                                        onClick={() => openModal(s)}
+                                        onClick={() => openModal(p)}
                                         className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-[#ffffff]"
                                     >
                                         View
@@ -119,25 +147,25 @@ const ProblemSubmit = () => {
                 </table>
             </div>
 
-            <Modal open={isOpen} onClose={closeModal} title={selected ? selected.title : "Submission"}>
+            <Modal open={isOpen} onClose={closeModal} title={selected ? selected.title : "Problem"}>
                 {selected ? (
                     <div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
                             <strong>ID:</strong> {selected.id}
                         </div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>Date:</strong> {selected.date}
+                            <strong>Posted:</strong> {selected.posted}
                         </div>
                         <div className="mb-3">
                             <span
-                                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${statusClass(
-                                    selected.status
+                                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${difficultyClass(
+                                    selected.difficulty
                                 )}`}
                             >
-                                {selected.status}
+                                {selected.difficulty}
                             </span>
                         </div>
-                        <div className="mt-4 text-sm text-[#4a4a4a]">{selected.details}</div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">{selected.statement}</div>
                         <div className="mt-6 flex justify-end">
                             <button
                                 onClick={closeModal}
@@ -148,11 +176,11 @@ const ProblemSubmit = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="text-sm text-[#4a4a4a]">No submission selected.</div>
+                    <div className="text-sm text-[#4a4a4a]">No problem selected.</div>
                 )}
             </Modal>
         </div>
     );
 };
 
-export default ProblemSubmit;
+export default ProblemStudent;

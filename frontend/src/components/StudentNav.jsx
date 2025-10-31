@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import SearchBar from '../components/SearchBar'
-import StudentSubmit from '../pages/student/Student_submitions'
+import Student_submitions from '../pages/student/Student_submitions'
 import TeamDetails from '../pages/student/TeamDetails'
-import ProblemSubmit from '../pages/student/ProblemSubmit'
+import ProblemSubmit from '../pages/student/ProblemStudent'
 
 const StudentNav = () => {
   const [active, setActive] = useState('Problem Statements')
@@ -45,7 +45,7 @@ const StudentNav = () => {
 
             {active === 'My Submission' && (
               <div className="mt-4">
-                <StudentSubmit />
+                <Student_submitions />
               </div>
             )}
 
