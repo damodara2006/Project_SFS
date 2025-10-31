@@ -2,10 +2,19 @@ import Login from "./components/Login"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Register from "./components/Register"
 import Home from "./pages/Home"
-import SdDashboard from './pages/student/SdDashboard';
-import Upload from "./pages/student/Upload"
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+
+// Student Imports
+import SdDashboard from './pages/student/SdDashboard';
+import Upload from "./pages/student/Upload"
+
+// SPOC Imports
+import SpocDashboard from "./pages/spoc/SpocDashboard";
+
+
+// Admin Imports
+
 
 function App() {
 
@@ -17,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/student" element={<SdDashboard />} />
+        <Route path="/spoc" element={<SpocDashboard />} />
         <Route path="/student/submit-solution" element={<Upload />} />
       </Routes>
       <Footer />
