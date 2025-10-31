@@ -127,7 +127,7 @@ const DashboardWithSide = () => {
         className="fixed left-5 top-1/2 -translate-y-1/2 bg-[#494949] text-white rounded-2xl shadow-xl flex flex-col items-center py-6 z-20"
       >
         <nav className="w-full">
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-4 px-2 mx-auto">
             <li>
               <button
                 onClick={() => setActiveView("dashboard")}
