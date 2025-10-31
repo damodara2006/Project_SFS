@@ -64,7 +64,7 @@ const DashboardWithSide = () => {
               <button
                 onClick={() => setActiveView('dashboard')}
                 className={`flex items-center w-full p-3 pl-4 rounded-lg transition-all duration-300 ${
-                  activeView === 'dashboard' ? 'bg-white text-gray-700 hover:bg-white hover:text-gray-700 ' : 'hover:bg-white hover:text-gray-700 text-white '
+                  activeView === 'dashboard' ? 'bg-white text-gray-700 hover:bg-white hover:text-gray-700 ' : 'cursor-pointer text-white '
                 }`}
               >
                 <FaUsers className="text-xl" />
@@ -77,7 +77,7 @@ const DashboardWithSide = () => {
               <button
                 onClick={() => setActiveView('problems')}
                 className={`flex items-center w-full p-3 pl-4 rounded-lg transition-all duration-300 ${
-                  activeView === 'problems' ? 'text-gray-700 bg-white hover:bg-white hover:text-gray-700 ' : 'hover:bg-white hover:text-gray-700 text-white '
+                  activeView === 'problems' ? 'text-gray-700 bg-white hover:bg-white hover:text-gray-700 ' : 'cursor-pointer text-white '
                 }`}
               >
                 <FaClipboardList className="text-xl" />
@@ -90,7 +90,7 @@ const DashboardWithSide = () => {
               <button
                 onClick={() => setActiveView('profile')}
                 className={`flex items-center w-full p-3 pl-4 rounded-lg transition-all duration-300 ${
-                  activeView === 'profile' ? 'text-gray-700 bg-white hover:bg-white hover:text-gray-700 ': 'hover:bg-white hover:text-gray-700 text-white '
+                  activeView === 'profile' ? 'text-gray-700 bg-white hover:bg-white hover:text-gray-700 ': 'cursor-pointer text-white '
                 }`}
               >
                 <FaUser className="text-xl" />
