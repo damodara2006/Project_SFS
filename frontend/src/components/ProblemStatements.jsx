@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; // 👈 Added motion for animation
 
 /* Hardcoded problem data */
 const sampleProblems = [
@@ -40,7 +41,13 @@ const Modal = ({ open, onClose, title, children }) => {
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-            <div className="w-full max-w-xl rounded shadow-lg bg-[#ffffff]">
+            <motion.div
+                className="w-full max-w-xl rounded shadow-lg bg-[#ffffff]"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.3 }}
+            >
                 <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
                     <h3 className="text-lg text-[#4a4a4a] font-bold">{title}</h3>
                     <button
@@ -52,7 +59,7 @@ const Modal = ({ open, onClose, title, children }) => {
                     </button>
                 </div>
                 <div className="p-4">{children}</div>
-            </div>
+            </motion.div>
         </div>
     );
 };
@@ -78,11 +85,33 @@ const ProblemStatements = () => {
         const params = new URLSearchParams({ problemId: selected.id });
         navigate(`/student/submit-solution?${params.toString()}`);
     };
+
+    // ✨ Animation Variants (matching dashboard style)
+    const pageVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    };
+
+    const tableVariants = {
+        hidden: { opacity: 0, x: -50 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.5, delay: 0.2 } },
+    };
+
     return (
-        <div>
+        <motion.div
+            className="p-4"
+            variants={pageVariants}
+            initial="hidden"
+            animate="visible"
+        >
             <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">Problems</h2>
 
-            <div className="overflow-x-auto rounded border">
+            <motion.div
+                className="overflow-x-auto rounded border bg-white shadow-sm"
+                variants={tableVariants}
+                initial="hidden"
+                animate="visible"
+            >
                 <table className="min-w-full divide-y">
                     <thead className="bg-[#4a4a4a] text-[#ffffff]">
                         <tr>
@@ -93,28 +122,37 @@ const ProblemStatements = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y bg-white">
-                        {problems.map((p) => (
-                            <tr key={p.id}>
+                        {problems.map((p, index) => (
+                            <motion.tr
+                                key={p.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
                                 <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.id}</td>
                                 <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.title}</td>
                                 <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.date}</td>
                                 <td className="px-4 py-3 text-right">
                                     <button
                                         onClick={() => openModal(p)}
-                                        className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-[#ffffff]"
+                                        className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-[#ffffff] hover:bg-[#e57f00]"
                                     >
                                         View
                                     </button>
                                 </td>
-                            </tr>
+                            </motion.tr>
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </motion.div>
 
             <Modal open={isOpen} onClose={closeModal} title={selected ? selected.title : "Problem"}>
                 {selected ? (
-                    <div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
                         <div className="mb-3 text-sm text-[#4a4a4a]">
                             <strong>ID:</strong> {selected.id}
                         </div>
@@ -144,23 +182,23 @@ const ProblemStatements = () => {
                         <div className="mt-6 flex justify-end gap-3">
                             <button
                                 onClick={handleSubmit}
-                                className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white"
+                                className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
                             >
                                 Submit
                             </button>
                             <button
                                 onClick={closeModal}
-                                className="rounded px-3 py-1 text-sm font-medium bg-[#4a4a4a] text-[#ffffff]"
+                                className="rounded px-3 py-1 text-sm font-medium bg-[#4a4a4a] text-[#ffffff] hover:bg-[#333333]"
                             >
                                 Close
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 ) : (
                     <div className="text-sm text-[#4a4a4a]">No problem selected.</div>
                 )}
             </Modal>
-        </div>
+        </motion.div>
     );
 };
 
