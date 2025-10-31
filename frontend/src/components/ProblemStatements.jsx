@@ -57,7 +57,7 @@ const Modal = ({ open, onClose, title, children }) => {
     );
 };
 
-const ProblemStudent = () => {
+const ProblemStatements = () => {
     const [problems] = useState(sampleProblems);
     const [selected, setSelected] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -164,4 +164,4 @@ const ProblemStudent = () => {
     );
 };
 
-export default ProblemStudent;
+export default ProblemStatements;

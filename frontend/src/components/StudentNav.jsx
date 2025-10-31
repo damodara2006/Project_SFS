@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SearchBar from '../components/SearchBar'
 import Student_submitions from '../pages/student/Student_submitions'
 import TeamDetails from '../pages/student/TeamDetails'
-import ProblemSubmit from '../pages/student/ProblemStudent'
+import ProblemStatements from './ProblemStatements'
 
 const StudentNav = () => {
   const [active, setActive] = useState('Problem Statements')
@@ -58,7 +58,7 @@ const StudentNav = () => {
                   <SearchBar />
                   {/* Put your Problem Statements content here */}
                   <div className="mt-4 p-4 bg-white rounded shadow">
-                    <ProblemSubmit />
+                    <ProblemStatements />
                   </div>
                 </motion.div>
               )}
