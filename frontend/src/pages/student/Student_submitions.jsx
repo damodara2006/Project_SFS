@@ -27,7 +27,7 @@ function useSubmissions() {
       setSubmissions(dummyData)
       setError(null)
       setLoading(false)
-    }, 300) // small delay to mimic network/loading
+    }, 100) // small delay to mimic network/loading
 
     return () => {
       mounted = false
