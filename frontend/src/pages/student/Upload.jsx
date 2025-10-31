@@ -6,6 +6,9 @@ const Upload = () => {
     const [progress, setProgress] = useState(0)
     const [status, setStatus] = useState(null)
     const [dragActive, setDragActive] = useState(false)
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [link, setLink] = useState('')
     const inputRef = useRef(null)
 
     useEffect(() => {
@@ -19,9 +22,11 @@ const Upload = () => {
 
     const handleFileChange = (e) => {
         const selected = Array.from(e.target.files)
-        setFiles((prev) => [...prev, ...selected])
-        setProgress(0)
-        setStatus(null)
+        if (selected.length) {
+            setFiles((prev) => [...prev, ...selected])
+            setProgress(0)
+            setStatus(null)
+        }
         e.target.value = null
     }
 
@@ -41,12 +46,20 @@ const Upload = () => {
     }
 
     const uploadFiles = () => {
+        if (!title.trim()) {
+            setStatus({ type: 'error', msg: 'Please provide a solution title' })
+            return
+        }
+
         if (files.length === 0) {
             setStatus({ type: 'error', msg: 'No files selected' })
             return
         }
 
         const form = new FormData()
+        form.append('title', title)
+        form.append('description', description)
+        form.append('link', link)
         files.forEach((f) => form.append('files', f))
 
         const xhr = new XMLHttpRequest()
@@ -62,6 +75,9 @@ const Upload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 setStatus({ type: 'success', msg: 'Upload successful' })
                 setFiles([])
+                setTitle('')
+                setDescription('')
+                setLink('')
                 if (inputRef.current) inputRef.current.value = null
             } else {
                 setStatus({ type: 'error', msg: `Upload failed (${xhr.status})` })
@@ -82,15 +98,48 @@ const Upload = () => {
         setFiles([])
         setProgress(0)
         setStatus(null)
+        setTitle('')
+        setDescription('')
+        setLink('')
         if (inputRef.current) inputRef.current.value = null
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        // added pt-24 to push content below a fixed header; adjust value if your header height differs
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 pt-24 mb-6">
             <div className="w-full max-w-5xl bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <div className="flex flex-col md:flex-row">
-                    {/* Left: Dropzone */}
+                    {/* Left: Dropzone + inputs */}
                     <div className="md:w-1/2 p-8 flex flex-col items-center justify-center">
+                        <div className="w-full space-y-3">
+                            <label className="text-sm font-medium text-gray-700">Solution Title</label>
+                            <input
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                placeholder="Enter solution title"
+                                aria-label="Solution title"
+                            />
+
+                            <label className="text-sm font-medium text-gray-700">Description</label>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className="w-full px-3 py-2 border rounded-md h-24 resize-y focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                placeholder="Add a short description"
+                                aria-label="Solution description"
+                            />
+
+                            <label className="text-sm font-medium text-gray-700">YouTube or Drive Link (optional)</label>
+                            <input
+                                value={link}
+                                onChange={(e) => setLink(e.target.value)}
+                                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                placeholder="https://youtube.com/... or https://drive.google.com/..."
+                                aria-label="YouTube or Drive link"
+                            />
+                        </div>
+
                         <div
                             onDrop={onDrop}
                             onDragOver={(e) => {
@@ -98,14 +147,18 @@ const Upload = () => {
                                 setDragActive(true)
                             }}
                             onDragLeave={() => setDragActive(false)}
-                            className={`w-full h-56 rounded-xl border-2 transition-all duration-150 flex flex-col items-center justify-center text-center px-6 ${
-                                dragActive
-                                    ? 'border-orange-400 bg-orange-50/60 shadow-inner'
-                                    : 'border-dashed border-gray-200 bg-white'
-                            }`}
                             onClick={() => inputRef.current && inputRef.current.click()}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    inputRef.current && inputRef.current.click()
+                                }
+                            }}
                             role="button"
                             tabIndex={0}
+                            className={`w-full mt-4 h-56 rounded-xl border-2 transition-all duration-150 flex flex-col items-center justify-center text-center px-6 ${
+                                dragActive ? 'border-orange-400 bg-orange-50/60 shadow-inner' : 'border-dashed border-gray-200 bg-white'
+                            }`}
                         >
                             <svg
                                 className="w-12 h-12 text-orange-500 mb-3"
@@ -113,24 +166,18 @@ const Upload = () => {
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden
                             >
                                 <path strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M7 16v4a1 1 0 001 1h8a1 1 0 001-1v-4M12 3v13" />
                                 <path strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M8 8l4-4 4 4" />
                             </svg>
 
-                            <div className="text-sm text-gray-600 mb-2">Drag & drop files here or Double click to browse</div>
+                            <div className="text-sm text-gray-600 mb-2">Drag & drop files here or click to browse</div>
                         </div>
 
-                        <div className="text-xs text-gray-400">Supports multiple files • Max single file size as configured on backend</div>
+                        <div className="text-xs text-gray-400 mt-2">Supports multiple files • Max single file size as configured on backend</div>
 
-                        <input
-                            ref={inputRef}
-                            type="file"
-                            multiple
-                            onChange={handleFileChange}
-                            className="hidden"
-                            aria-label="Upload files"
-                        />
+                        <input ref={inputRef} type="file" multiple onChange={handleFileChange} className="hidden" aria-label="Upload files" />
 
                         <div className="mt-6 flex gap-3">
                             <button
@@ -138,7 +185,7 @@ const Upload = () => {
                                 onClick={uploadFiles}
                                 className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-full shadow hover:bg-orange-600 transition"
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                                     <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5 5 5" />
                                 </svg>
                                 Upload
@@ -182,7 +229,7 @@ const Upload = () => {
                                             {f.type && f.type.startsWith('image/') ? (
                                                 <img src={previews[i]} alt={f.name} className="object-cover w-full h-full" />
                                             ) : (
-                                                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                                                     <path strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M7 7v10" />
                                                     <path strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M17 7v10" />
                                                 </svg>
