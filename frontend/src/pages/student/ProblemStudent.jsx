@@ -34,8 +34,6 @@ const sampleProblems = [
     },
 ];
 
-
-
 /* Simple modal */
 const Modal = ({ open, onClose, title, children }) => {
     if (!open) return null;
@@ -43,7 +41,7 @@ const Modal = ({ open, onClose, title, children }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
             <div className="w-full max-w-xl rounded shadow-lg bg-[#ffffff]">
                 <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
-                    <h3 className="text-lg  text-[#4a4a4a] font-bold">{title}</h3>
+                    <h3 className="text-lg text-[#4a4a4a] font-bold">{title}</h3>
                     <button
                         onClick={onClose}
                         className="rounded px-2 py-1 text-sm font-medium hover:bg-gray-100 text-[#4a4a4a]"
@@ -58,27 +56,13 @@ const Modal = ({ open, onClose, title, children }) => {
     );
 };
 
-const difficultyClass = (difficulty) => {
-    switch (difficulty) {
-        case "Easy":
-            return "bg-green-600 text-white";
-        case "Medium":
-            return "bg-yellow-600 text-white";
-        case "Hard":
-            return "bg-red-600 text-white";
-        default:
-            return "bg-gray-100 text-[#4a4a4a]";
-    }
-};
-
 const ProblemStudent = () => {
     const [problems] = useState(sampleProblems);
     const [selected, setSelected] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    const openModal = (submission) => {
-        console.log(submission)
-        setSelected(submission);
+    const openModal = (problem) => {
+        setSelected(problem);
         setIsOpen(true);
     };
 
@@ -98,25 +82,15 @@ const ProblemStudent = () => {
                             <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Title</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
-                            {/* <th className="px-4 py-2 text-left text-sm font-medium">Status</th> */}
                             <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y bg-white">
-                        {submissions.map((s) => (
-                            <tr key={s.id}>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{s.id}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{s.title}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{s.date}</td>
-                                {/* <td className="px-4 py-3">
-                                    <span
-                                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${difficultyClass(
-                                            p.difficulty
-                                        )}`}
-                                    >
-                                        {p.difficulty}
-                                    </span>
-                                </td> */}
+                        {problems.map((p) => (
+                            <tr key={p.id}>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.id}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.title}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.date}</td>
                                 <td className="px-4 py-3 text-right">
                                     <button
                                         onClick={() => openModal(p)}
@@ -133,29 +107,35 @@ const ProblemStudent = () => {
 
             <Modal open={isOpen} onClose={closeModal} title={selected ? selected.title : "Problem"}>
                 {selected ? (
-                    {selected},
                     <div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
                             <strong>ID:</strong> {selected.id}
                         </div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>Posted:</strong> {selected.posted}
+                            <strong>Date:</strong> {selected.date}
                         </div>
-                        <div className="mb-3">
-                            {/* <span
-                                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${statusClass(
-                                    selected.status
-                                )}`}
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Description:</strong> {selected.description}
+                        </div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Category:</strong> {selected.category}
+                        </div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Theme:</strong> {selected.theme}
+                        </div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Resources:</strong>{" "}
+                            <a
+                                className="hover:underline text-blue-600"
+                                href={selected.resources}
+                                target="_blank"
+                                rel="noreferrer"
                             >
-                                {selected.status}
-                            </span> */}
+                                {selected.resources}
+                            </a>
                         </div>
-                            <div className="mt-4 text-sm text-[#4a4a4a]"> <strong>Description:</strong> {selected.description}</div>
-                        <div className="mt-4 text-sm text-[#4a4a4a]"> <strong>Category:</strong> {selected.category}</div>
-                        <div className="mt-4 text-sm text-[#4a4a4a]"> <strong>Theme:</strong> {selected.theme}</div>
-                            <div className="mt-4 text-sm text-[#4a4a4a]"> <strong>Resources:</strong > <a className="hover:underline text-blue-600" href={selected.resources}>{selected.resources}</a> </div>
                         <div className="mt-6 flex justify-end">
-                            <button 
+                            <button
                                 onClick={closeModal}
                                 className="rounded px-3 py-1 text-sm font-medium bg-[#4a4a4a] text-[#ffffff]"
                             >
