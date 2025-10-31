@@ -74,9 +74,10 @@ const ProblemStudent = () => {
     };
     
     const handleSubmit = () => {
-        // Logic to handle submission of solution
-        navigate("/student/submit-solution", { state: { problemId: selected.id } });
-    }
+        if (!selected) return;
+        const params = new URLSearchParams({ problemId: selected.id });
+        navigate(`/student/submit-solution?${params.toString()}`);
+    };
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">Problems</h2>
