@@ -5,7 +5,7 @@ function TeamList() {
     const [active, setActive] = useState("Team Details");
     const [selectedTeam, setSelectedTeam] = useState(null);
 
-    const tabs = ["Problem Statements", "My Submission", "Team Details"];
+    const tabs = ["Problem Statements", "My Submission", "Team Details", "Team List"];
 
     const variants = {
         initial: { opacity: 0, y: 20 },
