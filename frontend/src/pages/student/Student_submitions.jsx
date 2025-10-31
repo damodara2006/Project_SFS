@@ -175,7 +175,7 @@ const Upload = ({ onClose } = {}) => {
           <input
             ref={inputRef}
             type="file"
-            multiple
+            multipleview
             onChange={handleFileChange}
             className="hidden"
             aria-label="Upload files"
@@ -316,6 +316,7 @@ function Student_submitions() {
   // open popup instead of navigating to detail page
   const openDetailPopup = (id) => {
     const item = submissions.find((s) => s.id === id || s.submissionId === id)
+    console.log(item)
     setSelected(item || null)
     setModalOpen(true)
   }
