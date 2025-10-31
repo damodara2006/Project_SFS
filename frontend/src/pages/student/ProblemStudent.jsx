@@ -4,52 +4,33 @@ import { useState } from "react";
 const sampleProblems = [
     {
         id: "P-001",
-        title: "Two Sum",
-        posted: "2025-09-01",
-        difficulty: "Easy",
-        statement: "Return indices of the two numbers such that they add up to a specific target.",
+        title: "Smart Waste Management System Using IoT and AI",
+        date: "2025-09-01",
+        description:
+            "Develop an IoT-based system integrated with AI algorithms to monitor, classify, and optimize waste collection in urban and rural areas. The system should help local authorities plan efficient routes and reduce environmental pollution.",
+        category: "Smart City / IoT / AI",
+        theme: "Smart Automation for Sustainable Cities",
+        resources: "https://www.sih.gov.in/problem-statements",
     },
     {
         id: "P-002",
-        title: "Reverse Linked List",
-        posted: "2025-09-05",
-        difficulty: "Medium",
-        statement: "Reverse a singly linked list iteratively and recursively.",
+        title: "Predictive Healthcare System for Early Disease Detection",
+        date: "2025-09-05",
+        description:
+            "Design a healthcare analytics platform that leverages machine learning to predict potential health issues based on patient records, wearable data, and environmental factors. The system should provide early warnings and connect users to nearby medical facilities.",
+        category: "Healthcare / Machine Learning",
+        theme: "AI-Powered Health Solutions",
+        resources: "https://www.sih.gov.in/problem-statements",
     },
     {
         id: "P-003",
-        title: "Path Sum",
-        posted: "2025-09-10",
-        difficulty: "Hard",
-        statement: "Determine if the tree has a root-to-leaf path summing to given value.",
-    },
-    {
-        id: "P-004",
-        title: "Valid Parentheses",
-        posted: "2025-09-12",
-        difficulty: "Easy",
-        statement: "Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input is valid.",
-    },
-    {
-        id: "P-005",
-        title: "Merge Intervals",
-        posted: "2025-09-15",
-        difficulty: "Medium",
-        statement: "Given a collection of intervals, merge all overlapping intervals and return the result.",
-    },
-    {
-        id: "P-006",
-        title: "Word Ladder",
-        posted: "2025-09-18",
-        difficulty: "Hard",
-        statement: "Given two words and a dictionary, find the length of shortest transformation sequence from beginWord to endWord.",
-    },
-    {
-        id: "P-007",
-        title: "LRU Cache",
-        posted: "2025-09-20",
-        difficulty: "Hard",
-        statement: "Design and implement a data structure for Least Recently Used (LRU) cache with get and put operations in O(1) time.",
+        title: "Blockchain-Based Student Credential Verification System",
+        date: "2025-09-10",
+        description:
+            "Create a blockchain-driven platform for educational institutions to issue, verify, and share student certificates securely. The system should prevent fraud and ensure transparency during recruitment or higher education admission processes.",
+        category: "Blockchain / Education",
+        theme: "Digital Transformation in Education",
+        resources: "https://www.sih.gov.in/problem-statements",
     },
 ];
 
@@ -60,7 +41,7 @@ const Modal = ({ open, onClose, title, children }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
             <div className="w-full max-w-xl rounded shadow-lg bg-[#ffffff]">
                 <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
-                    <h3 className="text-lg font-medium text-[#4a4a4a]">{title}</h3>
+                    <h3 className="text-lg text-[#4a4a4a] font-bold">{title}</h3>
                     <button
                         onClick={onClose}
                         className="rounded px-2 py-1 text-sm font-medium hover:bg-gray-100 text-[#4a4a4a]"
@@ -73,19 +54,6 @@ const Modal = ({ open, onClose, title, children }) => {
             </div>
         </div>
     );
-};
-
-const difficultyClass = (difficulty) => {
-    switch (difficulty) {
-        case "Easy":
-            return "bg-green-600 text-white";
-        case "Medium":
-            return "bg-yellow-600 text-white";
-        case "Hard":
-            return "bg-red-600 text-white";
-        default:
-            return "bg-gray-100 text-[#4a4a4a]";
-    }
 };
 
 const ProblemStudent = () => {
@@ -113,8 +81,7 @@ const ProblemStudent = () => {
                         <tr>
                             <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Title</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium">Posted</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium">Difficulty</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
                             <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
                         </tr>
                     </thead>
@@ -123,16 +90,7 @@ const ProblemStudent = () => {
                             <tr key={p.id}>
                                 <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.id}</td>
                                 <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.title}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.posted}</td>
-                                <td className="px-4 py-3">
-                                    <span
-                                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${difficultyClass(
-                                            p.difficulty
-                                        )}`}
-                                    >
-                                        {p.difficulty}
-                                    </span>
-                                </td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.date}</td>
                                 <td className="px-4 py-3 text-right">
                                     <button
                                         onClick={() => openModal(p)}
@@ -154,18 +112,28 @@ const ProblemStudent = () => {
                             <strong>ID:</strong> {selected.id}
                         </div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>Posted:</strong> {selected.posted}
+                            <strong>Date:</strong> {selected.date}
                         </div>
-                        <div className="mb-3">
-                            <span
-                                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${difficultyClass(
-                                    selected.difficulty
-                                )}`}
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Description:</strong> {selected.description}
+                        </div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Category:</strong> {selected.category}
+                        </div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Theme:</strong> {selected.theme}
+                        </div>
+                        <div className="mt-4 text-sm text-[#4a4a4a]">
+                            <strong>Resources:</strong>{" "}
+                            <a
+                                className="hover:underline text-blue-600"
+                                href={selected.resources}
+                                target="_blank"
+                                rel="noreferrer"
                             >
-                                {selected.difficulty}
-                            </span>
+                                {selected.resources}
+                            </a>
                         </div>
-                        <div className="mt-4 text-sm text-[#4a4a4a]">{selected.statement}</div>
                         <div className="mt-6 flex justify-end">
                             <button
                                 onClick={closeModal}
