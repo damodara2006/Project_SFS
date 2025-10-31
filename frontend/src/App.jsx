@@ -14,7 +14,7 @@ import SpocDashboard from "./pages/spoc/SpocDashboard";
 
 
 // Admin Imports
-import AdDashboard from "./pages/admin/AdminDashboard";
+
 
 function App() {
 
