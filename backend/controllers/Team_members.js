@@ -36,7 +36,30 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
                 to: `${singledata.email}`,
                 subject: "You have registered for Sakthi-auto contest",
                 // text: "You have registered for Sakthi-auto contest",
-                html: `<b>You have successfully registered for contest in Sakthi-auto contest at ${new Date().getFullYear()} under the team head ${leademail}</b>`, 
+                html: `
+  <div style="font-family: Arial, sans-serif; background-color: #f5f6fa; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px;">
+      <h2 style="color: #2f3640; text-align: center;">🎉 Registration Successful!</h2>
+      <p style="font-size: 16px; color: #333333;">
+        Hello <strong>Participant</strong>,
+      </p>
+      <p style="font-size: 16px; color: #333333; line-height: 1.5;">
+        You have successfully registered for the <strong>Sakthi-Auto Contest ${new Date().getFullYear()}</strong> 
+        under the team head <strong style="color: #0984e3;">${leademail}</strong>.
+      </p>
+      <p style="font-size: 16px; color: #333333; line-height: 1.5;">
+        We’re excited to have you on board and wish you all the best for the contest!
+      </p>
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="#" style="background-color: #00a8ff; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-size: 16px;">View Details</a>
+      </div>
+      <p style="font-size: 13px; color: #888888; text-align: center; margin-top: 30px;">
+        © ${new Date().getFullYear()} Sakthi-Auto Contest. All rights reserved.
+      </p>
+    </div>
+  </div>
+`
+, 
             });
 
             console.log("Message sent:", info.messageId);
