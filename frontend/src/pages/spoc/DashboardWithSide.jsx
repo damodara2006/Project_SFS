@@ -456,6 +456,7 @@ const DashboardWithSide = () => {
                   placeholder="Enter team name"
                   required
                 />
+                
               </div>
 
               {/* Team Members */}
