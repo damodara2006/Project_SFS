@@ -1,7 +1,7 @@
 // src/components/admin/AdminNavbar.jsx
 import React from 'react';
 import { FiUser, FiLogOut } from 'react-icons/fi';
-import Button from '../common/Button';
+import Button from '../common/button';
 
 const AdminNavbar = () => {
   const handleLogout = () => {
@@ -17,12 +17,12 @@ const AdminNavbar = () => {
       </h2>
       <div className="flex items-center space-x-4">
         <div className="flex items-center text-gray-700">
-            <FiUser className="w-5 h-5 mr-2" />
-            <span className="font-medium">admin@sakthi.com</span>
+          <FiUser className="w-5 h-5 mr-2" />
+          <span className="font-medium">admin@sakthi.com</span>
         </div>
         <Button onClick={handleLogout} variant="secondary" size="sm">
-            <FiLogOut className="inline-block w-4 h-4 mr-1" />
-            Logout
+          <FiLogOut className="inline-block w-4 h-4 mr-1" />
+          Logout
         </Button>
       </div>
     </header>

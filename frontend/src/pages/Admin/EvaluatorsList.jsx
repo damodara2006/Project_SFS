@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../components/common/DataTable';
-import Button from '../../components/common/Button';
+import Button from '../../components/common/button';
 import RoleBadge from '../../components/admin/RoleBadge';
 import { getEvaluatorUsers } from '../../mockData';
 import { FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
