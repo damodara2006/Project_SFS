@@ -36,6 +36,7 @@ const Button = ({ children, onClick, variant = 'primary', size = 'md', className
     default:
       sizeStyles = 'px-4 py-2 text-base';
   }
+  
 
   return (
     <button
