@@ -1,20 +1,65 @@
-export const mockSpocRequests = [
-  { id: 'S526', name: 'Knowledge Institute of Technology', status: 'Pending' },
-  { id: 'S527', name: 'PSG College of Technology', status: 'Pending' },
-  { id: 'S528', name: 'Coimbatore Institute of Technology', status: 'Pending' },
-  { id: 'S529', name: 'Anna University', status: 'Verified' },
-  { id: 'S530', name: 'Amrita Vishwa Vidyapeetham', status: 'Verified' },
+// src/mockData.js
+
+export const mockUsers = [
+  { id: 'u1', email: 'admin@sakthi.com', role: 'Admin', collegeId: null, teamName: null },
+  { id: 'u2', email: 'eval1@sakthi.com', role: 'Evaluator', collegeId: null, teamName: null },
+  { id: 'u3', email: 'eval2@sakthi.com', role: 'Evaluator', collegeId: null, teamName: null },
+  { id: 'u4', email: 'spoc1@collegea.edu', role: 'SPOC', collegeId: 'c1', teamName: null },
+  { id: 'u5', email: 'team1@collegea.edu', role: 'Team', collegeId: 'c1', teamName: 'Innovators' },
 ];
 
-export const mockEvaluators = [
-  { id: 'E001', name: 'Dr. Ram Kumar', email: 'ram.k@example.com', assignedProblems: 5 },
-  { id: 'E002', name: 'Prof. Priya Sharma', email: 'priya.s@example.com', assignedProblems: 3 },
-  { id: 'E003', name: 'Dr. Arjun Reddy', email: 'arjun.r@example.com', assignedProblems: 8 },
+export const mockColleges = [
+  { id: 'c1', name: 'College A', spocId: 'u4', status: 'Verified' },
+  { id: 'c2', name: 'College B', spocId: 'u6', status: 'Pending' },
 ];
 
 export const mockProblemStatements = [
-  { id: 'PS001', title: 'Smart Waste Management Using IoT and AI', status: 'Open', submissions: 12 },
-  { id: 'PS002', title: 'Predictive Healthcare System for Early Disease Detection', status: 'Open', submissions: 8 },
-  { id: 'PS003', title: 'Blockchain-Based Student Credential Verification System', status: 'In Review', submissions: 25 },
-  { id: 'PS004', title: 'AI-Powered Crop Monitoring for Precision Agriculture', status: 'Closed', submissions: 30 },
+  {
+    id: 'p1',
+    title: 'Optimizing CNC Machining Efficiency',
+    description: 'Develop a machine learning model to predict and minimize tool wear...',
+    deadline: new Date(Date.now() + 86400000 * 30).toISOString(),
+    status: 'Open',
+    assignedEvaluators: ['u2', 'u3'],
+  },
+  {
+    id: 'p2',
+    title: 'Supply Chain Risk Assessment Dashboard',
+    description: 'Create a web-based dashboard for visualizing and assessing material supplier risks.',
+    deadline: new Date(Date.now() + 86400000 * 60).toISOString(),
+    status: 'In Review',
+    assignedEvaluators: ['u3'],
+  },
 ];
+
+export const mockSpocRequests = [
+  {
+    id: 'req1',
+    collegeName: 'College C',
+    email: 'reqspoc@collegec.edu',
+    dateRequested: new Date(Date.now() - 86400000 * 5).toISOString(),
+    status: 'Pending',
+  },
+  {
+    id: 'req2',
+    collegeName: 'College D',
+    email: 'reqspoc2@colleged.edu',
+    dateRequested: new Date(Date.now() - 86400000 * 2).toISOString(),
+    status: 'Pending',
+  },
+];
+
+export const mockSubmissions = [
+  { id: 's1', problemId: 'p1', teamId: 'u5', status: 'Submitted' },
+  { id: 's2', problemId: 'p1', teamId: 'u8', status: 'Under Evaluation' },
+  { id: 's3', problemId: 'p2', teamId: 'u9', status: 'Evaluated' },
+];
+
+export const getProblemStatementById = (id) =>
+  mockProblemStatements.find((p) => p.id === id);
+
+export const getEvaluatorUsers = () =>
+  mockUsers.filter((u) => u.role === 'Evaluator');
+
+export const getSpocRequests = () =>
+    mockSpocRequests.filter((r) => r.status === 'Pending');
