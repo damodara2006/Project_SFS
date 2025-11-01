@@ -16,7 +16,7 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
         // console.log(dev)
     }
     // console.log(data.members[0])
-    res.send("Team id",result.insertId)
+    res.send(`Team id : ${result.insertId}`)
     
 })
 
