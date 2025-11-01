@@ -53,6 +53,9 @@ function ProblemStatementPage() {
         return 'default';
     }
   };
+
+
+  
   
   // This function is called when the "View Details" button is clicked for a submission
   const handleViewSubmission = (submissionId) => {
@@ -84,7 +87,6 @@ function ProblemStatementPage() {
           </Typography>
         </Box>
       </Paper>
-
       {/* Section for Submissions Table */}
       <Typography variant="h5" component="h2" sx={{ fontWeight: '500', marginBottom: 2 }}>
         Submissions
