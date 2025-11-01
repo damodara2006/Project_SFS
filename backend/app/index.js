@@ -1,8 +1,10 @@
-import express from 'express';
+import app from "./app.js";
+import dotenv from "dotenv"
+import connection from "../database/mysql.js";
+dotenv.config()
 
+const PORT = process.env.PORT
 
-const backend = express();
-
-backend.listen(Process .env.BACKEND_PORT, () => {
-  console.log(`Backend server is running on port ${Process.env.BACKEND_PORT}`);
+app.listen(PORT || 8001 ,() => {
+  console.log(`Backend server is running on port ${process.env.PORT}`);
 });

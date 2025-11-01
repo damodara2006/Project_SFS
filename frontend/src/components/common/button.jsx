@@ -1,4 +1,4 @@
-// src/components/common/Button.jsx
+// src/components/common/button.jsx
 import React from 'react';
 
 const Button = ({ children, onClick, variant = 'primary', size = 'md', className = '', type = 'button', disabled = false }) => {
@@ -36,7 +36,7 @@ const Button = ({ children, onClick, variant = 'primary', size = 'md', className
     default:
       sizeStyles = 'px-4 py-2 text-base';
   }
-  
+
 
   return (
     <button

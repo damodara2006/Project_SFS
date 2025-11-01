@@ -2,7 +2,7 @@
 import React from 'react';
 import DataTable from '../../components/common/DataTable';
 import StatusBadge from '../../components/admin/StatusBadge';
-import Button from '../../components/common/Button';
+import Button from '../../components/common/button';
 import { getSpocRequests } from '../../mockData';
 import { FiCheck, FiX } from 'react-icons/fi';
 

@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import ProblemStatements from "../../components/ProblemStatements";
 import SPOCProfile from "./SPOCProfile";
-
+import axios from "axios"
+import URL from "../../Utils";
 const DashboardWithSide = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeView, setActiveView] = useState("dashboard");
@@ -19,6 +20,8 @@ const DashboardWithSide = () => {
       { role: 'Member 3', name: '', email: '', phone: '', gender: '' }
     ]
   });
+
+  console.log(teamFormData)
 
   const teamsPerPage = 10;
 
@@ -87,19 +90,24 @@ const DashboardWithSide = () => {
 
   const handleCreateTeam = (e) => {
     e.preventDefault();
+    console.log('Creating team:', teamFormData);
+    axios.post(`${URL}/add_members`, teamFormData)
+      .then((res) => {
+        console.log(res)
+      })
     // Add team creation logic here
     console.log('Creating team:', teamFormData);
-    setShowCreateTeamModal(false);
+    // setShowCreateTeamModal(false);
     // Reset form
-    setTeamFormData({
-      teamName: '',
-      members: [
-        { role: 'Team Lead', name: '', email: '', phone: '', gender: '' },
-        { role: 'Member 1', name: '', email: '', phone: '', gender: '' },
-        { role: 'Member 2', name: '', email: '', phone: '', gender: '' },
-        { role: 'Member 3', name: '', email: '', phone: '', gender: '' }
-      ]
-    });
+    // setTeamFormData({
+    //   teamName: '',
+    //   members: [
+    //     { role: 'Team Lead', name: '', email: '', phone: '', gender: '' },
+    //     { role: 'Member 1', name: '', email: '', phone: '', gender: '' },
+    //     { role: 'Member 2', name: '', email: '', phone: '', gender: '' },
+    //     { role: 'Member 3', name: '', email: '', phone: '', gender: '' }
+    //   ]
+    // });
   };
 
   const cardVariants = {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from '../../components/common/DataTable';
-import Button from '../../components/common/Button';
+import Button from '../../components/common/button';
 import StatusBadge from '../../components/admin/StatusBadge';
 import { mockProblemStatements, getEvaluatorUsers } from '../../mockData';
 import { FiPlus, FiEdit, FiTrash2, FiUsers } from 'react-icons/fi';
@@ -21,23 +21,25 @@ const ProblemStatementsList = () => {
     // In a real app: API call to delete the problem
     alert(`Mock: Deleted Problem Statement: ${problem.title}`);
   };
-  
+
   const getEvaluatorNames = (problem) => {
     return problem.assignedEvaluators
-        .map(id => evaluators.find(e => e.id === id)?.email.split('@')[0])
-        .join(', ');
+      .map(id => evaluators.find(e => e.id === id)?.email.split('@')[0])
+      .join(', ');
   };
 
   const columns = [
     { header: 'Title', accessor: 'title' },
     { header: 'Deadline', cell: (row) => new Date(row.deadline).toLocaleDateString() },
     { header: 'Status', cell: (row) => <StatusBadge status={row.status} /> },
-    { header: 'Assigned Evaluators', cell: (row) => (
+    {
+      header: 'Assigned Evaluators', cell: (row) => (
         <span title={getEvaluatorNames(row)} className="text-sm flex items-center">
-            <FiUsers className="mr-1" />
-            {row.assignedEvaluators.length} Evaluator(s)
+          <FiUsers className="mr-1" />
+          {row.assignedEvaluators.length} Evaluator(s)
         </span>
-    )},
+      )
+    },
     {
       header: 'Actions',
       cell: (row) => (
