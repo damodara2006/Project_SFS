@@ -40,7 +40,7 @@ const AssignedProblem = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#ffffff] flex flex-col items-center py-10 px-6 mt-14">
+    <div className="min-h-screen bg-[#ffffff] flex flex-col items-center py-10 px-6">
       {/* Header */}
       <h1 className="text-4xl font-bold text-[#4a4a4a] mb-10 text-center">
         Problem Details
