@@ -34,6 +34,7 @@ const DataTable = ({ columns, data }) => {
                   key={colIndex}
                   className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                 >
+                  {/* This line handles both simple accessors and custom cell functions */}
                   {column.cell ? column.cell(row) : row[column.accessor]}
                 </td>
               ))}
