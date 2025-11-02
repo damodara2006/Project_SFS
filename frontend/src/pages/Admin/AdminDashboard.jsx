@@ -21,11 +21,11 @@ import { mockProblemStatements, mockSubmissions, mockSpocRequests, mockUsers } f
 const AdminDashboard = () => {
   // --- Data Calculations ---
   const totalProblems = mockProblemStatements.length;
-  const totalSubmissions = mockSubmissions.length;
+  const totalSubmissions = 340;
   const pendingApprovals = mockSpocRequests.filter(r => r.status === 'Pending').length;
   const totalEvaluators = mockUsers.filter(u => u.role === 'Evaluator').length;
   // For the new donut chart, let's assume a number of evaluated submissions
-  const evaluatedCount = 18;
+  const evaluatedCount = 168;
 
   // Mock data for the activity log
   const recentActivities = [
