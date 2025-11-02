@@ -23,7 +23,7 @@ const mockProblemStatements = [
 // --- END: Mock Data ---
 
 
-// --- START: Manage Evaluator Modal Component (Unchanged) ---
+// --- START: Manage Evaluator Modal Component (UPDATED to handle multiple IDs) ---
 const ManageEvaluatorModal = ({ evaluator, onClose, onSave, defaultProblemStatementId }) => {
     if (!evaluator) return null;
 
@@ -54,8 +54,29 @@ const ManageEvaluatorModal = ({ evaluator, onClose, onSave, defaultProblemStatem
         );
     }, [psSearchTerm]);
 
+    // MODIFIED: This handler now appends IDs instead of replacing the value.
     const handleProblemSelect = (problemId) => {
-        setFormData(prev => ({ ...prev, problemStatementId: problemId }));
+        setFormData(prev => {
+            // Get existing IDs, trim whitespace, and filter out any empty strings
+            const currentIds = prev.problemStatementId.split(',')
+                .map(id => id.trim())
+                .filter(id => id);
+
+            // Do not add the ID if it's already in the list
+            if (currentIds.includes(problemId)) {
+                return prev;
+            }
+
+            // If the list is empty or only contains the default placeholder, start fresh
+            if (currentIds.length === 0 || prev.problemStatementId === defaultProblemStatementId) {
+                return { ...prev, problemStatementId: problemId };
+            }
+
+            // Otherwise, append the new ID with a comma
+            return { ...prev, problemStatementId: `${prev.problemStatementId}, ${problemId}` };
+        });
+
+        // Reset search input after selection
         setPsSearchTerm('');
         setIsPsSearchFocused(false);
     };
@@ -92,11 +113,11 @@ const ManageEvaluatorModal = ({ evaluator, onClose, onSave, defaultProblemStatem
                         </div>
                     </div>
                     <div className="relative">
-                        <label htmlFor="psSearch" className="block text-sm font-medium text-gray-700 mb-1">Search for Problem Statement</label>
+                        <label htmlFor="psSearch" className="block text-sm font-medium text-gray-700 mb-1">Search to Add a Problem ID</label>
                         <div className="relative">
                             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
-                                type="text" id="psSearch" placeholder="Search by title or ID..."
+                                type="text" id="psSearch" placeholder="Search by title or ID to add to the list below..."
                                 value={psSearchTerm} onChange={(e) => setPsSearchTerm(e.target.value)}
                                 onFocus={() => setIsPsSearchFocused(true)} onBlur={() => setTimeout(() => setIsPsSearchFocused(false), 200)}
                                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -116,7 +137,7 @@ const ManageEvaluatorModal = ({ evaluator, onClose, onSave, defaultProblemStatem
                                ) : (<div className="p-2 text-gray-500">No results found.</div>)}
                             </div>
                         )}
-                        <label htmlFor="problemStatementId" className="block text-sm font-medium text-gray-700 mt-3 mb-1">Assigned Problem ID</label>
+                        <label htmlFor="problemStatementId" className="block text-sm font-medium text-gray-700 mt-3 mb-1">Assigned Problem IDs (comma-separated)</label>
                         <div className="relative">
                             <FiFileText className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
@@ -186,7 +207,7 @@ const ProblemStatementDetailModal = ({ problemStatement, onClose }) => {
 // --- END: Problem Statement Modal Component ---
 
 
-// --- START: Evaluator Profile Modal Component (REWORKED with Records View) ---
+// --- START: Evaluator Profile Modal Component (Unchanged) ---
 const EvaluatorDetailModal = ({ evaluator, onClose }) => {
     const [viewMode, setViewMode] = useState('profile');
 
