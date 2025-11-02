@@ -31,6 +31,7 @@ import ProblemStatementEdit from './pages/Admin/ProblemStatementEdit.jsx';
 import TeamDetails from './pages/student/TeamDetails.jsx';
 import Team_Members from './pages/spoc/Team_Members.jsx';
 import TeamList from './pages/spoc/TeamList.jsx';
+import AssignedProblem from './pages/evaluator/AssignedProblem.jsx';
 
 function App() {
   const isAuthenticated = true;
@@ -52,6 +53,7 @@ function App() {
         <Route path="/spoc/team" element={<TeamList />} />
 
         <Route path="/evaluator" element={<Evaluator />} />
+        <Route path="/evaluator/assignedproblem" element={<AssignedProblem />} />
 
 
       
