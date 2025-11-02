@@ -28,7 +28,8 @@ import EvaluatorManage from './pages/Admin/EvaluatorManage.jsx';
 import ProblemStatementsList from './pages/Admin/ProblemStatementsList.jsx';
 import ProblemStatementCreate from './pages/Admin/ProblemStatementCreate.jsx';
 import ProblemStatementEdit from './pages/Admin/ProblemStatementEdit.jsx';
-
+import ProblemStatementDetail from './pages/Admin/ProblemStatementDetail.jsx';
+import SubmissionDetail from './pages/Admin/SubmissionDetail.jsx';
 
 function App() {
   const isAuthenticated = true; 
@@ -59,6 +60,8 @@ function App() {
           <Route path="problems" element={<ProblemStatementsList />} />
           <Route path="problems/create" element={<ProblemStatementCreate />} />
           <Route path="problems/edit/:id" element={<ProblemStatementEdit />} />
+          <Route path="problems/:id/details" element={<ProblemStatementDetail />} />
+          <Route path="submissions/:id/details" element={<SubmissionDetail />} />
           <Route path="evaluators" element={<EvaluatorsList />} />
           <Route path="evaluators/create" element={<EvaluatorManage />} />
           <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
