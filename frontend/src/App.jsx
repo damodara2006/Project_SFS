@@ -16,6 +16,9 @@ import Upload from "./pages/student/Upload";
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";
 
+// Evaluator Imports
+import Evaluator from './pages/evaluator/Evaluator.jsx';
+
 // Admin Imports 
 import AdminLayout from './components/admin/AdminLayout.jsx'; 
 import AdminDashboard from './pages/Admin/AdminDashboard.jsx';
@@ -47,6 +50,8 @@ function App() {
         <Route path="/student/submit-solution" element={<Upload />} />
         <Route path="/spoc/team_details/:id" element={<Team_Members />} />
         <Route path="/spoc/team" element={<TeamList />} />
+
+        <Route path="/evaluator" element={<Evaluator />} />
 
 
       
