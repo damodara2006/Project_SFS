@@ -25,7 +25,8 @@ export const mockProblemStatements = [
     deadline: new Date(Date.now() + 86400000 * 30).toISOString(),
     status: 'Open',
     assignedEvaluators: ['u2', 'u3'],
-    submissionsCount: 2,
+    submissions: 2,
+    submissions: 84,
   },
   {
     id: 'p2',
@@ -38,7 +39,7 @@ export const mockProblemStatements = [
     deadline: new Date(Date.now() + 86400000 * 60).toISOString(),
     status: 'In Review',
     assignedEvaluators: ['u3'],
-    submissionsCount: 1,
+    submissions:86 ,
   },
 ];
 
@@ -154,6 +155,6 @@ export const addProblemStatement = (newProblem) => {
     deadline: new Date(Date.now() + 86400000 * 30).toISOString(), // Default deadline
     status: 'Open',
     assignedEvaluators: [],
-    submissionsCount: 0,
+    submissionsCount: 500,
   });
 };
