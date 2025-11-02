@@ -27,6 +27,7 @@ import ProblemStatementCreate from './pages/Admin/ProblemStatementCreate.jsx';
 import ProblemStatementEdit from './pages/Admin/ProblemStatementEdit.jsx';
 import TeamDetails from './pages/student/TeamDetails.jsx';
 import Team_Members from './pages/spoc/Team_Members.jsx';
+import TeamList from './pages/spoc/TeamList.jsx';
 
 function App() {
   const isAuthenticated = true;
@@ -40,9 +41,13 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/student" element={<SdDashboard />} />
         <Route path="/spoc" element={<SpocDashboard />} />
+        <Route path="/spoc" element={<SpocDashboard />} />
+
         <Route path="/spoc/profile" element={<SPOCProfile />} />
         <Route path="/student/submit-solution" element={<Upload />} />
         <Route path="/spoc/team_details/:id" element={<Team_Members />} />
+        <Route path="/spoc/team" element={<TeamList />} />
+
 
       
       {/* --- COMPLETE ADMIN ROUTING BLOCK --- */}

@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import URL from '../../Utils';
 function Team_Members() {
     const params = useParams()
+    const navigate = useNavigate()
     console.log(params)
     const [FullTeam, setFullTeam] = useState([]);
     
@@ -13,9 +14,13 @@ function Team_Members() {
     console.log(FullTeam)
   return (
       <div className='min-h-screen min-w-screen border mt-20'>
-          <h2 className="text-xl font-semibold text-gray-800 mt-10 mb-2 ml-2">
+          <div className='flex text-center items-center  justify-between h-10'> <h2 className="text-xl  font-semibold text-gray-800   ml-2">
               Team Details
           </h2>
+              <h2 className="text-lg text-blue-700 hover:underline cursor-pointer mb-0.5  font-light text-right   mr-10" onClick={()=>navigate("/spoc/team")}>
+                  Back to Team
+              </h2></div>
+         
           <table className="min-w-full border border-gray-200">
               <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>

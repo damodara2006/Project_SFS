@@ -25,8 +25,8 @@ const DashboardWithSide = () => {
   });
   function allteams() {
     // console.log("he")
-    axios.get(`${URL}/fetch_teams`).then(res => { setFullTeam(res.data), console.log(res.data) })
-
+    axios.get(`${URL}/fetch_teams`).then(res =>{ setFullTeam(res.data), console.log(res.data)})
+ 
   }
 
   function SelectedTeam(team) {
@@ -36,17 +36,17 @@ const DashboardWithSide = () => {
   }
 
   console.log(selectedTeam);
-
+  
 
   useEffect(() => {
     allteams()
-  }, [])
+  },[])
 
   console.log(FullTeam)
 
   const teamsPerPage = 10;
 
-
+  
 
   // Sample team list with members
   const teams1 = [
@@ -196,7 +196,7 @@ const DashboardWithSide = () => {
             </li>
             <li>
               <button
-                onClick={() => setActiveView("teamlist")}
+                onClick={() => navigate("/spoc/team")}
                 className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "teamlist" ? "bg-gray-700" : "hover:bg-gray-700"
                   }`}
               >
@@ -484,7 +484,7 @@ const DashboardWithSide = () => {
                   placeholder="Enter team name"
                   required
                 />
-
+                
               </div>
 
               {/* Team Members */}
