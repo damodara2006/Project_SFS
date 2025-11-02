@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import axios from "axios"
+import URL from "../../Utils"
 function TeamList() {
     const [active, setActive] = useState("Team Details");
     const [selectedTeam, setSelectedTeam] = useState(null);
@@ -12,6 +13,17 @@ function TeamList() {
         animate: { opacity: 1, y: 0 },
         exit: { opacity: 0, y: -20 },
     };
+
+    function allteams() {
+        console.log("he")
+        axios.get(`${URL}/fetch_teams`).then(res=>console.log(res))
+    }
+
+    useEffect(() => {
+        allteams()
+    })
+
+    
 
     const teams = [
         {
@@ -52,7 +64,7 @@ function TeamList() {
                                     className={`px-6 py-2 rounded-md font-medium transition relative ${active === tab ? "bg-white shadow text-[#4a4a4a]" : "text-gray-600 hover:text-gray-800"
                                         }`}
                                 >
-                                    {tab}
+                                    {tab} {allteams()}
                                 </button>
                             ))}
                         </div>

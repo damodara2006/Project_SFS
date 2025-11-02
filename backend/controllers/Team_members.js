@@ -50,6 +50,17 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
       <p style="font-size: 16px; color: #333333; line-height: 1.5;">
         We’re excited to have you on board and wish you all the best for the contest!
       </p>
+      <p style="font-size: 16px; color: #333333; line-height: 1.5;">
+        Your Details : 
+      </p>
+          <br/>
+     <div style=" border: 2px solid; width:fit-content; padding-right: 10px; padding-left: 10px; background-color: rgb(179, 176, 176); border-radius: 5px; color:black;">
+
+        <p style="font-family:monospace; font-weight: bolder;">Name- <span style="font-weight: lighter;">${singledata.name}</span></p>
+         <p style="font-family:monospace; font-weight: bolder">Phone-<span style="font-weight: lighter;">${singledata.phone}</span></p>
+         <p style="font-family:monospace; font-weight: bolder">Registered mail-<span style="font-weight: lighter;">${singledata.email}</span></p>
+         <p style="font-family:monospace; font-weight: bolder">Gender-<span style="font-weight: lighter;">${singledata.gender}</span></p>
+    </div>
       <div style="text-align: center; margin-top: 30px;">
         <a href="#" style="background-color: #00a8ff; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-size: 16px;">View Details</a>
       </div>
@@ -71,7 +82,7 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
     // console.log(data.members[0])
 
 
-    res.send(`Team id : ${result.insertId}`)
+    res.status(200).send(`Team id : ${result.insertId}`)
     
 })
 

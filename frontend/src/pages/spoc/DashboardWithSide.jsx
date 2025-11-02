@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import ProblemStatements from "../../components/ProblemStatements";
 import SPOCProfile from "./SPOCProfile";
 import axios from "axios"
 import URL from "../../Utils";
+import { useNavigate } from "react-router-dom";
 const DashboardWithSide = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeView, setActiveView] = useState("dashboard");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
+  const [FullTeam, setFullTeam] = useState([]);
+  const navigate = useNavigate();
   const [teamFormData, setTeamFormData] = useState({
     teamName: '',
     members: [
@@ -20,10 +23,30 @@ const DashboardWithSide = () => {
       { role: 'Member 3', name: '', email: '', phone: '', gender: '' }
     ]
   });
+  function allteams() {
+    // console.log("he")
+    axios.get(`${URL}/fetch_teams`).then(res => { setFullTeam(res.data), console.log(res.data) })
 
-  console.log(teamFormData)
+  }
+
+  function SelectedTeam(team) {
+    console.log(team.ID);
+    navigate(`/spoc/team_details/${team.ID}`)
+    // axios.post(`${URL}/fetch_team_members/${team.ID}`).then(res => setSelectedTeam(res.data))
+  }
+
+  console.log(selectedTeam);
+
+
+  useEffect(() => {
+    allteams()
+  }, [])
+
+  console.log(FullTeam)
 
   const teamsPerPage = 10;
+
+
 
   // Sample team list with members
   const teams1 = [
@@ -94,20 +117,25 @@ const DashboardWithSide = () => {
     axios.post(`${URL}/add_members`, teamFormData)
       .then((res) => {
         console.log(res)
+        if (res.status == 200) {
+          setShowCreateTeamModal(false);
+          // Reset form
+          setTeamFormData({
+            teamName: '',
+            members: [
+              { role: 'Team Lead', name: '', email: '', phone: '', gender: '' },
+              { role: 'Member 1', name: '', email: '', phone: '', gender: '' },
+              { role: 'Member 2', name: '', email: '', phone: '', gender: '' },
+              { role: 'Member 3', name: '', email: '', phone: '', gender: '' }
+            ]
+          });
+          // Refresh the team list
+          allteams();
+        }
       })
-    // Add team creation logic here
-    console.log('Creating team:', teamFormData);
-    // setShowCreateTeamModal(false);
-    // Reset form
-    // setTeamFormData({
-    //   teamName: '',
-    //   members: [
-    //     { role: 'Team Lead', name: '', email: '', phone: '', gender: '' },
-    //     { role: 'Member 1', name: '', email: '', phone: '', gender: '' },
-    //     { role: 'Member 2', name: '', email: '', phone: '', gender: '' },
-    //     { role: 'Member 3', name: '', email: '', phone: '', gender: '' }
-    //   ]
-    // });
+      .catch((error) => {
+        console.error('Error creating team:', error);
+      });
   };
 
   const cardVariants = {
@@ -330,23 +358,23 @@ const DashboardWithSide = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {teams1.map((team) => (
+                      {FullTeam.map((team) => (
                         <tr
-                          key={team.id}
-                          onClick={() => setSelectedTeam(team)}
+                          key={team.ID}
+                          onClick={() => SelectedTeam(team)}
                           className="hover:bg-gray-50 cursor-pointer"
                         >
                           <td className="px-6 py-4 text-sm text-gray-700">
-                            {team.id}
+                            {team.ID}
                           </td>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                            {team.name}
+                            {team.NAME}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {team.leadEmail}
+                            {team.LEAD_EMAIL}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {team.leadPhone}
+                            {team.LEAD_PHONE}
                           </td>
                         </tr>
                       ))}
@@ -364,7 +392,7 @@ const DashboardWithSide = () => {
                 >
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">
-                      {selectedTeam.name} - Members
+                      {selectedTeam.NAME} - Members
                     </h2>
                     <button
                       onClick={() => setSelectedTeam(null)}
@@ -395,22 +423,22 @@ const DashboardWithSide = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {selectedTeam.members.map((m, idx) => (
+                      {selectedTeam.map((m, idx) => (
                         <tr key={idx} className="hover:bg-gray-50 transition">
                           <td className="px-6 py-4 text-sm text-gray-700">
-                            {m.role}
+                            {m.ROLE}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-900">
-                            {m.name}
+                            {m.NAME}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {m.email}
+                            {m.EMAIL}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {m.phone}
+                            {m.PHONE}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            {m.gender}
+                            {m.GENDER}
                           </td>
                         </tr>
                       ))}
@@ -456,7 +484,7 @@ const DashboardWithSide = () => {
                   placeholder="Enter team name"
                   required
                 />
-                
+
               </div>
 
               {/* Team Members */}
