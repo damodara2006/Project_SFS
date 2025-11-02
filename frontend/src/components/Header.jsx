@@ -1,111 +1,107 @@
-import { useState } from "react";
-import profile from "../assets/profile.png";
-import skathiauto from "../assets/sakthi_auto.png";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import { HiMenuAlt3, HiX } from 'react-icons/hi';
+
+// Import your assets
+import sakthiLogo from '../assets/sakthi_auto.png';
+import profileIcon from '../assets/profile.png';
 
 const Header = () => {
-  const [active, setActive] = useState("");
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { name: "Home", path: "/" },
-    { name: "About us", path: "/about" },
-    { name: "Problem Statement", path: "/student" },
-    { name: "FAQ", path: "/faq" },
-    { name: "Profile", path: "/profile" },
+    { name: 'Home', path: '/' },
+    { name: 'Problem Statement', path: '/student' },
+    { name: 'About us', path: '/about' },
+    { name: 'FAQ', path: '/faq' },
   ];
 
-  const handleNavClick = (item) => {
-    setActive(item.name);
-    navigate(item.path);
-    setMobileOpen(false);
-  };
+  // A reusable NavLink component for both mobile and desktop
+  const NavItem = ({ path, name }) => (
+    <li>
+      <NavLink
+        to={path}
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={({ isActive }) =>
+          `block px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ease-in-out transform hover:scale-105 ${
+            isActive
+              ? 'bg-black/20 text-orange-400'
+              : 'text-slate-200 hover:text-orange-400'
+          }`
+        }
+      >
+        {name}
+      </NavLink>
+    </li>
+  );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#494949] text-white font-roboto">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-[#494949] text-white border-b border-white/10 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-20 flex items-center justify-between">
-          {/* Left: Logo */}
-          <div className="flex items-center space-x-4">
-            <img src={skathiauto} alt="Sakthi groups" className="w-32 h-14 rounded-sm" />
+        <div className="flex items-center justify-between h-20">
+
+          {/* Left Section: Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="flex items-center">
+              {/* Using your original image size for consistency */}
+              <img className="w-32 h-14 object-contain" src={sakthiLogo} alt="Sakthi Auto Logo" />
+            </Link>
           </div>
 
-          {/* Center: Navigation (desktop) */}
-          <nav className="hidden md:flex flex-1 justify-center">
-            <ul className="flex items-center space-x-2 w-full max-w-3xl justify-center">
+          {/* Center Section: Desktop Navigation */}
+          <nav className="hidden md:flex md:justify-center">
+            <ul className="flex items-center space-x-2">
               {navItems.map((item) => (
-                <li
-                  key={item.name}
-                  onClick={() => handleNavClick(item)}
-                  className={
-                    `relative px-4 py-2 cursor-pointer text-sm font-semibold rounded-md transition-all transform select-none ` +
-                    (active === item.name
-                      ? "text-orange-400 scale-105 border-b-2 border-orange-400"
-                      : "hover:text-orange-400 hover:scale-105")
-                  }
-                >
-                  {item.name}
-                </li>
+                <NavItem key={item.name} {...item} />
               ))}
             </ul>
           </nav>
 
-          {/* Right: profile + mobile toggle */}
+          {/* Right Section: Profile and Mobile Toggle */}
           <div className="flex items-center space-x-3">
-            <button
-              onClick={() => handleNavClick({ name: "Profile", path: "/profile" })}
-              className="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-md hover:brightness-110 transition"
-              aria-label="Open profile"
+            <Link
+              to="/profile"
+              className="hidden md:block rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#494949] focus:ring-orange-400"
+              aria-label="View Profile"
             >
-              <img src={profile} alt="profile" className="w-10 h-10 rounded-full ring-1 ring-white/20" />
-            </button>
+              <img className="h-10 w-10 rounded-full ring-2 ring-white/20 hover:ring-orange-400/80 transition-shadow" src={profileIcon} alt="User Profile" />
+            </Link>
 
-            {/* Mobile menu toggle */}
-            <button
-              className="md:hidden p-2 rounded-md hover:bg-white/5 transition"
-              onClick={() => setMobileOpen((s) => !s)}
-              aria-label="Toggle menu"
-            >
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-slate-300 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
+                aria-controls="mobile-menu"
+                aria-expanded={isMobileMenuOpen}
+              >
+                <span className="sr-only">Open main menu</span>
+                {isMobileMenuOpen ? <HiX className="block h-6 w-6" /> : <HiMenuAlt3 className="block h-6 w-6" />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* --- Mobile Menu --- */}
+      {/* Uses a smooth transition for max-height */}
       <div
-        className={`md:hidden absolute left-0 right-0 bg-[#494949] border-t border-white/5 overflow-hidden transition-all ${
-          mobileOpen ? "max-h-96 py-3" : "max-h-0"
-        }`}
+        className={`md:hidden bg-[#494949] overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-96' : 'max-h-0'}`}
+        id="mobile-menu"
       >
-        <ul className="flex flex-col gap-1 px-4">
+        <ul className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           {navItems.map((item) => (
-            <li
-              key={item.name + "-mobile"}
-              onClick={() => handleNavClick(item)}
-              className={
-                `w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ` +
-                (active === item.name ? "text-orange-400 bg-white/5" : "hover:text-orange-400 hover:bg-white/3")
-              }
-            >
-              {item.name}
-            </li>
+            <NavItem key={`${item.name}-mobile`} {...item} />
           ))}
-          <li className="px-3 pt-2">
-            <button
-              onClick={() => handleNavClick({ name: "Profile", path: "/profile" })}
-              className="w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-white/5 transition"
+          <li>
+            <Link
+              to="/profile"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center mt-2 px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-black/20 hover:text-orange-400"
             >
-              <img src={profile} alt="profile" className="w-9 h-9 rounded-full ring-1 ring-white/20" />
-              <span className="text-sm font-semibold">Profile</span>
-            </button>
+              <img className="h-8 w-8 rounded-full object-cover mr-3" src={profileIcon} alt="User Profile" />
+              <span>Profile</span>
+            </Link>
           </li>
         </ul>
       </div>

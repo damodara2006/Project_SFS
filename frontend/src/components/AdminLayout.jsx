@@ -1,24 +1,19 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import AdminNavbar from './AdminNavbar.jsx';
+import Navbar from './Navbar';
 
 const AdminLayout = () => {
   return (
-    <div className="p-4 md:p-8 min-h-screen bg-[#E5E5E5]">
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-       
-        <div className="h-10 bg-gray-100 flex items-center px-4 border-b border-gray-200">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          </div>
-        </div>
+    // THE FIX: Added 'pt-20' to push the entire container down by 5rem (80px),
+    // creating space for the fixed <Header /> component.
+    <div className="min-h-screen bg-gray-100 font-sans pt-20">
+      {/* Sidebar Navigation */}
+      <Navbar />
 
-        <AdminNavbar />
-
-       
-        <main className="p-6 md:p-8 bg-light-gray-bg min-h-[calc(100vh-124px)]">
+      {/* Main Content Area */}
+      {/* This margin still correctly corresponds to the sidebar's width */}
+      <div className="ml-64">
+        <main className="p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
