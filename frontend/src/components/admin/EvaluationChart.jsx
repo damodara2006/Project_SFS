@@ -1,17 +1,35 @@
+/**
+ * @file EvaluationChart.jsx
+ * @description Renders a professional, minimalist chart panel to display key evaluation metrics.
+ * @param {object} props - The component props.
+ * @param {number} props.totalSubmissions - The total number of submissions.
+ * @param {number} props.evaluatedCount - The number of submissions that have been evaluated.
+ * @returns {JSX.Element} The rendered chart panel component.
+ */
+
 import React from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 
 const EvaluationChart = ({ totalSubmissions, evaluatedCount }) => {
-  const pendingCount = totalSubmissions - evaluatedCount;
+  // Ensure pendingCount is never negative
+  const pendingCount = Math.max(0, totalSubmissions - evaluatedCount);
 
+  /**
+   * THE FIX (Data Order): We now put 'Evaluated' first.
+   * This ensures the most important metric is drawn first.
+   */
   const chartData = [
     { name: 'Evaluated', value: evaluatedCount },
     { name: 'Pending', value: pendingCount },
   ];
 
-  // Better contrast colors (visible on white background)
-  const COLORS = ['#2563eb', '#afa79cff']; // Blue-600 and Gray-500
+  /**
+   * THE FIX (Color Order): The colors now correctly match the new data order.
+   * - The first data item ('Evaluated') gets the first color (Blue).
+   * - The second data item ('Pending') gets the second color (Gray).
+   */
+  const COLORS = ['#2563eb', '#d1d5db']; // Blue-600 for evaluated, Gray-300 for pending
 
   return (
     <motion.div
@@ -28,7 +46,7 @@ const EvaluationChart = ({ totalSubmissions, evaluatedCount }) => {
       </div>
 
       {/* --- Center Section: Donut Chart --- */}
-      <div className="relative w-64 h-64 flex items-center justify-center ">
+      <div className="relative w-64 h-64 flex items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
