@@ -1,8 +1,6 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { FaFilePdf, FaLink } from "react-icons/fa";
 
 const submissionsData = [
   {
@@ -105,6 +103,7 @@ const StatusPill = ({ status, onClick }) => {
 
 const SubmissionList = () => {
   const [submissions, setSubmissions] = useState(submissionsData);
+  const [filterStatus, setFilterStatus] = useState("All");
 
   const handleStatusChange = (teamId, newStatus) => {
     setSubmissions((prevSubmissions) =>
@@ -114,8 +113,15 @@ const SubmissionList = () => {
     );
   };
 
+  // Filter logic
+  const filteredSubmissions =
+    filterStatus === "All"
+      ? submissions
+      : submissions.filter((sub) => sub.status === filterStatus);
+
   return (
     <div className="min-h-screen bg-[#ffffff] py-10 px-6 mt-14">
+      {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -128,6 +134,23 @@ const SubmissionList = () => {
         <p className="text-lg text-gray-600 mt-2">Problem ID: PRB2025-07</p>
       </motion.div>
 
+      {/* Filter Dropdown */}
+      <div className="flex justify-end mb-4 max-w-6xl mx-auto">
+        <div className="flex items-center space-x-3">
+          <label className="text-gray-700 font-medium">Filter by Status:</label>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-[#fc8f00] focus:border-[#fc8f00] cursor-pointer"
+          >
+            <option value="All">All</option>
+            <option value="In Review">In Review</option>
+            <option value="Evaluated">Evaluated</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Submissions Table */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -156,8 +179,12 @@ const SubmissionList = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {submissions.map((submission, index) => (
-                <Link to={`/evaluator/submission/${submission.teamId}`} key={submission.teamId} className="contents">
+              {filteredSubmissions.map((submission, index) => (
+                <Link
+                  to={`/evaluator/submission/${submission.teamId}`}
+                  key={submission.teamId}
+                  className="contents"
+                >
                   <motion.tr
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -182,16 +209,24 @@ const SubmissionList = () => {
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
-                      >
+                      <button className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300">
                         View
                       </button>
                     </td>
                   </motion.tr>
                 </Link>
-              ))
-              }
+              ))}
+
+              {filteredSubmissions.length === 0 && (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="text-center text-gray-500 py-6 text-sm"
+                  >
+                    No submissions found for this filter.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
