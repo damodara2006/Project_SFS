@@ -1,384 +1,409 @@
-// src/pages/admin/EvaluatorsList.jsx
-import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DataTable from '../../components/common/DataTable';
-import Button from '../../components/common/Button';
-import { getEvaluatorUsers } from '../../mockData'; // Assuming mockData is updated or adapted
-// Added new icons for the redesigned modal
+import React, { useState } from "react";
 import {
-    FiPlus, FiEdit, FiSearch, FiX, FiMail, FiUser, FiHash, FiFileText,
-    FiBriefcase, FiCheckCircle, FiClock, FiActivity, FiAward
-} from 'react-icons/fi';
+  FiEye,
+  FiEdit,
+  FiTrash2,
+  FiPlus,
+  FiX,
+  FiCheckCircle,
+  FiXCircle,
+  FiUsers,
+  FiUserCheck,
+  FiUserX,
+} from "react-icons/fi";
 
-// --- START: Mock Data for Problem Statement Search (Unchanged) ---
-const mockProblemStatements = [
-    { id: 'PS-AI-101', title: 'AI-Powered Customer Support Bot' },
-    { id: 'PS-ML-205', title: 'Predictive Maintenance for Machinery' },
-    { id: 'PS-DV-302', title: 'Interactive Data Visualization Dashboard' },
-    { id: 'PS-SEC-451', title: 'Cybersecurity Threat Detection System' },
-    { id: 'PS-IOT-515', title: 'Smart Home Energy Management' },
-    { id: 'PS-FIN-620', title: 'Algorithmic Trading Strategy Analysis' },
-    { id: 'PS-HLT-730', title: 'Patient Data Anonymization Tool' },
-];
-// --- END: Mock Data ---
+const EvaluatorList = () => {
+  const [evaluators, setEvaluators] = useState([
+    {
+      id: "EV1001",
+      name: "John Doe",
+      email: "john@example.com",
+      dept: "CSE",
+      status: "active",
+    },
+    {
+      id: "EV1002",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      dept: "ECE",
+      status: "inactive",
+    },
+  ]);
 
+  const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [showViewPopup, setShowViewPopup] = useState(null);
+  const [showEditPopup, setShowEditPopup] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [newEvaluator, setNewEvaluator] = useState({
+    id: "",
+    name: "",
+    email: "",
+    dept: "",
+  });
 
-// --- START: Manage Evaluator Modal Component (UPDATED to handle multiple IDs) ---
-const ManageEvaluatorModal = ({ evaluator, onClose, onSave, defaultProblemStatementId }) => {
-    if (!evaluator) return null;
+  const showToast = (message, type) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
-    const [formData, setFormData] = useState({
-        name: evaluator.name || '',
-        email: evaluator.email || '',
-        problemStatementId: evaluator.problemStatementId || defaultProblemStatementId || '',
-    });
+  // Generate new Evaluator ID automatically
+  const generateId = () => `EV${1000 + evaluators.length + 1}`;
 
-    const [psSearchTerm, setPsSearchTerm] = useState('');
-    const [isPsSearchFocused, setIsPsSearchFocused] = useState(false);
+  // Handle new evaluator creation
+  const handleCreate = (e) => {
+    e.preventDefault();
+    if (!newEvaluator.name || !newEvaluator.email || !newEvaluator.dept) {
+      showToast("Please fill all fields", "error");
+      return;
+    }
+    const id = generateId();
+    const newEval = { ...newEvaluator, id, status: "active" };
+    setEvaluators([...evaluators, newEval]);
+    setNewEvaluator({ id: "", name: "", email: "", dept: "" });
+    setShowCreatePopup(false);
+    showToast("Evaluator created successfully!", "success");
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevData => ({ ...prevData, [name]: value }));
-    };
+  // Handle delete
+  const handleDelete = (id) => {
+    setEvaluators(evaluators.filter((ev) => ev.id !== id));
+    showToast("Evaluator deleted successfully!", "success");
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSave(evaluator.id, formData);
-    };
-
-    const filteredProblemStatements = useMemo(() => {
-        if (!psSearchTerm) return [];
-        return mockProblemStatements.filter(ps =>
-            ps.title.toLowerCase().includes(psSearchTerm.toLowerCase()) ||
-            ps.id.toLowerCase().includes(psSearchTerm.toLowerCase())
-        );
-    }, [psSearchTerm]);
-
-    // MODIFIED: This handler now appends IDs instead of replacing the value.
-    const handleProblemSelect = (problemId) => {
-        setFormData(prev => {
-            // Get existing IDs, trim whitespace, and filter out any empty strings
-            const currentIds = prev.problemStatementId.split(',')
-                .map(id => id.trim())
-                .filter(id => id);
-
-            // Do not add the ID if it's already in the list
-            if (currentIds.includes(problemId)) {
-                return prev;
-            }
-
-            // If the list is empty or only contains the default placeholder, start fresh
-            if (currentIds.length === 0 || prev.problemStatementId === defaultProblemStatementId) {
-                return { ...prev, problemStatementId: problemId };
-            }
-
-            // Otherwise, append the new ID with a comma
-            return { ...prev, problemStatementId: `${prev.problemStatementId}, ${problemId}` };
-        });
-
-        // Reset search input after selection
-        setPsSearchTerm('');
-        setIsPsSearchFocused(false);
-    };
-
-    return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg m-4">
-                <div className="flex justify-between items-center mb-6 border-b pb-3">
-                    <h2 className="text-2xl font-bold text-gray-800">Edit Evaluator Profile</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition" aria-label="Close">
-                        <FiX className="w-6 h-6" />
-                    </button>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                        <div className="relative">
-                            <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="text" id="name" name="name" value={formData.name} onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <div className="relative">
-                            <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="email" id="email" name="email" value={formData.email} onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required
-                            />
-                        </div>
-                    </div>
-                    <div className="relative">
-                        <label htmlFor="psSearch" className="block text-sm font-medium text-gray-700 mb-1">Search to Add a Problem ID</label>
-                        <div className="relative">
-                            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="text" id="psSearch" placeholder="Search by title or ID to add to the list below..."
-                                value={psSearchTerm} onChange={(e) => setPsSearchTerm(e.target.value)}
-                                onFocus={() => setIsPsSearchFocused(true)} onBlur={() => setTimeout(() => setIsPsSearchFocused(false), 200)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                autoComplete="off"
-                            />
-                        </div>
-                        {isPsSearchFocused && psSearchTerm && (
-                            <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
-                               {filteredProblemStatements.length > 0 ? (
-                                   filteredProblemStatements.map(ps => (
-                                       <div key={ps.id} className="p-2 hover:bg-indigo-100 cursor-pointer border-b last:border-b-0"
-                                           onMouseDown={() => handleProblemSelect(ps.id)}>
-                                           <p className="font-semibold text-gray-800">{ps.title}</p>
-                                           <p className="text-sm text-blue-600 font-mono">{ps.id}</p>
-                                       </div>
-                                   ))
-                               ) : (<div className="p-2 text-gray-500">No results found.</div>)}
-                            </div>
-                        )}
-                        <label htmlFor="problemStatementId" className="block text-sm font-medium text-gray-700 mt-3 mb-1">Assigned Problem IDs (comma-separated)</label>
-                        <div className="relative">
-                            <FiFileText className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="text" id="problemStatementId" name="problemStatementId" value={formData.problemStatementId} onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50" required
-                            />
-                        </div>
-                    </div>
-                    <div className="mt-8 flex justify-end space-x-3 pt-4 border-t">
-                        <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
-                        <Button type="submit" variant="primary">Save Changes</Button>
-                    </div>
-                </form>
-            </div>
-        </div>
+  // Toggle active/inactive
+  const handleToggleStatus = (id) => {
+    setEvaluators(
+      evaluators.map((ev) =>
+        ev.id === id
+          ? { ...ev, status: ev.status === "active" ? "inactive" : "active" }
+          : ev
+      )
     );
-};
-// --- END: Manage Evaluator Modal Component ---
+    showToast("Evaluator status updated!", "success");
+  };
 
-
-// --- START: Problem Statement Modal Component (Unchanged) ---
-const ProblemStatementDetailModal = ({ problemStatement, onClose }) => {
-    if (!problemStatement) return null;
-    const title = problemStatement.title || "Untitled Evaluation Project";
-    const defaultDepartment = "R&D Innovation";
-    const defaultCategory = "Machine Learning / AI";
-
-    const { 
-        id = 'PS-000', description = 'This problem statement currently has no detailed description available.', 
-        department = defaultDepartment, category = defaultCategory, youtubeLink = '', dataSetLink = '',
-        teamsEnrolled = 1, submissions = 0 
-    } = problemStatement;
-
-    return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg m-4">
-                <div className="flex justify-between items-start mb-4 border-b pb-3">
-                    <h2 className="text-2xl font-bold text-indigo-700">Problem Statement: {title}</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition" aria-label="Close">
-                        <FiX className="w-6 h-6" />
-                    </button>
-                </div>
-                <div className="space-y-4 text-sm">
-                    <p className="font-mono text-gray-500">ID: <span className="font-semibold text-indigo-600">{id}</span></p>
-                    <div>
-                        <p className="font-semibold text-gray-700">Description:</p>
-                        <p className="text-gray-600 italic mt-1 text-base">{description}</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-y-2 pt-2 border-t">
-                        <p className="text-gray-500">Department: <span className="font-medium text-gray-800">{department}</span></p>
-                        <p className="text-gray-500">Category: <span className="font-medium text-gray-800">{category}</span></p>
-                        <p className="text-gray-500">Teams Enrolled: <span className="font-bold text-green-600">{teamsEnrolled}</span></p>
-                        <p className="text-gray-500">Total Submissions: <span className="font-bold text-blue-600">{submissions}</span></p>
-                    </div>
-                    <div className="pt-3 border-t space-y-2">
-                        {youtubeLink ? (<p>YouTube Link: <a href={youtubeLink} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline ml-2">View</a></p>) : (<p className="italic">YouTube Link: Not available</p>)}
-                        {dataSetLink ? (<p>Dataset Link: <a href={dataSetLink} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline ml-2">Download</a></p>) : (<p className="italic">Dataset Link: Not available</p>)}
-                    </div>
-                </div>
-                <div className="mt-6 flex justify-end">
-                    <Button onClick={onClose} variant="secondary">Close</Button>
-                </div>
-            </div>
-        </div>
+  // Handle edit save
+  const handleEditSave = (updatedEval) => {
+    setEvaluators(
+      evaluators.map((ev) => (ev.id === updatedEval.id ? updatedEval : ev))
     );
-};
-// --- END: Problem Statement Modal Component ---
+    setShowEditPopup(null);
+    showToast("Evaluator updated successfully!", "success");
+  };
 
+  // --- Stats ---
+  const totalEvaluators = evaluators.length;
+  const activeEvaluators = evaluators.filter((e) => e.status === "active").length;
+  const inactiveEvaluators = evaluators.filter((e) => e.status === "inactive").length;
 
-// --- START: Evaluator Profile Modal Component (Unchanged) ---
-const EvaluatorDetailModal = ({ evaluator, onClose }) => {
-    const [viewMode, setViewMode] = useState('profile');
-
-    useEffect(() => {
-        if (evaluator) {
-            setViewMode('profile');
-        }
-    }, [evaluator]);
-
-    if (!evaluator) return null;
-
-    const displayName = evaluator.name || evaluator.email || 'No Name Provided';
-    const defaultDepartment = "Engineering";
-
-    const records = {
-        completed: 45,
-        pending: 5,
-        current: 'PS-SEC-451: Cybersecurity Threat Detection',
-        experience: '4 Years',
-    };
-
-    return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md m-4 transition-all duration-300">
-                <div className="flex justify-between items-start mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">
-                        {viewMode === 'profile' ? `Profile: ${displayName}` : `Records: ${displayName}`}
-                    </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition" aria-label="Close">
-                        <FiX className="w-6 h-6" />
-                    </button>
-                </div>
-
-                {viewMode === 'profile' ? (
-                    <div className="space-y-4">
-                        <div className="flex items-center"><FiUser className="w-5 h-5 text-gray-400 mr-3" /><div><p className="text-sm text-gray-500">Name</p><p className="font-semibold text-gray-900 text-lg">{evaluator.name || 'N/A'}</p></div></div>
-                        <div className="flex items-center"><FiHash className="w-5 h-5 text-gray-400 mr-3" /><div><p className="text-sm text-gray-500">ID</p><p className="font-mono text-indigo-600">{evaluator.id}</p></div></div>
-                        <div className="flex items-center"><FiMail className="w-5 h-5 text-gray-400 mr-3" /><div><p className="text-sm text-gray-500">Email</p><p className="text-gray-700">{evaluator.email}</p></div></div>
-                        <div className="flex items-center"><FiBriefcase className="w-5 h-5 text-gray-400 mr-3" /><div><p className="text-sm text-gray-500">Department</p><p className="font-medium text-gray-700">{evaluator.department || defaultDepartment}</p></div></div>
-                    </div>
-                ) : (
-                    <div className="space-y-4 pt-2">
-                        <div className="flex items-center p-3 bg-green-50 rounded-lg"><FiCheckCircle className="w-6 h-6 text-green-600 mr-4" /><div><p className="text-sm text-gray-500">Completed Problems</p><p className="font-bold text-gray-900 text-xl">{records.completed}</p></div></div>
-                        <div className="flex items-center p-3 bg-yellow-50 rounded-lg"><FiClock className="w-6 h-6 text-yellow-600 mr-4" /><div><p className="text-sm text-gray-500">Pending Problems</p><p className="font-bold text-gray-900 text-xl">{records.pending}</p></div></div>
-                        <div className="flex items-center p-3 bg-blue-50 rounded-lg"><FiActivity className="w-6 h-6 text-blue-600 mr-4" /><div><p className="text-sm text-gray-500">Currently Evaluating</p><p className="font-semibold text-gray-900">{records.current}</p></div></div>
-                        <div className="flex items-center p-3 bg-indigo-50 rounded-lg"><FiAward className="w-6 h-6 text-indigo-600 mr-4" /><div><p className="text-sm text-gray-500">Experience</p><p className="font-bold text-gray-900 text-lg">{records.experience}</p></div></div>
-                    </div>
-                )}
-
-                <div className="mt-8 flex justify-end space-x-3 border-t pt-4">
-                    {viewMode === 'records' && (<Button onClick={() => setViewMode('profile')} variant="outline">Back to Profile</Button>)}
-                    {viewMode === 'profile' && (<Button onClick={() => setViewMode('records')} variant="primary">View Records</Button>)}
-                    <Button onClick={onClose} variant="secondary">Close</Button>
-                </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
+      {/* Header */}
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#1A202C] mb-1">
+            Evaluator Management
+          </h1>
+          <p className="text-[#718096] text-sm">
+            View, manage, and create evaluator profiles.
+          </p>
         </div>
-    );
-};
-// --- END: Evaluator Profile Modal Component ---
+        <button
+          onClick={() => setShowCreatePopup(true)}
+          className="flex items-center gap-2 bg-[#FF9900] hover:bg-[#E68500] text-white px-4 py-2 rounded-xl text-sm transition-all"
+        >
+          <FiPlus /> Create New Evaluator
+        </button>
+      </div>
 
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 flex items-center gap-3">
+          <div className="bg-[#FFF4E5] p-3 rounded-xl">
+            <FiUsers className="text-[#FF9900] text-xl" />
+          </div>
+          <div>
+            <p className="text-sm text-[#718096]">Total Evaluators</p>
+            <p className="text-xl font-bold text-[#1A202C]">{totalEvaluators}</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 flex items-center gap-3">
+          <div className="bg-[#E6FFFA] p-3 rounded-xl">
+            <FiUserCheck className="text-[#48BB78] text-xl" />
+          </div>
+          <div>
+            <p className="text-sm text-[#718096]">Active Evaluators</p>
+            <p className="text-xl font-bold text-[#1A202C]">{activeEvaluators}</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 flex items-center gap-3">
+          <div className="bg-[#FFE6E6] p-3 rounded-xl">
+            <FiUserX className="text-red-500 text-xl" />
+          </div>
+          <div>
+            <p className="text-sm text-[#718096]">Inactive Evaluators</p>
+            <p className="text-xl font-bold text-[#1A202C]">{inactiveEvaluators}</p>
+          </div>
+        </div>
+      </div>
 
-const EvaluatorsList = () => {
-    const navigate = useNavigate();
-    const allEvaluators = getEvaluatorUsers(); 
-    const [searchTerm, setSearchTerm] = useState(''); 
-    const [selectedEvaluator, setSelectedEvaluator] = useState(null); 
-    const [selectedProblemStatement, setSelectedProblemStatement] = useState(null);
-    const [evaluatorToManage, setEvaluatorToManage] = useState(null);
-    
-    const defaultProblemStatementId = "PS-GEN-001";
-    const defaultDepartment = "Engineering";
+      {/* Table */}
+      <div className="bg-white shadow-sm rounded-2xl border border-[#E2E8F0] overflow-x-auto">
+        <table className="min-w-full text-sm">
+          <thead className="bg-[#F7F8FC] text-[#718096]">
+            <tr>
+              <th className="text-left py-3 px-4 font-medium">Evaluator ID</th>
+              <th className="text-left py-3 px-4 font-medium">Name</th>
+              <th className="text-left py-3 px-4 font-medium">Email</th>
+              <th className="text-left py-3 px-4 font-medium">Department</th>
+              <th className="text-left py-3 px-4 font-medium">Status</th>
+              <th className="text-center py-3 px-4 font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {evaluators.map((ev) => (
+              <tr
+                key={ev.id}
+                className="hover:bg-gray-50 border-t border-[#E2E8F0] transition-all"
+              >
+                <td className="py-3 px-4 font-medium text-[#1A202C]">{ev.id}</td>
+                <td className="py-3 px-4">{ev.name}</td>
+                <td className="py-3 px-4 text-[#718096]">{ev.email}</td>
+                <td className="py-3 px-4 text-[#718096]">{ev.dept}</td>
+                <td className="py-3 px-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      ev.status === "active"
+                        ? "bg-[#E6FFFA] text-[#2F855A]"
+                        : "bg-[#FFE6E6] text-red-600"
+                    }`}
+                  >
+                    {ev.status}
+                  </span>
+                </td>
+                <td className="py-3 px-4 text-center space-x-3">
+                  <button
+                    onClick={() => setShowViewPopup(ev)}
+                    className="text-[#3182CE] hover:text-blue-700 transition-all"
+                  >
+                    <FiEye />
+                  </button>
+                  <button
+                    onClick={() => setShowEditPopup(ev)}
+                    className="text-[#FF9900] hover:text-[#E68500] transition-all"
+                  >
+                    <FiEdit />
+                  </button>
+                  <button
+                    onClick={() => handleToggleStatus(ev.id)}
+                    className="text-[#48BB78] hover:text-green-600 transition-all"
+                  >
+                    {ev.status === "active" ? "Deactivate" : "Activate"}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(ev.id)}
+                    className="text-red-500 hover:text-red-700 transition-all"
+                  >
+                    <FiTrash2 />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-    const handleViewProfileInModal = (evaluator) => setSelectedEvaluator(evaluator); 
-    const handleCloseProfileModal = () => setSelectedEvaluator(null);
-    const handleViewProblemStatementDetail = (problemStatementDetail, problemStatementId) => {
-        setSelectedProblemStatement(problemStatementDetail || { id: problemStatementId, title: `Problem ID: ${problemStatementId}` });
-    };
-    const handleClosePSModal = () => setSelectedProblemStatement(null);
-    const handleOpenManageModal = (evaluator) => setEvaluatorToManage(evaluator);
-    const handleCloseManageModal = () => setEvaluatorToManage(null);
-    const handleSaveChanges = (evaluatorId, updatedData) => {
-        console.log("Saving data for evaluator:", evaluatorId, updatedData);
-        handleCloseManageModal();
-    };
-
-    const filteredEvaluators = useMemo(() => {
-        if (!searchTerm) return allEvaluators;
-        const lowerCaseSearch = searchTerm.toLowerCase();
-        return allEvaluators.filter((evaluator) => {
-            const nameToSearch = evaluator.name || evaluator.email; 
-            const searchProblemId = evaluator.problemStatementId || defaultProblemStatementId;
-            const searchDepartment = evaluator.department || defaultDepartment;
-            return (
-                nameToSearch.toLowerCase().includes(lowerCaseSearch) ||
-                evaluator.email.toLowerCase().includes(lowerCaseSearch) ||
-                evaluator.id.toLowerCase().includes(lowerCaseSearch) ||
-                searchProblemId.toLowerCase().includes(lowerCaseSearch) ||
-                searchDepartment.toLowerCase().includes(lowerCaseSearch)
-            );
-        });
-    }, [allEvaluators, searchTerm, defaultProblemStatementId, defaultDepartment]);
-
-    const columns = [
-        { 
-            header: 'ID', 
-            cell: (row) => (
-                <span className="font-mono text-indigo-600 hover:text-indigo-800 cursor-pointer"
-                    onClick={() => handleViewProfileInModal(row)} title={`View profile for ${row.name || row.email}`}>
-                    {row.id} 
-                </span>
-            )
-        },
-        { 
-            header: 'Name', 
-            cell: (row) => (
-                <span className="font-medium text-indigo-600 hover:text-indigo-800 cursor-pointer"
-                    onClick={() => handleViewProfileInModal(row)} title={`View profile for ${row.name || row.email}`}>
-                    {row.name || row.email.split('@')[0] || 'N/A'} 
-                </span>
-            )
-        }, 
-        { 
-            header: 'Problem ID',
-            cell: (row) => (
-                <span className="text-sm font-mono text-blue-600 hover:text-blue-800 cursor-pointer"
-                    onClick={() => handleViewProblemStatementDetail(row.problemStatementDetail, row.problemStatementId || defaultProblemStatementId)}
-                    title={`View details for Problem ID: ${row.problemStatementId || defaultProblemStatementId}`}>
-                    {row.problemStatementId || defaultProblemStatementId}
-                </span>
-            )
-        },
-        { header: 'Department', cell: (row) => (<span className="text-sm text-gray-700">{row.department || defaultDepartment}</span>) },
-        { header: 'Email', accessor: 'email' },
-        {
-            header: 'Actions',
-            cell: (row) => (
-                <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => handleOpenManageModal(row)} className="flex items-center">
-                        <FiEdit className="w-4 h-4 mr-1" /> Manage
-                    </Button>
-                </div>
-            ),
-        },
-    ];
-
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">Evaluator Management</h1>
-                <Button onClick={() => navigate('/admin/evaluators/create')} className="flex items-center">
-                    <FiPlus className="w-5 h-5 mr-1" /> Create Evaluator
-                </Button>
-            </div>
-            <p className="text-gray-600">Full control over Evaluator accounts, including credential generation and editing.</p>
-            <div className="relative max-w-lg">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+      {/* Create Popup */}
+      {showCreatePopup && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md">
+            <h2 className="text-lg font-semibold text-[#1A202C] mb-4">
+              Create New Evaluator
+            </h2>
+            <form onSubmit={handleCreate} className="space-y-4">
+              <div>
+                <label className="text-sm text-[#4A5568] font-medium mb-1 block">
+                  Evaluator Name
+                </label>
                 <input
-                    type="text" placeholder="Search by name, email, ID, problem ID, or department..."
-                    value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  type="text"
+                  name="name"
+                  value={newEvaluator.name}
+                  onChange={(e) =>
+                    setNewEvaluator({ ...newEvaluator, name: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
+                  placeholder="Enter name"
                 />
-            </div>
-            <DataTable columns={columns} data={filteredEvaluators} />
-            <EvaluatorDetailModal evaluator={selectedEvaluator} onClose={handleCloseProfileModal} />
-            <ProblemStatementDetailModal problemStatement={selectedProblemStatement} onClose={handleClosePSModal} />
-            <ManageEvaluatorModal
-                evaluator={evaluatorToManage} onClose={handleCloseManageModal}
-                onSave={handleSaveChanges} defaultProblemStatementId={defaultProblemStatementId}
-            />
+              </div>
+              <div>
+                <label className="text-sm text-[#4A5568] font-medium mb-1 block">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={newEvaluator.email}
+                  onChange={(e) =>
+                    setNewEvaluator({ ...newEvaluator, email: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
+                  placeholder="Enter email"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-[#4A5568] font-medium mb-1 block">
+                  Department
+                </label>
+                <select
+                  value={newEvaluator.dept}
+                  onChange={(e) =>
+                    setNewEvaluator({ ...newEvaluator, dept: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
+                >
+                  <option value="">Select Department</option>
+                  <option value="CSE">Computer Science</option>
+                  <option value="ECE">Electronics</option>
+                  <option value="EEE">Electrical</option>
+                  <option value="MECH">Mechanical</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowCreatePopup(false)}
+                  className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-[#FF9900] hover:bg-[#E68500] text-white text-sm"
+                >
+                  Create
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-    );
+      )}
+
+      {/* View Popup */}
+      {showViewPopup && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md">
+            <h2 className="text-lg font-semibold text-[#1A202C] mb-4">
+              Evaluator Details
+            </h2>
+            <p>
+              <b>ID:</b> {showViewPopup.id}
+            </p>
+            <p>
+              <b>Name:</b> {showViewPopup.name}
+            </p>
+            <p>
+              <b>Email:</b> {showViewPopup.email}
+            </p>
+            <p>
+              <b>Department:</b> {showViewPopup.dept}
+            </p>
+            <p>
+              <b>Status:</b> {showViewPopup.status}
+            </p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setShowViewPopup(null)}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Popup */}
+      {showEditPopup && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md">
+            <h2 className="text-lg font-semibold text-[#1A202C] mb-4">
+              Edit Evaluator
+            </h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleEditSave(showEditPopup);
+              }}
+              className="space-y-4"
+            >
+              <input
+                type="text"
+                value={showEditPopup.name}
+                onChange={(e) =>
+                  setShowEditPopup({ ...showEditPopup, name: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm"
+              />
+              <input
+                type="email"
+                value={showEditPopup.email}
+                onChange={(e) =>
+                  setShowEditPopup({ ...showEditPopup, email: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm"
+              />
+              <select
+                value={showEditPopup.dept}
+                onChange={(e) =>
+                  setShowEditPopup({ ...showEditPopup, dept: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm"
+              >
+                <option value="CSE">CSE</option>
+                <option value="ECE">ECE</option>
+                <option value="EEE">EEE</option>
+                <option value="MECH">MECH</option>
+              </select>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowEditPopup(null)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#FF9900] hover:bg-[#E68500] text-white rounded-xl text-sm"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all animate-slideUp ${
+            toast.type === "success" ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <FiCheckCircle className="inline mr-2" />
+          ) : (
+            <FiXCircle className="inline mr-2" />
+          )}
+          {toast.message}
+        </div>
+      )}
+    </div>
+  );
 };
 
-export default EvaluatorsList;
+export default EvaluatorList;
