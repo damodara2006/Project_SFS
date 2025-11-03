@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import { mockProblemStatements, getEvaluatorUsers } from '../../mockData';
-import { FiSave, FiList, FiSearch, FiCheckCircle, FiXCircle, FiInfo } from 'react-icons/fi'; // Added FiInfo
+import { FiSave, FiList, FiSearch, FiCheckCircle, FiXCircle, FiInfo, FiEdit, FiTrash } from 'react-icons/fi';
 
 // --- Mock Toast Component for Demonstration ---
 const Toast = ({ message, type, onClose }) => {
@@ -147,137 +147,98 @@ const EvaluatorManage = () => {
     }
 
     return (
-        <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                {isCreate ? 'Create New Evaluator' : `Manage Evaluator: ${existingEvaluator.email}`}
-            </h1>
+        <div className="min-h-screen bg-background-light py-10">
+            <div className="max-w-4xl mx-auto bg-background-white shadow-card rounded-2xl p-8">
+                <h1 className="text-2xl font-bold text-text-primary mb-6">
+                    SPOC Approval Requests
+                </h1>
+                <p className="text-sm text-text-secondary mb-8 max-w-3xl">
+                    Review and verify college SPOC (Single Point of Contact) requests. Approval creates the necessary College and SPOC User accounts.
+                </p>
             
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <fieldset className="border p-4 rounded-lg space-y-4">
-                    <legend className="px-2 text-lg font-semibold text-indigo-600">{isCreate ? 'Account Details' : 'Account Info'}</legend>
-                    
-                    {/* ID, Email, Password Inputs (unchanged) */}
-                    {isCreate && (
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Evaluator ID (System Generated)</label>
-                            <input
-                                type="text"
-                                value={newEvaluatorId || 'Generating...'}
-                                disabled 
-                                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-indigo-50 text-indigo-700 font-mono"
-                            />
-                        </div>
-                    )}
-                    
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            disabled={!isCreate}
-                            required
-                            placeholder={isCreate ? 'Enter new evaluator email' : ''}
-                            className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 disabled:bg-gray-100 disabled:text-gray-500"
-                        />
-                    </div>
-                    {isCreate && (
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Password (Initial)</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                placeholder="Enter initial password"
-                                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3"
-                            />
-                        </div>
-                    )}
-                </fieldset>
-
-                {!isCreate && (
-                    <fieldset className="border p-4 rounded-lg space-y-4">
-                        <legend className="px-2 text-lg font-semibold text-indigo-600">Problem Assignment</legend>
-                        <p className="text-sm text-gray-600">Select which Problem Statements this Evaluator is authorized to view submissions for and evaluate.</p>
-                        
-                        {/* 🌟 Problem Count Display */}
-                        <div className="text-sm font-semibold text-gray-800 bg-gray-50 p-2 rounded-md border border-gray-200">
-                            Showing **{filteredProblemStatements.length}** Problem Statement(s) (Filtered)
-                        </div>
-                        {/* End of Problem Count Display */}
-
-                        {/* Combined Filter Controls (Updated to use Select Dropdown) */}
-                        <div className="space-y-3">
-                            {/* Status Filter Dropdown */}
-                            <div className="flex items-center space-x-3">
-                                <label htmlFor="status-filter" className="text-sm font-medium text-gray-700">Filter by Status:</label>
-                                <select
-                                    id="status-filter"
-                                    value={statusFilter}
-                                    onChange={handleStatusFilterChange}
-                                    className="block w-48 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                >
-                                    <option value="ALL">All Statuses</option>
-                                    <option value="Approved">Approved</option>
-                                    <option value="Rejected">Rejected</option>
-                                    <option value="Pending">Pending</option>
-                                </select>
-                            </div>
-
-                            {/* Text Search Input */}
-                            <div className="relative">
-                                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search by title, ID, or status..."
-                                    value={problemSearchTerm}
-                                    onChange={(e) => setProblemSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                />
-                            </div>
-                        </div>
-                        {/* End of Combined Filter Controls */}
-
-
-                        <div className="space-y-2 max-h-60 overflow-y-auto p-2 border rounded-lg">
-                            {filteredProblemStatements.length > 0 ? (
-                                filteredProblemStatements.map(problem => (
-                                    <div key={problem.id} className="flex items-center">
-                                        <input
-                                            id={`problem-${problem.id}`}
-                                            type="checkbox"
-                                            checked={assignedProblems.includes(problem.id)}
-                                            onChange={() => handleAssignmentChange(problem.id)}
-                                            className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                                        />
-                                        <label htmlFor={`problem-${problem.id}`} className="ml-3 text-sm font-medium text-gray-700">
-                                            {problem.title} <span className={`text-xs font-semibold ${problem.status === 'Approved' ? 'text-green-600' : problem.status === 'Rejected' ? 'text-red-600' : 'text-gray-500'}`}>({problem.status})</span>
-                                        </label>
+                <div className="bg-background-white rounded-xl shadow-card p-6">
+                    <table className="w-full border-collapse border border-border-color rounded-xl overflow-hidden">
+                        <thead className="bg-primary-accent/10">
+                            <tr>
+                                <th className="p-3 font-semibold text-text-primary border border-border-color text-left uppercase text-sm tracking-wide">College Name</th>
+                                <th className="p-3 font-semibold text-text-primary border border-border-color text-left uppercase text-sm tracking-wide">SPOC Email</th>
+                                <th className="p-3 font-semibold text-text-primary border border-border-color text-center uppercase text-sm tracking-wide">Date Requested</th>
+                                <th className="p-3 font-semibold text-text-primary border border-border-color text-center uppercase text-sm tracking-wide">Status</th>
+                                <th className="p-3 font-semibold text-text-primary border border-border-color text-center uppercase text-sm tracking-wide">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {/* Mock data for SPOC requests */}
+                            <tr className="hover:bg-background-light/50 transition-colors duration-150">
+                                <td className="p-3 border border-border-color text-text-primary font-medium">Indian Institute of Technology Delhi</td>
+                                <td className="p-3 border border-border-color text-text-secondary text-sm">spoc@iitd.ac.in</td>
+                                <td className="p-3 border border-border-color text-center text-text-primary font-mono">2024-01-15</td>
+                                <td className="p-3 border border-border-color text-center">
+                                    <span className="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full">Pending</span>
+                                </td>
+                                <td className="p-3 border border-border-color text-center">
+                                    <div className="flex justify-center space-x-2">
+                                        <button className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg flex items-center space-x-1 text-sm">
+                                            <FiCheckCircle className="w-4 h-4" />
+                                            <span>Approve</span>
+                                        </button>
+                                        <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg flex items-center space-x-1 text-sm">
+                                            <FiXCircle className="w-4 h-4" />
+                                            <span>Reject</span>
+                                        </button>
                                     </div>
-                                ))
-                            ) : (
-                                <p className="text-center py-4 text-gray-500">No problems match your current filters.</p>
-                            )}
-                        </div>
-                    </fieldset>
-                )}
-
-                <div className="flex justify-end space-x-3">
-                    <Button variant="secondary" onClick={() => navigate('/admin/evaluators')} className="flex items-center">
-                        <FiList className="w-5 h-5 mr-1" /> Cancel/View List
-                    </Button>
-                    <Button type="submit" variant="primary" disabled={isSubmitting} className="flex items-center">
-                        <FiSave className="w-5 h-5 mr-1" /> {isSubmitting ? 'Saving...' : (isCreate ? 'Create Account' : 'Save Assignments')}
-                    </Button>
+                                </td>
+                            </tr>
+                            <tr className="hover:bg-background-light/50 transition-colors duration-150">
+                                <td className="p-3 border border-border-color text-text-primary font-medium">Jawaharlal Nehru University</td>
+                                <td className="p-3 border border-border-color text-text-secondary text-sm">contact@jnu.ac.in</td>
+                                <td className="p-3 border border-border-color text-center text-text-primary font-mono">2024-01-12</td>
+                                <td className="p-3 border border-border-color text-center">
+                                    <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Approved</span>
+                                </td>
+                                <td className="p-3 border border-border-color text-center">
+                                    <div className="flex justify-center space-x-2">
+                                        <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-lg flex items-center space-x-1 text-sm">
+                                            <FiEdit className="w-4 h-4" />
+                                            <span>Edit</span>
+                                        </button>
+                                        <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg flex items-center space-x-1 text-sm">
+                                            <FiTrash className="w-4 h-4" />
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr className="hover:bg-background-light/50 transition-colors duration-150">
+                                <td className="p-3 border border-border-color text-text-primary font-medium">University of Delhi</td>
+                                <td className="p-3 border border-border-color text-text-secondary text-sm">spoc@du.ac.in</td>
+                                <td className="p-3 border border-border-color text-center text-text-primary font-mono">2024-01-10</td>
+                                <td className="p-3 border border-border-color text-center">
+                                    <span className="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">Rejected</span>
+                                </td>
+                                <td className="p-3 border border-border-color text-center">
+                                    <div className="flex justify-center space-x-2">
+                                        <button className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-lg flex items-center space-x-1 text-sm">
+                                            <FiEdit className="w-4 h-4" />
+                                            <span>Edit</span>
+                                        </button>
+                                        <button className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg flex items-center space-x-1 text-sm">
+                                            <FiTrash className="w-4 h-4" />
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </form>
-            {/* RENDER THE TOAST COMPONENT HERE */}
-            <Toast 
-                message={toast.message} 
-                type={toast.type} 
-                onClose={() => setToast({ message: '', type: '' })} 
-            />
+                {/* RENDER THE TOAST COMPONENT HERE */}
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ message: '', type: '' })}
+                />
+            </div>
         </div>
     );
 };
