@@ -49,7 +49,7 @@ const Homepage = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-background-light via-primary-accent/10 to-background-white text-text-primary relative">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-15 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,153,0,0.3)_1px,transparent_0)] bg-[length:20px_20px]"></div>
         <WaveImage
           src="/src/assets/kriya.png"
@@ -124,7 +124,7 @@ const Homepage = () => {
         <WaveImage
           src="/src/assets/kriya.png"
           alt="Decorative curved section"
-          className="absolute bottom-0 left-0 w-full h-[160px] md:h-[180px] opacity-20"
+          className="absolute bottom-0 left-0 w-full h-40 md:h-[180px] opacity-20"
         />
       </section>
 
@@ -132,7 +132,7 @@ const Homepage = () => {
       <section className="py-20 px-4 bg-gradient-to-br from-background-white via-primary-accent/5 to-background-light relative overflow-hidden">
         <div className="absolute inset-0 from-primary-accent/10 via-transparent to-transparent"></div>
         <div className="max-w-6xl mx-auto relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-primary-accent">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-16 text-primary-accent">
             Why Choose Solve for Sakthi?
           </h2>
           <div className="flex flex-col md:flex-row gap-20">
@@ -152,7 +152,7 @@ const Homepage = () => {
                   ></path>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-6 text-text-primary">
+              <h3 className="text-xl font-semibold text-amber-600 mb-6 text-text-primary">
                 Innovative Challenges
               </h3>
               <p className="text-text-secondary leading-relaxed">
@@ -176,7 +176,7 @@ const Homepage = () => {
                   ></path>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-6 text-text-primary">
+              <h3 className="text-xl font-semibold text-amber-600 mb-6 text-text-primary">
                 Collaborative Teams
               </h3>
               <p className="text-text-secondary leading-relaxed">
@@ -200,7 +200,7 @@ const Homepage = () => {
                   ></path>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-6 text-text-primary">
+              <h3 className="text-xl font-semibold mb-6 text-amber-600 text-text-primary">
                 Expert Evaluation
               </h3>
               <p className="text-text-secondary leading-relaxed">
@@ -213,10 +213,10 @@ const Homepage = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-primary-accent/5 via-background-white to-primary-accent/10 relative overflow-hidden">
+      <section className="py-20 px-4 bg-linear-to-br from-primary-accent/5 via-background-white to-primary-accent/10 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-accent/10 via-transparent to-primary-accent/10"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-primary-accent">
+        <div className="max-w-4xl mx-auto text-center relative z-10 mt-[-4rem]">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 text-primary-accent">
             Ready to Make an Impact?
           </h2>
           <p className="text-lg text-text-secondary mb-10 leading-relaxed">
@@ -245,7 +245,7 @@ const Homepage = () => {
             </Link>
             <Link
               to="/login"
-              className="shadow-xl text-primary-accent font-semibold py-5 px-12 rounded-2xl hover:bg-primary-accent hover:text-background-white transition-all duration-300 inline-flex items-center gap-3 group hover:shadow-card"
+              className="shadow-xl bg-white text-primary-accent font-semibold py-5 px-12 rounded-2xl hover:bg-primary-accent hover:text-background-white transition-all duration-300 inline-flex items-center gap-3 group hover:shadow-card"
             >
               Log In
               <svg
