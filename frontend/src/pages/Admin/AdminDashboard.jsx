@@ -67,11 +67,11 @@ const AdminDashboard = () => {
         <div className="bg-white p-6 rounded-xl shadow-lg">
           <h2 className="text-xl font-bold text-brand-dark mb-4">Quick Links</h2>
           <div className="space-y-3">
-            <Link to="/admin/spoc-approvals" className="flex items-center justify-between text-blue-600 hover:text-blue-800"><span className="font-medium">Review SPOC Requests</span><FiArrowRight /></Link>
-            <Link to="/admin/problem-statements/create" className="flex items-center justify-between text-blue-600 hover:text-blue-800"><span className="font-medium">create New Problem Statement</span><FiArrowRight /></Link>
-            <Link to="/admin/evaluators" className="flex items-center justify-between text-blue-600 hover:text-blue-800"><span className="font-medium">Manage Evaluators</span><FiArrowRight /></Link>
-             <Link to="/admin/evaluators" className="flex items-center justify-between text-blue-600 hover:text-blue-800"><span className="font-medium">Create new Evaluators</span><FiArrowRight /></Link>
-              <Link to="/admin/evaluators" className="flex items-center justify-between text-blue-600 hover:text-blue-800"><span className="font-medium">View Problem statements</span><FiArrowRight /></Link>
+            <Link to="/admin/spoc-approvals" className="flex items-center justify-between text-orange-400 hover:text-orange-300"><span className="font-medium">Review SPOC Requests</span><FiArrowRight /></Link>
+            <Link to="/admin/problem-statements/create" className="flex items-center justify-between text-orange-400 hover:text-orange-300"><span className="font-medium">create New Problem Statement</span><FiArrowRight /></Link>
+            <Link to="/admin/evaluators" className="flex items-center justify-between text-orange-400 hover:text-orange-300"><span className="font-medium">Manage Evaluators</span><FiArrowRight /></Link>
+             <Link to="/admin/evaluators" className="flex items-center justify-between text-orange-400 hover:text-orange-300"><span className="font-medium">Create new Evaluators</span><FiArrowRight /></Link>
+              <Link to="/admin/evaluators" className="flex items-center justify-between text-orange-400 hover:text-orange-300"><span className="font-medium">View Problem statements</span><FiArrowRight /></Link>
           </div>
         </div>
 
