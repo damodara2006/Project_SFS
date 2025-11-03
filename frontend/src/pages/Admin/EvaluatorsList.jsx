@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import {
   FiEye,
@@ -11,6 +12,16 @@ import {
   FiUserCheck,
   FiUserX,
 } from "react-icons/fi";
+=======
+// src/pages/admin/EvaluatorsList.jsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import DataTable from '../../components/common/DataTable';
+import Button from '../../components/common/button';
+import RoleBadge from '../../components/admin/RoleBadge';
+import { getEvaluatorUsers } from '../../mockData';
+import { FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
+>>>>>>> 42e6b4e022e695f1ac5bb9cbe1fb2e97d9e56440
 
 const EvaluatorList = () => {
   const [evaluators, setEvaluators] = useState([

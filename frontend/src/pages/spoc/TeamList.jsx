@@ -1,145 +1,370 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import URL from "../../Utils";
+import { useNavigate } from "react-router-dom";
+import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
+import toast, { Toaster } from 'react-hot-toast';
 
 function TeamList() {
-    const [active, setActive] = useState("Team Details");
+    const [FullTeam, setFullTeam] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
+    const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
+    const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+    const [activeView, setActiveView] = useState("teamlist");
+    const navigate = useNavigate();
 
-    const tabs = ["Problem Statements", "My Submission", "Team Details"];
+    const [teamFormData, setTeamFormData] = useState({
+        teamName: "",
+        members: [
+            { role: "Team Lead", name: "", email: "", phone: "", gender: "" },
+            { role: "Member 1", name: "", email: "", phone: "", gender: "" },
+            { role: "Member 2", name: "", email: "", phone: "", gender: "" },
+            { role: "Member 3", name: "", email: "", phone: "", gender: "" },
+        ],
+    });
 
-    const variants = {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -20 },
+    // Fetch all teams
+    function allteams() {
+        axios
+            .get(`${URL}/fetch_teams`)
+            .then((res) => setFullTeam(res.data))
+            .catch((err) => console.error("Error fetching teams:", err));
+    }
+
+    // Navigate to selected team
+    function SelectedTeam(team) {
+        navigate(`/spoc/team_details/${team.ID}`);
+    }
+
+    useEffect(() => {
+        allteams();
+    }, []);
+
+    // Handle form
+    const handleMemberChange = (index, field, value) => {
+        setTeamFormData((prev) => ({
+            ...prev,
+            members: prev.members.map((member, i) =>
+                i === index ? { ...member, [field]: value } : member
+            ),
+        }));
     };
 
-    const teams = [
-        {
-            id: "T001",
-            name: "Alpha Coders",
-            leadEmail: "aarav.mehta@example.com",
-            leadPhone: "+91 98765 43210",
-            members: [
-                { role: "Team Lead", name: "Aarav Mehta", email: "aarav.mehta@example.com", phone: "+91 98765 43210", gender: "Male" },
-                { role: "Frontend Developer", name: "Priya Sharma", email: "priya.sharma@example.com", phone: "+91 99887 65432", gender: "Female" },
-                { role: "Backend Developer", name: "Rohan Das", email: "rohan.das@example.com", phone: "+91 91234 56789", gender: "Male" },
-            ],
-        },
-        {
-            id: "T002",
-            name: "Tech Titans",
-            leadEmail: "neha.verma@example.com",
-            leadPhone: "+91 97654 32109",
-            members: [
-                { role: "Team Lead", name: "Neha Verma", email: "neha.verma@example.com", phone: "+91 97654 32109", gender: "Female" },
-                { role: "FullStack Developer", name: "Aditya", email: "aditya@example.com", phone: "+91 98567 89012", gender: "Male" },
-                { role: "QA Engineer", name: "Kavya Reddy", email: "kavya.reddy@example.com", phone: "+91 93456 78901", gender: "Female" },
-            ],
-        },
-    ];
+    const handleCreateTeam = (e) => {
+        e.preventDefault();
+
+        // Show loading toast
+        const loadingToast = toast.loading('Creating team...');
+        let mailToast;
+        setTimeout(() => {
+            toast.dismiss(loadingToast);
+         mailToast  = toast.loading('Sending mails...');
+
+        }, 2000);
+        axios
+            .post(`${URL}/add_members`, teamFormData)
+            .then((res) => {
+                if (res.status === 200) {
+                    // Dismiss loading toast and show success toast
+                    toast.dismiss(mailToast)
+                    toast.success('Mail sent successfully!', {
+                        duration: 3000,
+                        position: 'top-right',
+                        style: {
+                            backgroundColor: "green",
+                            color: "white"
+                        }
+                    });
+                    toast.success('Team created successfully!', {
+                        duration: 3000,
+                        position: 'top-right',
+                    });
+
+                    setShowCreateTeamModal(false);
+                    setTeamFormData({
+                        teamName: "",
+                        members: [
+                            { role: "Team Lead", name: "", email: "", phone: "", gender: "" },
+                            { role: "Member 1", name: "", email: "", phone: "", gender: "" },
+                            { role: "Member 2", name: "", email: "", phone: "", gender: "" },
+                            { role: "Member 3", name: "", email: "", phone: "", gender: "" },
+                        ],
+                    });
+                    allteams();
+                }
+            })
+            .catch((error) => {
+                // Dismiss loading toast and show error toast
+                toast.dismiss(loadingToast);
+                toast.error('Failed to create team. Please try again.', {
+                    duration: 4000,
+                    position: 'top-right',
+                });
+                console.error("Error creating team:", error);
+            });
+    };
+
+    const tableVariants = {
+        hidden: { opacity: 0, x: -50 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+    };
 
     return (
-        <div className="min-h-screen mx-10">
-            <main className="flex-1 p-6">
-                <div className="max-w-5xl mx-auto">
-                    {/* Tabs */}
-                    <div className="bg-gray-100 rounded-md p-3 mb-4 flex justify-center">
-                        <div className="flex gap-2 relative">
-                            {tabs.map((tab) => (
-                                <button
-                                    key={tab}
-                                    onClick={() => setActive(tab)}
-                                    className={`px-6 py-2 rounded-md font-medium transition relative ${active === tab ? "bg-white shadow text-[#4a4a4a]" : "text-gray-600 hover:text-gray-800"
-                                        }`}
-                                >
-                                    {tab}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+        <div className="flex bg-gray-50 min-h-screen relative">
+            {/* Toast Container */}
+            <Toaster />
 
-                    {/* Tab Content */}
-                    <AnimatePresence mode="wait">
-                        {active === "Team Details" && (
-                            <motion.div
-                                key="team-details"
-                                variants={variants}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                transition={{ duration: 0.3 }}
+            {/* ===== Sidebar ===== */}
+            <motion.aside
+                onMouseEnter={() => setIsSidebarExpanded(true)}
+                onMouseLeave={() => setIsSidebarExpanded(false)}
+                animate={{ width: isSidebarExpanded ? 200 : 70 }}
+                transition={{ duration: 0.3 }}
+                className="fixed left-5 top-1/2 -translate-y-1/2 bg-[#494949] text-white rounded-2xl shadow-xl flex flex-col items-center py-6 z-20"
+            >
+                <nav className="w-full">
+                    <ul className="flex flex-col gap-4 px-2 mx-auto">
+                        <li>
+                            <button
+                                onClick={() => navigate("/spoc")}
+                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "dashboard" ? "bg-gray-700" : "hover:bg-gray-700"
+                                    }`}
                             >
-                                <div className="mt-4 bg-white p-4 rounded-lg shadow">
-                                    {!selectedTeam ? (
-                                        <>
-                                            <h2 className="text-lg font-semibold mb-4">Team List</h2>
-                                            <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-                                                <thead className="bg-gray-100 border-b border-gray-200">
-                                                    <tr>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Team ID</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Team Name</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Lead Email</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Lead Phone</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-gray-100">
-                                                    {teams.map((team) => (
-                                                        <tr
-                                                            key={team.id}
-                                                            className="hover:bg-gray-50 transition cursor-pointer"
-                                                            onClick={() => setSelectedTeam(team)}
-                                                        >
-                                                            <td className="px-6 py-4 text-sm text-gray-700">{team.id}</td>
-                                                            <td className="px-6 py-4 text-sm font-medium text-gray-900">{team.name}</td>
-                                                            <td className="px-6 py-4 text-sm text-gray-600">{team.leadEmail}</td>
-                                                            <td className="px-6 py-4 text-sm text-gray-600">{team.leadPhone}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="flex justify-between items-center mb-4">
-                                                <h2 className="text-lg font-semibold">{selectedTeam.name} - Members</h2>
-                                                <button
-                                                    onClick={() => setSelectedTeam(null)}
-                                                    className="text-blue-600 hover:underline text-sm"
-                                                >
-                                                    ← Back to Teams
-                                                </button>
-                                            </div>
+                                <FaUsers className="text-xl mx-auto" />
+                                {isSidebarExpanded && (
+                                    <span className="ml-3 text-sm font-medium">Dashboard</span>
+                                )}
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => navigate("/spoc")}
+                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "problems" ? "bg-gray-700" : "hover:bg-gray-700"
+                                    }`}
+                            >
+                                <FaClipboardList className="text-xl mx-auto" />
+                                {isSidebarExpanded && (
+                                    <span className="ml-3 text-sm font-medium">Problems</span>
+                                )}
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => navigate("/spoc")}
+                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "profile" ? "bg-gray-700" : "hover:bg-gray-700"
+                                    }`}
+                            >
+                                <FaUser className="text-xl mx-auto" />
+                                {isSidebarExpanded && (
+                                    <span className="ml-3 text-sm font-medium">Profile</span>
+                                )}
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                onClick={() => setActiveView("teamlist")}
+                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "teamlist" ? "bg-gray-700" : "hover:bg-gray-700"
+                                    }`}
+                            >
+                                <FaUsers className="text-xl mx-auto" />
+                                {isSidebarExpanded && (
+                                    <span className="ml-3 text-sm font-medium">Team List</span>
+                                )}
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </motion.aside>
 
-                                            <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-                                                <thead className="bg-gray-100 border-b border-gray-200">
-                                                    <tr>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Role</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Phone</th>
-                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Gender</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-gray-100">
-                                                    {selectedTeam.members.map((m, idx) => (
-                                                        <tr key={idx} className="hover:bg-gray-50 transition">
-                                                            <td className="px-6 py-4 text-sm text-gray-700">{m.role}</td>
-                                                            <td className="px-6 py-4 text-sm text-gray-900">{m.name}</td>
-                                                            <td className="px-6 py-4 text-sm text-gray-600">{m.email}</td>
-                                                            <td className="px-6 py-4 text-sm text-gray-600">{m.phone}</td>
-                                                            <td className="px-6 py-4 text-sm text-gray-600">{m.gender}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </>
-                                    )}
+            {/* ===== Main Content ===== */}
+            <div className="flex-1 m-30 mt-30">
+                <AnimatePresence mode="wait">
+                    {!selectedTeam ? (
+                        <motion.div
+                            key="team-list"
+                            variants={tableVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="hidden"
+                            className="bg-white p-6 rounded-lg shadow-lg"
+                        >
+                            <div className="flex justify-between items-center mb-4 ">
+                                <h2 className="text-xl font-semibold text-gray-800">
+                                    Team List
+                                </h2>
+                                <button
+                                    onClick={() => setShowCreateTeamModal(true)}
+                                    className="bg-[#fc8f00] text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors font-medium"
+                                >
+                                    + Create Team
+                                </button>
+                            </div>
+
+                            <table className="min-w-full border border-gray-200">
+                                <thead className="bg-gray-100 border-b border-gray-200">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Team ID
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Team Name
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Lead Email
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Lead Phone
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {FullTeam.map((team) => (
+                                        <tr
+                                            key={team.ID}
+                                            onClick={() => SelectedTeam(team)}
+                                            className="hover:bg-gray-50 cursor-pointer"
+                                        >
+                                            <td className="px-6 py-4 text-sm text-gray-700">{team.ID}</td>
+                                            <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                                                {team.NAME}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                                {team.LEAD_EMAIL}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                                {team.LEAD_PHONE}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </motion.div>
+                    ) : null}
+                </AnimatePresence>
+            </div>
+
+            {/* ===== Modal ===== */}
+            {showCreateTeamModal && (
+                <div className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-4"
+                    >
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-2xl font-bold text-gray-800">
+                                Create New Team
+                            </h3>
+                            <button
+                                onClick={() => setShowCreateTeamModal(false)}
+                                className="text-gray-500 hover:text-gray-700 text-xl"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreateTeam}>
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Team Name
+                                </label>
+                                <input
+                                    type="text"
+                                    value={teamFormData.teamName}
+                                    onChange={(e) =>
+                                        setTeamFormData({ ...teamFormData, teamName: e.target.value })
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                    placeholder="Enter team name"
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-6">
+                                <h4 className="text-lg font-semibold text-gray-800 mb-4">
+                                    Team Members
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {teamFormData.members.map((member, index) => (
+                                        <div
+                                            key={index}
+                                            className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                                        >
+                                            <h5 className="font-medium text-gray-700 mb-3">
+                                                {member.role}
+                                            </h5>
+
+                                            <div className="space-y-3">
+                                                <input
+                                                    type="text"
+                                                    value={member.name}
+                                                    onChange={(e) =>
+                                                        handleMemberChange(index, "name", e.target.value)
+                                                    }
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                                    placeholder="Name"
+                                                    required
+                                                />
+                                                <input
+                                                    type="email"
+                                                    value={member.email}
+                                                    onChange={(e) =>
+                                                        handleMemberChange(index, "email", e.target.value)
+                                                    }
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                                    placeholder="Email"
+                                                    required
+                                                />
+                                                <input
+                                                    type="tel"
+                                                    value={member.phone}
+                                                    onChange={(e) =>
+                                                        handleMemberChange(index, "phone", e.target.value)
+                                                    }
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                                    placeholder="Phone"
+                                                    required
+                                                />
+                                                <select
+                                                    value={member.gender}
+                                                    onChange={(e) =>
+                                                        handleMemberChange(index, "gender", e.target.value)
+                                                    }
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                                    required
+                                                >
+                                                    <option value="">Select Gender</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                            </div>
+
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCreateTeamModal(false)}
+                                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-6 py-2 bg-[#fc8f00] text-white rounded-lg hover:bg-orange-600 transition-colors"
+                                >
+                                    Create Team
+                                </button>
+                            </div>
+                        </form>
+                    </motion.div>
                 </div>
-            </main>
+            )}
         </div>
     );
 }
