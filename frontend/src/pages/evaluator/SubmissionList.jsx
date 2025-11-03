@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import samplePdf from "../../assets/sample.pdf";
 
@@ -106,6 +106,8 @@ const StatusPill = ({ status, onClick }) => {
 const SubmissionList = () => {
   const [submissions, setSubmissions] = useState(submissionsData);
   const [filterStatus, setFilterStatus] = useState("All");
+  const [previewPdf, setPreviewPdf] = useState(null); // <-- preview state
+  const navigate = useNavigate();
 
   const handleStatusChange = (teamId, newStatus) => {
     setSubmissions((prevSubmissions) =>
@@ -210,15 +212,26 @@ const SubmissionList = () => {
                         }
                       />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-4">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          window.open(submission.pdfLink, "_blank", "noopener,noreferrer");
+                          navigate(`/evaluator/submission/${submission.teamId}`);
                         }}
                         className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
                       >
                         View
+                      </button>
+
+                      {/* Preview button uses object tag in modal */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewPdf(submission.pdfLink);
+                        }}
+                        className="text-[#0b74ff] hover:text-[#095ecf] transition-colors duration-300"
+                      >
+                        Preview
                       </button>
                     </td>
                   </motion.tr>
@@ -239,6 +252,42 @@ const SubmissionList = () => {
           </table>
         </div>
       </motion.div>
+
+      {/* PDF Preview Modal using object tag */}
+      {previewPdf && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setPreviewPdf(null)}
+        >
+          <div
+            className="w-full max-w-5xl h-[80vh] bg-white rounded-lg overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setPreviewPdf(null)}
+              className="absolute top-3 right-3 z-50 bg-white rounded-full px-3 py-1 shadow-md text-sm"
+            >
+              Close
+            </button>
+
+            <div className="w-full h-full">
+              <object
+                data={previewPdf}
+                type="application/pdf"
+                width="100%"
+                height="100%"
+              >
+                <p className="p-4">
+                  PDF preview is not available.{" "}
+                  <a href={previewPdf} target="_blank" rel="noreferrer" className="text-blue-600 underline">
+                    Open in new tab
+                  </a>
+                </p>
+              </object>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

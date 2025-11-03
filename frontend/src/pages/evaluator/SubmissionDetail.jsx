@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Document, Page } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
 
 import samplePdf from "../../assets/sample.pdf";
 
@@ -23,35 +21,24 @@ const submissionDetailData = {
 };
 
 const PDFViewer = ({ url }) => {
-  const [numPages, setNumPages] = useState(null);
-  const [error, setError] = useState(null);
-
-  function onDocumentLoadSuccess(pdf) {
-    setNumPages(pdf?.numPages ?? 0);
-    setError(null);
-  }
-
-  function onDocumentLoadError(err) {
-    console.error('Failed to load PDF:', err);
-    setError(err);
-    setNumPages(0);
-  }
-
   const file = url || samplePdf;
 
   return (
     <div className="w-full h-[70vh] overflow-auto bg-gray-100 rounded-lg">
-      <Document file={file} onLoadSuccess={onDocumentLoadSuccess} onLoadError={onDocumentLoadError}>
-        {numPages > 0 ? (
-          Array.from({ length: numPages }, (_, index) => (
-            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-          ))
-        ) : error ? (
-          <div className="p-6 text-center text-gray-500">Unable to load PDF.</div>
-        ) : (
-          <div className="p-6 text-center text-gray-500">Loading PDF...</div>
-        )}
-      </Document>
+      <object data={file} type="application/pdf" width="100%" height="100%">
+        <div className="p-6 text-center text-gray-500">
+          This browser does not support embedded PDFs.{' '}
+          <a
+            href={file}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#fc8f00] underline"
+          >
+            Open or download the PDF
+          </a>
+          .
+        </div>
+      </object>
     </div>
   );
 };
