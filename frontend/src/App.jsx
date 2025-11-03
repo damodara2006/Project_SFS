@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // --- LAYOUT IMPORTS ---
 // Your existing AdminLayout (which does NOT have a Header/Footer)
-import AdminLayout from './components/admin/AdminLayout.jsx';
+
 // The new MainLayout we just created (which DOES have a Header/Footer)
 import MainLayout from './components/layout/MainLayout.jsx';
 
@@ -18,7 +18,7 @@ import Footer from "./components/Footer";
 // Student Imports
 import SdDashboard from "./pages/student/SdDashboard";
 import Upload from "./pages/student/Upload";
-
+                                                    
 // SPOC Imports
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";

@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import DataTable from '../../components/common/DataTable'; // Assuming you have a DataTable component
 import Button from '../../components/common/Button';     // Assuming you have a Button component
 import Breadcrumb from '../../components/common/Breadcrumb'; // Breadcrumb component
 import { mockProblemStatements, getEvaluatorUsers, getSubmissionsByProblemId } from '../../mockData'; // Mock data imports
 import { FiSearch, FiFilter, FiUsers, FiFileText } from 'react-icons/fi'; // Icon imports
-=======
-import DataTable from '../../components/common/DataTable';
-import Button from '../../components/common/button';
-import StatusBadge from '../../components/admin/StatusBadge';
-import { mockProblemStatements, getEvaluatorUsers } from '../../mockData';
-import { FiPlus, FiEdit, FiTrash2, FiUsers } from 'react-icons/fi';
->>>>>>> 42e6b4e022e695f1ac5bb9cbe1fb2e97d9e56440
 
 const ProblemStatementsList = () => {
   const navigate = useNavigate(); // For navigation, if used
@@ -27,7 +19,6 @@ const ProblemStatementsList = () => {
     navigate(`/admin/problems/${problem.id}/details`); // Example navigation
   };
 
-<<<<<<< HEAD
 
 
   const getEvaluatorIdForProblem = (problem) => {
@@ -36,18 +27,6 @@ const ProblemStatementsList = () => {
       return evaluators.find(e => e.id === problem.assignedEvaluators[0])?.id || 'N/A';
     }
     return 'E0001'; // Defaulting for consistency with the image
-=======
-  const handleDelete = (problem) => {
-    console.log(`Deleting problem statement: ${problem.title}`);
-    // In a real app: API call to delete the problem
-    alert(`Mock: Deleted Problem Statement: ${problem.title}`);
-  };
-
-  const getEvaluatorNames = (problem) => {
-    return problem.assignedEvaluators
-      .map(id => evaluators.find(e => e.id === id)?.email.split('@')[0])
-      .join(', ');
->>>>>>> 42e6b4e022e695f1ac5bb9cbe1fb2e97d9e56440
   };
 
   const getEvaluatedCount = (problemId) => {
@@ -85,20 +64,6 @@ const ProblemStatementsList = () => {
 
   // Define columns for the DataTable
   const columns = [
-<<<<<<< HEAD
-=======
-    { header: 'Title', accessor: 'title' },
-    { header: 'Deadline', cell: (row) => new Date(row.deadline).toLocaleDateString() },
-    { header: 'Status', cell: (row) => <StatusBadge status={row.status} /> },
-    {
-      header: 'Assigned Evaluators', cell: (row) => (
-        <span title={getEvaluatorNames(row)} className="text-sm flex items-center">
-          <FiUsers className="mr-1" />
-          {row.assignedEvaluators.length} Evaluator(s)
-        </span>
-      )
-    },
->>>>>>> 42e6b4e022e695f1ac5bb9cbe1fb2e97d9e56440
     {
       header: 'PS ID',
       accessor: 'id',
