@@ -79,9 +79,9 @@ const AssignedProblem = () => {
           <h3 className="text-xl font-semibold text-[#4a4a4a] mb-3">
             Problem Description
           </h3>
-          <div className="bg-white border border-gray-200 rounded-lg p-5 text-gray-700 leading-relaxed shadow-sm hover:shadow-md transition">
+          <div className="bg-white border border-gray-200 rounded-lg p-5 text-gray-700 leading-relaxed shadow-sm hover:shadow-md transition text-justify">
             {problemData.description.split("\n").map((line, index) => (
-              <p key={index} className="mb-3">
+              <p key={index} className="mb-3 text-justify">
                 {line}
               </p>
             ))}
