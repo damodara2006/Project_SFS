@@ -24,7 +24,7 @@ import SPOCProfile from "./pages/spoc/SPOCProfile";
 import AdminDashboard from './pages/Admin/AdminDashboard.jsx';
 import SpocApprovals from './pages/Admin/SpocApprovals.jsx';
 import EvaluatorsList from './pages/Admin/EvaluatorsList.jsx';
-import EvaluatorManage from './pages/Admin/EvaluatorManage.jsx';
+
 import ProblemStatementsList from './pages/Admin/ProblemStatementsList.jsx';
 import ProblemStatementCreate from './pages/Admin/ProblemStatementCreate.jsx';
 import ProblemStatementEdit from './pages/Admin/ProblemStatementEdit.jsx';
@@ -63,8 +63,7 @@ function App() {
           <Route path="problems/:id/details" element={<ProblemStatementDetail />} />
           <Route path="submissions/:id/details" element={<SubmissionDetail />} />
           <Route path="evaluators" element={<EvaluatorsList />} />
-          <Route path="evaluators/create" element={<EvaluatorManage />} />
-          <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
+        
         </Route>
 
       </Routes>
