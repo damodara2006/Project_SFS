@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 // General Component Imports
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./pages/Home";
+import Homepage from "./pages/Homepage";
+import About from "./pages/About";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -55,7 +56,9 @@ function App() {
 
       <Routes>
 
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Homepage />} />
+
+        <Route path="/about" element={<About />} />
 
         <Route path="/login" element={<Login />} />
 
