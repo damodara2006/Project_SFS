@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import sample from '../../assets/sample.pdf';
 
-// PDF.js worker configuration
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+import samplePdf from "../../assets/sample.pdf";
+
 
 const submissionDetailData = {
   TEAM001: {
@@ -19,23 +18,39 @@ const submissionDetailData = {
       'The project is highly feasible, as the required technologies are open-source and readily available. The main challenge lies in data aggregation and cleaning, which we have addressed by developing a robust data pipeline. The system is scalable and can be expanded to include more product categories and sustainability metrics in the future.',
     budget:
       'The project was developed with a minimal budget, primarily covering hosting and domain registration costs. The team consisted of four members who contributed their time and expertise voluntarily. The total estimated cost for the first year of operation is $500.',
-    pdfLink: '/sample.pdf',
+    pdfLink: samplePdf,
   },
 };
 
 const PDFViewer = ({ url }) => {
   const [numPages, setNumPages] = useState(null);
+  const [error, setError] = useState(null);
 
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
+  function onDocumentLoadSuccess(pdf) {
+    setNumPages(pdf?.numPages ?? 0);
+    setError(null);
   }
+
+  function onDocumentLoadError(err) {
+    console.error('Failed to load PDF:', err);
+    setError(err);
+    setNumPages(0);
+  }
+
+  const file = url || samplePdf;
 
   return (
     <div className="w-full h-[70vh] overflow-auto bg-gray-100 rounded-lg">
-      <Document file={url || sample} onLoadSuccess={onDocumentLoadSuccess}>
-        {Array.from(new Array(numPages), (el, index) => (
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-        ))}
+      <Document file={file} onLoadSuccess={onDocumentLoadSuccess} onLoadError={onDocumentLoadError}>
+        {numPages > 0 ? (
+          Array.from({ length: numPages }, (_, index) => (
+            <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+          ))
+        ) : error ? (
+          <div className="p-6 text-center text-gray-500">Unable to load PDF.</div>
+        ) : (
+          <div className="p-6 text-center text-gray-500">Loading PDF...</div>
+        )}
       </Document>
     </div>
   );
@@ -78,7 +93,6 @@ const SubmissionDetail = () => {
         <p className="text-lg text-gray-600 mt-2">Team ID: {teamId}</p>
       </motion.div>
 
-      {/* Project Details */}
       <div className="max-w-6xl mx-auto space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -104,7 +118,6 @@ const SubmissionDetail = () => {
           </div>
         </motion.div>
 
-        {/* PDF Viewer Section */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -115,7 +128,6 @@ const SubmissionDetail = () => {
           <PDFViewer url={submission.pdfLink} />
         </motion.div>
 
-        {/* Evaluator Section (moved to bottom) */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

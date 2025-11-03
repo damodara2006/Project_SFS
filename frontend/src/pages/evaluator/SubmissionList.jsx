@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+
+import samplePdf from "../../assets/sample.pdf";
 
 const submissionsData = [
   {
@@ -9,7 +11,7 @@ const submissionsData = [
     title: "Eco-Friendly Product Recommendation System",
     submittedAt: "2025-11-10T14:48:00.000Z",
     status: "In Review",
-    pdfLink: "/sample.pdf",
+    pdfLink: samplePdf,
     liveLink: "https://example.com/live-demo-1",
   },
   {
@@ -18,7 +20,7 @@ const submissionsData = [
     title: "Sustainable Shopping Assistant",
     submittedAt: "2025-11-10T18:30:00.000Z",
     status: "In Review",
-    pdfLink: "/sample.pdf",
+    pdfLink: samplePdf,
     liveLink: "https://example.com/live-demo-2",
   },
   {
@@ -27,7 +29,7 @@ const submissionsData = [
     title: "GreenChoice Product Analyzer",
     submittedAt: "2025-11-11T09:15:00.000Z",
     status: "Evaluated",
-    pdfLink: "/sample.pdf",
+    pdfLink: samplePdf,
     liveLink: "https://example.com/live-demo-3",
   },
   {
@@ -36,7 +38,7 @@ const submissionsData = [
     title: "EcoCart: A Path to Greener Purchases",
     submittedAt: "2025-11-11T11:45:00.000Z",
     status: "In Review",
-    pdfLink: "/sample.pdf",
+    pdfLink: samplePdf,
     liveLink: "https://example.com/live-demo-4",
   },
 ];
@@ -209,7 +211,13 @@ const SubmissionList = () => {
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(submission.pdfLink, "_blank", "noopener,noreferrer");
+                        }}
+                        className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
+                      >
                         View
                       </button>
                     </td>
