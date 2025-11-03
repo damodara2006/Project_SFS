@@ -1,9 +1,7 @@
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { mockProblemStatements } from "../mockData";
-import SearchBar from "../components/SearchBar";
-import WaveImage from "../components/WaveImage"; // import WaveImage
+import WaveImage from "../components/WaveImage";
 
 const Homepage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);

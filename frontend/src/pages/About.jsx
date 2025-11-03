@@ -1,325 +1,233 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// const About = () => {
-//   return (
-//     <div className="min-h-screen bg-white text-black">
-//         {/* About Section */}
-//             <section className="py-16 mt-19 bg-gray-800/50">
-//               <div className="max-w-4xl mx-auto text-center">
-//                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-orange-400">About Solve for Sakthi</h2>
-//                 <p className="text-lg text-gray-300 leading-relaxed mb-8">
-//                   Solve for Sakthi is a pioneering platform that bridges the gap between academia and industry. We provide students and professionals with opportunities to solve complex, real-world problems in manufacturing, supply chain management, and technological innovation. Our mission is to foster creativity, collaboration, and practical problem-solving skills that drive the future of industry.
-//                 </p>
-//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//                   <div className="text-center">
-//                     <div className="text-3xl font-bold text-orange-400 mb-2">500+</div>
-//                     <p className="text-gray-300">Students Engaged</p>
-//                   </div>
-//                   <div className="text-center">
-//                     <div className="text-3xl font-bold text-orange-400 mb-2">50+</div>
-//                     <p className="text-gray-300">Problem Statements</p>
-//                   </div>
-//                   <div className="text-center">
-//                     <div className="text-3xl font-bold text-orange-400 mb-2">20+</div>
-//                     <p className="text-gray-300">Partner Colleges</p>
-//                   </div>
-//                 </div>
-//               </div>
-//             </section>
-
-//       {/* Mission Section */}
-//       <section className="py-16 px-4">
-//         <div className="max-w-6xl mx-auto">
-//           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-orange-400">
-//             Our Mission
-//           </h2>
-//           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-//             <div>
-//               <p className="text-lg text-gray leading-relaxed mb-6 text-justify">
-//                 Solve for Sakthi is dedicated to fostering a culture of
-//                 innovation by connecting students, educators, and industry
-//                 professionals. We provide a platform where real-world challenges
-//                 in manufacturing, supply chain management, and technological
-//                 advancement are tackled through collaborative problem-solving.
-//               </p>
-//               <p className="text-lg text-gray leading-relaxed text-justify">
-//                 Our goal is to empower the next generation of innovators by
-//                 offering opportunities to work on meaningful projects that drive
-//                 change and create lasting impact in the industry.
-//               </p>
-//             </div>
-//             <div className="bg-gray-800/50 p-8 rounded-lg">
-//               <h3 className="text-2xl font-semibold mb-4 text-orange-400">
-//                 What We Do
-//               </h3>
-//               <ul className="space-y-3 text-gray">
-//                 <li className="flex items-start">
-//                   <span className="text-orange-500 mr-3">•</span>
-//                   To optimise and continuously innovate our processes.
-//                 </li>
-//                 <li className="flex items-start">
-//                   <span className="text-orange-500 mr-3">•</span> To make sure
-//                   our progress is sustainable.
-//                 </li>
-//                 <li className="flex items-start">
-//                   <span className="text-orange-500 mr-3">•</span>
-//                   To make sure we are the company of choice for our customers.
-//                 </li>
-//               </ul>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* Vision Section */}
-//       <section className="py-16 px-4 bg-gray-800/50">
-//         <div className="max-w-4xl mx-auto text-center">
-//           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-orange-400">
-//             Our Vision
-//           </h2>
-//           <p className="text-xl text-white leading-relaxed mb-8">
-//             To be a progressive and class-leading company in providing safety-critical components to the industry.
-//           </p>
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//             <div className="p-6 bg-white rounded-lg">
-//               <h3 className="text-xl font-semibold mb-2 text-orange-400">
-//                 Innovation
-//               </h3>
-//               <p className="text-gray">
-//                 Cultivating creative solutions to complex industry challenges.
-//               </p>
-//             </div>
-//             <div className="p-6 bg-white rounded-lg">
-//               <h3 className="text-xl font-semibold mb-2 text-orange-400">
-//                 Collaboration
-//               </h3>
-//               <p className="text-gray">
-//                 Building bridges between students, educators, and industry
-//                 experts.
-//               </p>
-//             </div>
-//             <div className="p-6 bg-white rounded-lg">
-//               <h3 className="text-xl font-semibold mb-2 text-orange-400">
-//                 Impact
-//               </h3>
-//               <p className="text-gray">
-//                 Creating real-world solutions that drive meaningful change.
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* Team Section */}
-//       <section className="py-16 px-4">
-//         <div className="max-w-6xl mx-auto">
-//           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-orange-400">
-//             Our Team
-//           </h2>
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//             <div className="text-center p-6 bg-gray-800/50 rounded-lg">
-//               <div className="w-24 h-24 mx-auto mb-4 bg-orange-500 rounded-full flex items-center justify-center">
-//                 <span className="text-2xl font-bold text-white">A</span>
-//               </div>
-//               <h3 className="text-xl text-gray-800 mb-2">Administrators - SACL</h3>
-//               <p className="text-white">
-//                 Overseeing platform operations and ensuring quality standards.
-//               </p>
-//             </div>
-//             <div className="text-center p-6 bg-gray-800/50 rounded-lg">
-//               <div className="w-24 h-24 mx-auto mb-4 bg-orange-500 rounded-full flex items-center justify-center">
-//                 <span className="text-2xl font-bold text-white">E</span>
-//               </div>
-//               <h3 className="text-xl text-gray-800 mb-2">Evaluators - SACL</h3>
-//               <p className="text-white">
-//                 Industry experts providing feedback and mentorship to teams.
-//               </p>
-//             </div>
-//             <div className="text-center p-6 bg-gray-800/50 rounded-lg">
-//               <div className="w-24 h-24 mx-auto mb-4 bg-orange-500 rounded-full flex items-center justify-center">
-//                 <span className="text-2xl font-bold text-white">S</span>
-//               </div>
-//               <h3 className="text-xl text-gray-800 mb-2">SPOCs & Students</h3>
-//               <p className="text-white">
-//                 College representatives and student teams driving innovation.
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default About;
 import React from "react";
 import { motion } from "framer-motion";
+import { FaGlobe, FaHandshake, FaLightbulb, FaGraduationCap, FaBuilding, FaTools, FaChartLine, FaCheckCircle, FaLaptopCode } from "react-icons/fa";
 
+// Animation variant for a consistent fade-in-up effect
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
+
+// Color Scheme Variables (Consistent and Professional)
+const ACCENT_COLOR = "text-[#FF9800]"; // Rich Amber/Orange
+const ACCENT_BG = "bg-[#FF9800]";       // Rich Amber/Orange Background
+const TEXT_COLOR = "text-[#212529]";   // Dark Gray/Black
+const LIGHT_BG = "bg-gray-50";          // Subtle Light Gray Background
+
+// Data for sections
+const visionData = [
+  { icon: FaLightbulb, title: "Pioneering", desc: "Leading the development of new technologies and smart methodologies for industry." },
+  { icon: FaHandshake, title: "Collaborative", desc: "Seamlessly bridging academia and industry through shared resources and expert knowledge." },
+  { icon: FaGlobe, title: "Impactful", desc: "Creating measurable, deep, and positive change in the economic and technological landscape." },
+];
+
+const impactData = [
+  { icon: FaCheckCircle, title: "100+ Solutions Deployed", stat: "Problem Statements Solved", desc: "Successfully turning challenging industry needs into scalable, working prototypes and deployments." },
+  { icon: FaChartLine, title: "45% Operational Efficiency", stat: "Average Improvement", desc: "Projects focused on data-driven optimization, significantly boosting production and supply chain metrics." },
+  { icon: FaLaptopCode, title: "500+ Engineers Mentored", stat: "Future Innovators Trained", desc: "Empowering students with hands-on, industry-relevant experience and professional mentorship." },
+];
+
+const teamData = [
+  { icon: FaBuilding, title: "Administrators - SACL", desc: "Oversee strategic operations, govern the platform, and ensure world-class quality and adherence to standards." },
+  { icon: FaHandshake, title: "Evaluators & Mentors", desc: "Industry experts who guide participants, providing invaluable domain expertise and professional excellence." },
+  { icon: FaGraduationCap, title: "SPOCs & Student Teams", desc: "The creative core, collaborating tirelessly to develop impactful, technologically-driven, real-world innovations." },
+];
+
+// Sub-components
+const HeroSection = () => (
+  <section className="py-40 bg-white shadow-xl overflow-hidden relative border-b border-gray-100">
+    <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAnIGhlaWdodD0nMTAnIHZpZXdCb3g9JzAgMCAxMCAxMCc+CiAgPGcgb3BhY2l0eT0nMC41JyBmaWxsPScjNjM2MzYzJz4KICAgIDxyZWN0IHdpZHRoPScxMCcgaGVpZ2h0PScxMCcgeD0nMCcgeT0nMCcgLz4KICAgIDxwYXRoIGQ9J00xMCAwTDAgMTBWMTBaJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMC4zNScgLz4KICA8L2c+CgogIDwvc3ZnPg==')]" />
+    <div className="max-w-7xl mx-auto text-center px-8 relative z-10">
+      <motion.h2
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInUp}
+        className={`text-7xl font-extrabold mb-8 ${TEXT_COLOR} tracking-tighter leading-snug`}
+      >
+        Driving the Future of <br />
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600">
+          Academia-Industry Collaboration
+        </span>
+      </motion.h2>
+      <motion.p
+        initial="hidden"
+        whileInView="visible"
+        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.2, ease: "easeOut" } } }}
+        className={`text-2xl leading-relaxed max-w-5xl mx-auto text-gray-700 font-normal`}
+      >
+        <span className="font-semibold text-[#FF9800]">Solve for Sakthi</span> is the strategic nexus that transforms <span className="font-bold">real-world manufacturing, supply chain, and technology</span> challenges into high-impact learning and innovation opportunities.
+      </motion.p>
+      <motion.button
+        initial="hidden"
+        whileInView="visible"
+        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.4, ease: "easeOut" } } }}
+        className={`mt-10 px-8 py-3 text-lg font-semibold rounded-full ${ACCENT_BG} text-white shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105`}
+      >
+        Explore Our Challenges
+      </motion.button>
+    </div>
+  </section>
+);
+
+const MissionSection = () => (
+  <section className={`py-24 px-8 ${LIGHT_BG}`}>
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+      <motion.div initial="hidden" whileInView="visible" variants={fadeInUp} className="lg:col-span-2">
+        <h2 className={`text-4xl font-bold mb-6 ${ACCENT_COLOR}`}>Our Mission</h2>
+        <p className={`text-lg text-gray-700 leading-8 mb-6 text-justify`}>
+          Our core mission is to <span className="font-bold">build a dynamic ecosystem</span> where innovation is a fundamental outcome. We achieve this by strategically connecting eager learners with established industry experts, effectively bridging the gap between theoretical knowledge and practical application.
+        </p>
+        <p className={`text-lg text-gray-700 leading-8 mb-6 text-justify`}>
+          This collaborative approach transforms academic concepts into <span className="font-bold">tangible, scalable industrial solutions</span>. Through carefully structured projects, we cultivate a new generation of technical leaders prepared to drive India's manufacturing and technology transformation forward.
+        </p>
+        <p className={`text-lg text-gray-700 leading-8 mb-6 text-justify`}>
+          We are committed to fostering an environment of continuous learning and growth, where students can develop practical skills through hands-on experience with real industrial challenges. Our platform serves as a catalyst for innovation, enabling the seamless transfer of knowledge between academia and industry. This dedication ensures that participants not only solve problems but also emerge as highly skilled professionals ready to drive industrial transformation. Ultimately, we aim to build a strong pipeline of future engineers equipped to tackle the complexities of a rapidly evolving global market.
+        </p>
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.2, ease: "easeOut" } } }}
+        className="bg-white rounded-xl shadow-2xl p-8 transform hover:scale-[1.02] transition duration-500 border-t-4 border-[#FF9800]"
+      >
+        <h3 className={`text-2xl font-bold mb-6 ${TEXT_COLOR}`}>Core Values</h3>
+        <ul className={`space-y-5 text-gray-700 text-lg`}>
+          <li className="flex items-start">
+            <FaLightbulb className={`${ACCENT_COLOR} text-2xl mt-1 mr-3 flex-shrink-0`} />
+            <p><b>Continuous Innovation</b>: Encouraging creative and boundary-pushing solutions in every challenge.</p>
+          </li>
+          <li className="flex items-start">
+            <FaTools className={`${ACCENT_COLOR} text-2xl mt-1 mr-3 flex-shrink-0`} />
+            <p><b>Sustainable Growth</b>: Building solutions that are robust, responsible, and capable of long-term evolution.</p>
+          </li>
+          <li className="flex items-start">
+            <FaGraduationCap className={`${ACCENT_COLOR} text-2xl mt-1 mr-3 flex-shrink-0`} />
+            <p><b>Excellence & Mentorship</b>: Delivering consistent quality and fostering trust and knowledge transfer.</p>
+          </li>
+        </ul>
+      </motion.div>
+    </div>
+  </section>
+);
+
+const VisionSection = () => (
+  <section className="py-24 px-8 bg-[#212529] text-white">
+    <div className="max-w-7xl mx-auto text-center">
+      <motion.h2
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInUp}
+        className={`text-4xl font-bold mb-6 ${ACCENT_COLOR}`}
+      >
+        Our Strategic Vision
+      </motion.h2>
+      <motion.p
+        initial="hidden"
+        whileInView="visible"
+        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.1, ease: "easeOut" } } }}
+        className="text-xl leading-relaxed mb-16 text-gray-300 max-w-4xl mx-auto"
+      >
+        To establish ourselves as a premier, world-class innovation hub dedicated to empowering both industries and educational institutions to co-create high-impact, technologically advanced, and sustainable solutions globally.
+      </motion.p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {visionData.map(({ icon: Icon, title, desc }, i) => (
+          <motion.div
+            key={i}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="p-8 bg-white text-[#212529] rounded-2xl shadow-xl border-b-4 border-transparent hover:border-[#FF9800] transition duration-300 transform hover:scale-[1.05]"
+          >
+            <Icon className={`${ACCENT_COLOR} text-4xl mb-4 mx-auto`} />
+            <h3 className={`text-xl font-bold mb-3 ${TEXT_COLOR}`}>{title}</h3>
+            <p className="text-gray-600">{desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const ImpactSection = () => (
+  <section className="py-24 px-8 bg-white">
+    <div className="max-w-7xl mx-auto text-center">
+      <motion.h2
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInUp}
+        className={`text-4xl font-bold mb-6 ${TEXT_COLOR}`}
+      >
+        Our Impact in Action 🚀
+      </motion.h2>
+      <motion.p
+        initial="hidden"
+        whileInView="visible"
+        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.1, ease: "easeOut" } } }}
+        className="text-xl leading-relaxed mb-16 text-gray-600 max-w-4xl mx-auto"
+      >
+        We measure our success by the real-world value we generate, delivering tangible results across the entire manufacturing and technology value chain.
+      </motion.p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {impactData.map(({ icon: Icon, title, stat, desc }, i) => (
+          <motion.div
+            key={i}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="p-8 bg-white rounded-xl border border-gray-200 shadow-lg transform hover:shadow-2xl transition duration-300"
+          >
+            <Icon className={`${ACCENT_COLOR} text-5xl mb-4 mx-auto`} />
+            <h3 className={`text-2xl font-bold mb-1 ${TEXT_COLOR}`}>{title}</h3>
+            <p className={`text-4xl font-extrabold mb-3 ${ACCENT_COLOR}`}>{stat}</p>
+            <p className="text-gray-600 text-base">{desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const TeamSection = () => (
+  <section className={`py-24 px-8 ${LIGHT_BG}`}>
+    <div className="max-w-7xl mx-auto text-center">
+      <motion.h2
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInUp}
+        className={`text-4xl font-bold mb-16 ${ACCENT_COLOR}`}
+      >
+        The Ecosystem & Our Contributors
+      </motion.h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {teamData.map(({ icon: Icon, title, desc }, i) => (
+          <motion.div
+            key={i}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="bg-white p-8 rounded-xl border border-gray-200 shadow-md transition duration-300 hover:shadow-xl"
+          >
+            <Icon className={`${ACCENT_COLOR} text-4xl mb-4 mx-auto`} />
+            <h3 className={`text-xl font-bold mb-3 ${TEXT_COLOR}`}>{title}</h3>
+            <p className="text-gray-600 text-base">{desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-white text-[#4a4a4a] scroll-smooth">
-      {/* About Section */}
-      <section className="py-20 bg-[#4a4a4a] text-[#ffffff]">
-        <div className="max-w-5xl mx-auto text-center px-6">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeInUp}
-            viewport={{ once: true }}
-            className="text-4xl font-semibold mb-6 text-[#fc8f00]"
-          >
-            About Solve for Sakthi
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeInUp}
-            className="text-lg text-gray-200 leading-relaxed mb-10"
-          >
-            Solve for Sakthi bridges academia and industry by enabling students and professionals
-            to solve real-world manufacturing, supply chain, and technology challenges.
-            Our mission is to inspire innovation and collaboration to drive future-ready solutions.
-          </motion.p>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            transition={{ staggerChildren: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          >
-            {[["500+", "Students Engaged"], ["50+", "Problem Statements"], ["20+", "Partner Colleges"]].map(
-              ([num, label], i) => (
-                <motion.div key={i} variants={fadeInUp}>
-                  <h3 className="text-4xl font-bold text-[#fc8f00] mb-2">{num}</h3>
-                  <p className="text-gray-300">{label}</p>
-                </motion.div>
-              )
-            )}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="py-20 px-6 bg-[#ffffff]">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeInUp}
-            viewport={{ once: true }}
-            className="text-4xl font-semibold text-center mb-12 text-[#fc8f00]"
-          >
-            Our Mission
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <motion.div initial="hidden" whileInView="visible" variants={fadeInUp}>
-              <p className="text-lg text-[#4a4a4a] leading-relaxed mb-6 text-justify">
-                We foster an ecosystem where innovation thrives by connecting learners and industry leaders.
-                Through collaborative projects, users gain hands-on problem-solving experience while contributing to industry transformation.
-              </p>
-              <p className="text-lg text-[#4a4a4a] leading-relaxed text-justify">
-                Our aim is to nurture next-generation innovators, empowering them to deliver lasting impact in real-world manufacturing and technology systems.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              variants={fadeInUp}
-              className="bg-[#4a4a4a]/10 p-8 rounded-lg shadow-md"
-            >
-              <h3 className="text-2xl font-semibold mb-4 text-[#fc8f00]">What We Do</h3>
-              <ul className="space-y-3 text-[#4a4a4a]">
-                <li>• Foster continuous innovation in every process.</li>
-                <li>• Ensure growth through sustainable methods.</li>
-                <li>• Deliver excellence that earns industry trust.</li>
-              </ul>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Vision Section */}
-      <section className="py-20 px-6 bg-[#4a4a4a] text-[#ffffff]">
-        <div className="max-w-5xl mx-auto text-center">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeInUp}
-            viewport={{ once: true }}
-            className="text-4xl font-semibold mb-6 text-[#fc8f00]"
-          >
-            Our Vision
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeInUp}
-            className="text-xl leading-relaxed mb-10 text-gray-200"
-          >
-            To be a progressive, world-class organization delivering safety-critical industrial components.
-          </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              ["Innovation", "Driving creative, scalable solutions for industry challenges."],
-              ["Collaboration", "Building strong partnerships across academia and industry."],
-              ["Impact", "Transforming ideas into meaningful real-world change."],
-            ].map(([title, desc], i) => (
-              <motion.div
-                key={i}
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                className="p-6 bg-white text-[#4a4a4a] rounded-lg shadow hover:shadow-lg transition"
-              >
-                <h3 className="text-xl font-semibold mb-2 text-[#fc8f00]">{title}</h3>
-                <p>{desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            variants={fadeInUp}
-            className="text-4xl font-semibold mb-12 text-[#fc8f00]"
-          >
-            Our Team
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {[
-              ["A", "Administrators - SACL", "Overseeing operations and ensuring top-quality standards."],
-              ["E", "Evaluators - SACL", "Guiding teams with expertise and professional mentoring."],
-              ["S", "SPOCs & Students", "Collaborating to shape tomorrow’s innovative solutions."],
-            ].map(([icon, title, desc], i) => (
-              <motion.div
-                key={i}
-                variants={fadeInUp}
-                initial="hidden"
-                whileInView="visible"
-                className="bg-[#4a4a4a]/5 p-8 rounded-lg shadow-md hover:shadow-lg transition"
-              >
-                <div className="w-20 h-20 mx-auto mb-4 bg-[#fc8f00] rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  {icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-[#4a4a4a]">{title}</h3>
-                <p className="text-[#4a4a4a]/80">{desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className={`min-h-screen ${LIGHT_BG} ${TEXT_COLOR} scroll-smooth`}>
+      <HeroSection />
+      <MissionSection />
+      <VisionSection />
+      <ImpactSection />
+      <TeamSection />
     </div>
   );
 };

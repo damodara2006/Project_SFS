@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Homepage from "./pages/Homepage";
 import About from "./pages/About";
+import FAQ from "./pages/FAQ";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -48,6 +49,8 @@ function App() {
         <Route path="/" element={<Homepage />} />
 
         <Route path="/about" element={<About />} />
+
+        <Route path="/faq" element={<FAQ />} />
 
         <Route path="/login" element={<Login />} />
 
