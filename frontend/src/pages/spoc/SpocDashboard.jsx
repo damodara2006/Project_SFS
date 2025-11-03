@@ -1,10 +1,37 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaClipboardList, FaUser } from 'react-icons/fa';
 import ProblemStatements from "../../components/ProblemStatements"
 import SPOCProfile from './SPOCProfile';
 import TeamList from './TeamList';
+
+const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: FaUsers },
+    { id: 'problems', label: 'Problems', icon: FaClipboardList },
+    { id: 'teamdetails', label: 'Team Details', icon: FaUser },
+    { id: 'profile', label: 'Profile', icon: FaUser },
+];
+
+const NavItem = ({ item, activeView, onClick }) => {
+    const Icon = item.icon;
+    const isActive = activeView === item.id;
+    return (
+        <li className="mb-2">
+            <button
+                onClick={() => onClick(item.id)}
+                className={`w-full flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-400 transition ${
+                    isActive ? 'bg-gray-700' : ''
+                }`}
+                aria-current={isActive ? 'page' : undefined}
+                aria-pressed={isActive}
+            >
+                <Icon className="mr-3" />
+                <span>{item.label}</span>
+            </button>
+        </li>
+    );
+};
+
 const SpocDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [activeView, setActiveView] = useState('dashboard');
@@ -46,41 +73,12 @@ const SpocDashboard = () => {
         <div className="flex flex-col min-h-screen bg-gray-100">
             <div className="flex flex-1 pt-20">
                 {/* Sidebar */}
-                <aside className="w-48 bg-[#494949] text-white p-6">
-                    <nav>
-                        <ul>
-                            <li className="mb-4">
-                                <button
-                                    onClick={() => setActiveView('dashboard')}
-                                    className={`flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 ${activeView === 'dashboard' ? 'bg-gray-700' : ''}`}
-                                >
-                                    <FaUsers className="mr-3" />
-                                    Dashboard
-                                </button>
-                            </li>
-                            <li className="mb-4">
-                                <button
-                                    onClick={() => setActiveView('problems')}
-                                    className={`flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 ${activeView === 'problems' ? 'bg-gray-700' : ''}`}
-                                >
-                                    <FaClipboardList className="mr-3" />
-                                    Problems
-                                </button>
-                            </li>
-                            <li>
-                                <button onClick={()=>setActiveView('teamdetails')} 
-                                className={`flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 ${activeView==='profile'?'bg-gray-700':''}`}>
-                                    <FaUser className="mr-3" />
-                                    Team Details
-                                </button>
-                            </li>
-                              <li>
-                                <button onClick={()=>setActiveView('profile')} 
-                                className={`flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 ${activeView==='profile'?'bg-gray-700':''}`}>
-                                    <FaUser className="mr-3" />
-                                    Profile
-                                </button>
-                            </li>
+                <aside className="w-56 bg-[#494949] text-white p-6 sticky top-20 h-[calc(100vh-5rem)]">
+                    <nav aria-label="Main navigation">
+                        <ul className="mt-2">
+                            {navItems.map(item => (
+                                <NavItem key={item.id} item={item} activeView={activeView} onClick={setActiveView} />
+                            ))}
                         </ul>
                     </nav>
                 </aside>
@@ -146,14 +144,15 @@ const SpocDashboard = () => {
 
                                 {/* Pagination */}
                                 <div className="py-3 flex justify-center">
-                                    <nav className="block">
+                                    <nav className="block" aria-label="Pagination">
                                         <ul className="flex pl-0 rounded list-none flex-wrap">
                                             {pageNumbers.map(number => (
                                                 <li key={number}>
                                                     <a
-                                                        onClick={() => paginate(number)}
+                                                        onClick={(e) => { e.preventDefault(); paginate(number); }}
                                                         href="#"
                                                         className={`first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 items-center justify-center leading-tight relative border border-solid border-gray-300 rounded-full ${currentPage === number ? 'bg-[#fc8f00] text-white' : 'text-gray-800'}`}
+                                                        aria-current={currentPage === number ? 'page' : undefined}
                                                     >
                                                         {number}
                                                     </a>
@@ -166,15 +165,9 @@ const SpocDashboard = () => {
                         </>
                     )}
 
-                    {activeView === 'problems' && (
-                        <ProblemStatements />
-                    )}
-                    {
-                        activeView ==='profile' && (<SPOCProfile/>)
-                    }
-                    {
-                        activeView ==='teamdetails' && (<TeamList/>)
-                    }
+                    {activeView === 'problems' && <ProblemStatements />}
+                    {activeView === 'profile' && <SPOCProfile />}
+                    {activeView === 'teamdetails' && <TeamList />}
                 </main>
             </div>
         </div>
@@ -182,15 +175,3 @@ const SpocDashboard = () => {
 };
 
 export default SpocDashboard;
-// import React from 'react'
-// import DashboardWithSide from './DashboardWithSide'
-
-// const SpocDashboard = () => {
-//   return (
-//     <div>
-//         <DashboardWithSide  />
-//     </div>
-//   )
-// }
-
-// export default SpocDashboard

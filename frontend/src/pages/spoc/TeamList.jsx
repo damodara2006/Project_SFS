@@ -116,7 +116,7 @@ function TeamList() {
             <Toaster />
 
             {/* ===== Sidebar ===== */}
-            <motion.aside
+            {/* <motion.aside
                 onMouseEnter={() => setIsSidebarExpanded(true)}
                 onMouseLeave={() => setIsSidebarExpanded(false)}
                 animate={{ width: isSidebarExpanded ? 200 : 70 }}
@@ -175,7 +175,7 @@ function TeamList() {
                         </li>
                     </ul>
                 </nav>
-            </motion.aside>
+            </motion.aside> */}
 
             {/* ===== Main Content ===== */}
             <div className="flex-1 m-30 mt-30">
