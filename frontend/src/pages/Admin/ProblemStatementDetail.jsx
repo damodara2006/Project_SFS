@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import { getProblemStatementById, getSubmissionsByProblemId } from '../../mockData';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiFilter } from 'react-icons/fi';
 
 const ProblemStatementDetail = () => {
   const { id } = useParams();
@@ -10,15 +10,24 @@ const ProblemStatementDetail = () => {
   const problem = getProblemStatementById(id);
   const submissions = getSubmissionsByProblemId(id);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterOptions, setFilterOptions] = useState({
+    evaluated: false,
+    submitted: false,
+  });
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
   if (!problem) {
     return <div className="min-h-screen bg-gray-50 py-10"><div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8"><h1>Problem Statement not found</h1></div></div>;
   }
 
-  const filteredSubmissions = submissions.filter(sub =>
-    sub.spocId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sub.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSubmissions = submissions.filter(sub => {
+    const matchesSearch = sub.spocId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sub.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = (!filterOptions.evaluated && !filterOptions.submitted) ||
+      (filterOptions.evaluated && sub.status === 'Evaluated') ||
+      (filterOptions.submitted && sub.status === 'Submitted');
+    return matchesSearch && matchesFilter;
+  });
 
   const teamsEnrolled = new Set(submissions.map(s => s.teamId)).size;
   const totalSubmissions = submissions.length;
@@ -85,8 +94,8 @@ const ProblemStatementDetail = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex justify-center mb-6">
+        {/* Search Bar and Filter */}
+        <div className="flex justify-center items-center space-x-4 mb-6">
           <div className="relative w-full md:w-1/2">
             <input
               type="text"
@@ -98,6 +107,39 @@ const ProblemStatementDetail = () => {
             <button className="absolute right-3 top-2.5 text-gray-500">
               <FiSearch className="w-5 h-5" />
             </button>
+          </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-md flex items-center space-x-2"
+            >
+              <FiFilter className="w-4 h-4" />
+              <span>Filter</span>
+            </button>
+            {showFilterDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                <div className="p-3">
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={filterOptions.evaluated}
+                      onChange={(e) => setFilterOptions({ ...filterOptions, evaluated: e.target.checked })}
+                      className="form-checkbox"
+                    />
+                    <span>Evaluated</span>
+                  </label>
+                  <label className="flex items-center space-x-2 mt-2">
+                    <input
+                      type="checkbox"
+                      checked={filterOptions.submitted}
+                      onChange={(e) => setFilterOptions({ ...filterOptions, submitted: e.target.checked })}
+                      className="form-checkbox"
+                    />
+                    <span>Submitted</span>
+                  </label>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

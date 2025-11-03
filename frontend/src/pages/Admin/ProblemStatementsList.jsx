@@ -9,6 +9,7 @@ const ProblemStatementsList = () => {
   const navigate = useNavigate(); // For navigation, if used
   const evaluators = getEvaluatorUsers();
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' for low to high, 'desc' for high to low
 
   // Mock API call handlers
   const handleProblemClick = (problem) => {
@@ -17,10 +18,7 @@ const ProblemStatementsList = () => {
     navigate(`/admin/problems/${problem.id}/details`); // Example navigation
   };
 
-  const handleFilter = () => {
-    alert('Mock: Filter applied!');
-    // In a real app: apply filters to the data
-  };
+
 
   const getEvaluatorIdForProblem = (problem) => {
     // Logic to find and return the primary evaluator's ID
@@ -30,11 +28,22 @@ const ProblemStatementsList = () => {
     return 'E0001'; // Defaulting for consistency with the image
   };
 
-  // Filtered data based on search term
-  const filteredData = mockProblemStatements.filter(problem =>
-    problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    problem.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtered and sorted data based on search term and sort order
+  const filteredData = mockProblemStatements
+    .filter(problem => {
+      const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        problem.id.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesSearch;
+    })
+    .sort((a, b) => {
+      const countA = a.submissionsCount || 1;
+      const countB = b.submissionsCount || 1;
+      if (sortOrder === 'asc') {
+        return countA - countB;
+      } else {
+        return countB - countA;
+      }
+    });
 
   // Define columns for the DataTable
   const columns = [
@@ -67,9 +76,9 @@ const ProblemStatementsList = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10">
-      <div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8">
+      <div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-10">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-gray-800">Problem Statements</h1>
           <div className="flex space-x-4">
             <Button
@@ -78,17 +87,11 @@ const ProblemStatementsList = () => {
             >
               Create New
             </Button>
-            <Button
-              onClick={handleFilter}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md"
-            >
-              <FiFilter className="w-4 h-4 mr-1 inline" /> FILTER
-            </Button>
           </div>
         </div>
 
         {/* Metrics */}
-        <div className="flex items-center space-x-10 mb-6">
+        <div className="flex items-center space-x-10 mb-8">
           <div className="flex items-center space-x-2">
             <span className="font-medium">No Of Teams Enrolled :</span>
             <input
@@ -109,8 +112,8 @@ const ProblemStatementsList = () => {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="flex justify-center mb-6">
+        {/* Search and Filter */}
+        <div className="flex items-center justify-center space-x-4 mb-8">
           <div className="relative w-full md:w-1/2">
             <input
               type="text"
@@ -123,6 +126,17 @@ const ProblemStatementsList = () => {
               <FiSearch className="w-5 h-5" />
             </button>
           </div>
+          <div className="flex items-center space-x-4">
+            <label className="text-sm font-medium">Filter:</label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="border border-gray-300 rounded py-1 px-2 focus:ring-1 focus:ring-gray-400"
+            >
+              <option value="asc">Low to High</option>
+              <option value="desc">High to Low</option>
+            </select>
+          </div>
         </div>
 
         {/* Table */}
@@ -130,17 +144,17 @@ const ProblemStatementsList = () => {
           <table className="w-full text-left">
             <thead className="bg-pink-100">
               <tr>
-                <th className="p-3 font-semibold text-gray-700">PS ID</th>
-                <th className="p-3 font-semibold text-gray-700">Problem Statement</th>
-                <th className="p-3 font-semibold text-gray-700">Evaluator ID</th>
-                <th className="p-3 font-semibold text-gray-700">No.Of.Submission</th>
+                <th className="p-4 font-semibold text-gray-700">PS ID</th>
+                <th className="p-4 font-semibold text-gray-700">Problem Statement</th>
+                <th className="p-4 font-semibold text-gray-700 text-center">Evaluator ID</th>
+                <th className="p-4 font-semibold text-gray-700 text-center">No.Of.Submission</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.map((problem, index) => (
                 <tr key={problem.id} className="hover:bg-gray-50">
-                  <td className="p-3">{problem.id}</td>
-                  <td className="p-3">
+                  <td className="p-4">{problem.id}</td>
+                  <td className="p-4">
                     <span
                       className="text-blue-600 hover:text-blue-800 cursor-pointer"
                       onClick={() => handleProblemClick(problem)}
@@ -148,8 +162,8 @@ const ProblemStatementsList = () => {
                       {problem.title}
                     </span>
                   </td>
-                  <td className="p-3">{getEvaluatorIdForProblem(problem)}</td>
-                  <td className="p-3 text-center">{problem.submissionsCount || 1}</td>
+                  <td className="p-4 text-center">{getEvaluatorIdForProblem(problem)}</td>
+                  <td className="p-4 text-center">{problem.submissionsCount || 1}</td>
                 </tr>
               ))}
             </tbody>

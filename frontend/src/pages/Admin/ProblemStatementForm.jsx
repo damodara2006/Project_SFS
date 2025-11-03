@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import { addProblemStatement, getEvaluatorUsers } from '../../mockData';
+import { FiSearch } from 'react-icons/fi';
 
 const ProblemStatementForm = ({ isCreate }) => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const ProblemStatementForm = ({ isCreate }) => {
     dataset: '',
   });
   const [assignedEvaluators, setAssignedEvaluators] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -149,24 +151,57 @@ const ProblemStatementForm = ({ isCreate }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Assign Evaluators
             </label>
-            <div className="space-y-2">
-              {evaluators.map((evaluator) => (
-                <label key={evaluator.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={assignedEvaluators.includes(evaluator.id)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setAssignedEvaluators([...assignedEvaluators, evaluator.id]);
-                      } else {
-                        setAssignedEvaluators(assignedEvaluators.filter(id => id !== evaluator.id));
-                      }
-                    }}
-                    className="mr-2"
-                  />
-                  {evaluator.email} (ID: {evaluator.id})
-                </label>
-              ))}
+            <div className="mb-4">
+              <div className="relative w-full md:w-1/2">
+                <input
+                  type="text"
+                  placeholder="Search Evaluators"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full border border-gray-300 rounded-full py-2 pl-4 pr-10 focus:ring-1 focus:ring-gray-400"
+                />
+                <button className="absolute right-3 top-2.5 text-gray-500">
+                  <FiSearch className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md p-4">
+              <table className="w-full text-left">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="p-2 font-semibold text-gray-700">Select</th>
+                    <th className="p-2 font-semibold text-gray-700">Evaluator Email</th>
+                    <th className="p-2 font-semibold text-gray-700">ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {evaluators
+                    .filter(evaluator =>
+                      evaluator.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      evaluator.id.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((evaluator) => (
+                      <tr key={evaluator.id} className="hover:bg-gray-50">
+                        <td className="p-2">
+                          <input
+                            type="checkbox"
+                            checked={assignedEvaluators.includes(evaluator.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setAssignedEvaluators([...assignedEvaluators, evaluator.id]);
+                              } else {
+                                setAssignedEvaluators(assignedEvaluators.filter(id => id !== evaluator.id));
+                              }
+                            }}
+                            className="mr-2"
+                          />
+                        </td>
+                        <td className="p-2">{evaluator.email}</td>
+                        <td className="p-2">{evaluator.id}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <div className="flex space-x-4">
