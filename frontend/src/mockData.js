@@ -23,6 +23,7 @@ export const mockProblemStatements = [
     youtube: '',
     dataset: '',
     deadline: new Date(Date.now() + 86400000 * 30).toISOString(),
+    created: new Date(Date.now() - 86400000 * 10).toISOString(), // Added created date
     status: 'Open',
     assignedEvaluators: ['u2', 'u3'],
     submissionsCount: 2,
@@ -36,6 +37,7 @@ export const mockProblemStatements = [
     youtube: '',
     dataset: '',
     deadline: new Date(Date.now() + 86400000 * 60).toISOString(),
+    created: new Date(Date.now() - 86400000 * 5).toISOString(), // Added created date
     status: 'In Review',
     assignedEvaluators: ['u3'],
     submissionsCount: 1,
@@ -151,6 +153,7 @@ export const getSubmissionById = (id) =>
 export const addProblemStatement = (newProblem) => {
   mockProblemStatements.push({
     ...newProblem,
+    created: new Date().toISOString(), // Added created date
     deadline: new Date(Date.now() + 86400000 * 30).toISOString(), // Default deadline
     status: 'Open',
     assignedEvaluators: [],
