@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer"
+
 const Verify_OTP = (req, res) => {
     const { email } = req.params;
     const transporter = nodemailer.createTransport({

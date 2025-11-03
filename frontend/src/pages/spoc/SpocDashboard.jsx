@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { FaUsers, FaClipboardList, FaUser } from 'react-icons/fa';
 import ProblemStatements from "../../components/ProblemStatements"
 import SPOCProfile from './SPOCProfile';
-
+import TeamList from './TeamList';
 const SpocDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [activeView, setActiveView] = useState('dashboard');
@@ -68,6 +68,13 @@ const SpocDashboard = () => {
                                 </button>
                             </li>
                             <li>
+                                <button onClick={()=>setActiveView('teamdetails')} 
+                                className={`flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 ${activeView==='profile'?'bg-gray-700':''}`}>
+                                    <FaUser className="mr-3" />
+                                    Team Details
+                                </button>
+                            </li>
+                              <li>
                                 <button onClick={()=>setActiveView('profile')} 
                                 className={`flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 ${activeView==='profile'?'bg-gray-700':''}`}>
                                     <FaUser className="mr-3" />
@@ -164,6 +171,9 @@ const SpocDashboard = () => {
                     )}
                     {
                         activeView ==='profile' && (<SPOCProfile/>)
+                    }
+                    {
+                        activeView ==='teamdetails' && (<TeamList/>)
                     }
                 </main>
             </div>

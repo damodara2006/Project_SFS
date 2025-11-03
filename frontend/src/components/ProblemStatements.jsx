@@ -1,6 +1,8 @@
-import { useState } from "react";
+import {  useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // 👈 Added motion for animation
+import axios from "axios";
+
 
 /* Hardcoded problem data */
 const sampleProblems = [
@@ -63,9 +65,20 @@ const Modal = ({ open, onClose, title, children }) => {
         </div>
     );
 };
+const fetchProblems = async () => {
+    try {
+        const response = await axios.get('http://localhost:8000/get_problems');
+        console.log("Fetched problems:", response.data);
+        return response.data.problems;
+    }
+    catch (error) {
+        console.error("Error fetching problems:", error);
+        return [];
+    }
+}
 
 const ProblemStatements = () => {
-    const [problems] = useState(sampleProblems);
+    const [problems,setProblems] = useState([]);
     const [selected, setSelected] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
@@ -96,6 +109,15 @@ const ProblemStatements = () => {
         hidden: { opacity: 0, x: -50 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.5, delay: 0.2 } },
     };
+     
+    useEffect(()=>{
+        const loadProblems = async () => {
+            const data = await fetchProblems();
+            console.log("Setting problems:", data);
+            setProblems(data);
+        };
+        loadProblems();
+    },[])
 
     return (
         <motion.div
@@ -129,9 +151,9 @@ const ProblemStatements = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05 }}
                             >
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.id}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.title}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.date}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.ID}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.TITLE}</td>
+                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.SUB_DATE}</td>
                                 <td className="px-4 py-3 text-right">
                                     <button
                                         onClick={() => openModal(p)}
@@ -146,7 +168,7 @@ const ProblemStatements = () => {
                 </table>
             </motion.div>
 
-            <Modal open={isOpen} onClose={closeModal} title={selected ? selected.title : "Problem"}>
+            <Modal open={isOpen} onClose={closeModal} title={selected ? selected.TITLE : "Problem"}>
                 {selected ? (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -154,29 +176,29 @@ const ProblemStatements = () => {
                         transition={{ duration: 0.3 }}
                     >
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>ID:</strong> {selected.id}
+                            <strong>ID:</strong> {selected.ID}
                         </div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>Date:</strong> {selected.date}
+                            <strong>Date:</strong> {selected.SUB_DATE}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
-                            <strong>Description:</strong> {selected.description}
+                            <strong>Description:</strong> {selected.DESCRIPTION}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
-                            <strong>Category:</strong> {selected.category}
+                            <strong>Category:</strong> {selected.CATEGORY}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
-                            <strong>Theme:</strong> {selected.theme}
+                            <strong>Department:</strong> {selected.DEPT}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
                             <strong>Resources:</strong>{" "}
                             <a
                                 className="hover:underline text-blue-600"
-                                href={selected.resources}
+                                href={selected.Links}
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                {selected.resources}
+                                {selected.Links}
                             </a>
                         </div>
                         <div className="mt-6 flex justify-end gap-3">

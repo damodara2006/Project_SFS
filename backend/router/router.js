@@ -3,6 +3,10 @@ import { Add_Team_Members } from "../controllers/Team_members.js";
 import { Fetch_Teams, Fetch_Team_Members } from "../controllers/Spoc_Teams.js";
 import { signup } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
+import { Post_problem } from "../controllers/Problems.js";
+import { Get_problems } from "../controllers/Problems.js";
+import { Get_problem_by_id } from "../controllers/Problems.js";
+
 const router = Router();
 
 router.route("/").get((req, res) => {
@@ -13,5 +17,8 @@ router.route("/fetch_teams").get(Fetch_Teams)
 router.route("/fetch_team_members/:id").post(Fetch_Team_Members)
 router.route("/signup/:email/:password/:role/:college/:college_code").post(signup)
 router.route("/verify_email/:email").post(Verify_OTP)
+router.route("/problems").post(Post_problem)
+router.route("/get_problems").get(Get_problems)
+router.route("/problems/:id").get(Get_problem_by_id)
 
 export default router
