@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import {
-  FiEye,
-
   FiEdit,
   FiTrash2,
   FiPlus,
-  FiX,
   FiCheckCircle,
   FiXCircle,
   FiUsers,
@@ -24,6 +21,7 @@ const EvaluatorList = () => {
       dept: "CSE",
       status: "active",
       rank: 5,
+      problemStatementId: "PSAI01",
       problemStatement: "AI-Powered assistants",
       experience: "5 years",
       completed: 25,
@@ -36,6 +34,7 @@ const EvaluatorList = () => {
       dept: "ECE",
       status: "inactive",
       rank: 12,
+      problemStatementId: "PSIoT02",
       problemStatement: "IoT sensor networks",
       experience: "8 years",
       completed: 42,
@@ -48,6 +47,7 @@ const EvaluatorList = () => {
       dept: "MECH",
       status: "active",
       rank: 8,
+      problemStatementId: "PSRA03",
       problemStatement: "Robotics and Automation",
       experience: "6 years",
       completed: 33,
@@ -60,6 +60,7 @@ const EvaluatorList = () => {
       dept: "EEE",
       status: "active",
       rank: 15,
+      problemStatementId: "PSPGO04",
       problemStatement: "Power Grid Optimization",
       experience: "7 years",
       completed: 29,
@@ -72,34 +73,37 @@ const EvaluatorList = () => {
       dept: "CSE",
       status: "inactive",
       rank: 2,
+      problemStatementId: "PSCS05",
       problemStatement: "Cybersecurity Protocols",
       experience: "10 years",
       completed: 50,
       pending: 1,
     },
     {
-        id: "EV1006",
-        name: "Patricia Wilson",
-        email: "patricia.w@example.com",
-        dept: "ECE",
-        status: "active",
-        rank: 20,
-        problemStatement: "Wireless Communication",
-        experience: "4 years",
-        completed: 18,
-        pending: 6,
+      id: "EV1006",
+      name: "Patricia Wilson",
+      email: "patricia.w@example.com",
+      dept: "ECE",
+      status: "active",
+      rank: 20,
+      problemStatementId: "PSWC06",
+      problemStatement: "Wireless Communication",
+      experience: "4 years",
+      completed: 18,
+      pending: 6,
     },
     {
-        id: "EV1007",
-        name: "Michael Brown",
-        email: "michael.b@example.com",
-        dept: "MECH",
-        status: "active",
-        rank: 9,
-        problemStatement: "Fluid Dynamics Simulation",
-        experience: "9 years",
-        completed: 45,
-        pending: 2,
+      id: "EV1007",
+      name: "Michael Brown",
+      email: "michael.b@example.com",
+      dept: "MECH",
+      status: "active",
+      rank: 9,
+      problemStatementId: "PSFD07",
+      problemStatement: "Fluid Dynamics Simulation",
+      experience: "9 years",
+      completed: 45,
+      pending: 2,
     },
   ]);
 
@@ -135,6 +139,7 @@ const EvaluatorList = () => {
       id,
       status: "active",
       rank: "N/A",
+      problemStatementId: "N/A",
       problemStatement: "Not Assigned",
       experience: "0 years",
       completed: 0,
@@ -419,34 +424,40 @@ const EvaluatorList = () => {
               // Details View
               <div className="space-y-2 text-sm">
                 <p>
-                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                  <b className="font-medium text-[#4A5568] w-36 inline-block">
                     ID:
                   </b>{" "}
                   {showDetailsPopup.id}
                 </p>
                 <p>
-                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                  <b className="font-medium text-[#4A5568] w-36 inline-block">
                     Name:
                   </b>{" "}
                   {showDetailsPopup.name}
                 </p>
                 <p>
-                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                  <b className="font-medium text-[#4A5568] w-36 inline-block">
                     Email:
                   </b>{" "}
                   {showDetailsPopup.email}
                 </p>
                 <p>
-                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                  <b className="font-medium text-[#4A5568] w-36 inline-block">
                     Department:
                   </b>{" "}
                   {showDetailsPopup.dept}
                 </p>
                 <p>
-                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                  <b className="font-medium text-[#4A5568] w-36 inline-block">
                     Status:
                   </b>{" "}
                   {showDetailsPopup.status}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-36 inline-block">
+                    Problem Statement ID:
+                  </b>{" "}
+                  {showDetailsPopup.problemStatementId}
                 </p>
               </div>
             ) : (
