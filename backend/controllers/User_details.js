@@ -51,7 +51,23 @@ const login = async (req, res) => {
     console.log("done");
     
 
-    res.send(response)
+    res.json({data:response, user:result})
 }
 
-export { signup, login }
+const logout = async(req, res) => {
+    console.log("hh")
+    try {
+        await res.clearCookie("login_creditionals", {
+            maxAge: 864000,
+            secure: true
+        })
+        console.log("dele");
+        console.log("Cookie cleared");
+        res.status(200).json({ message: "Logout successful" });
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export { signup, login, logout }

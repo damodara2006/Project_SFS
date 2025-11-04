@@ -13,21 +13,33 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate()
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    axios.defaults.withCredentials = true;
-      axios.post(`${URL}/login`, { email, password })
-        .then(res => {
-          if (res.data) {
-            toast.success("Success",{style:{backgroundColor:"green"}})
-            setTimeout(() => {
-            navigate("/")
-          },2000)
-          }
-          else {
-            toast.error("Failed")
-          }
-      })
+  const handleLogin = async(e) => {
+   try {
+     e.preventDefault()
+     console.log("hey");
+     axios.defaults.withCredentials = true;
+     await axios.post(`${URL}/login`, { email, password })
+       .then(res => {
+         console.log(res);
+
+         if (res.data.data) {
+           toast.success("Success", { style: { backgroundColor: "green" } })
+           setTimeout(() => {
+             if (res.data.user[0].ROLE == 'SPOC') {
+               navigate("/spoc")
+             }
+             else {
+               navigate("/")
+             }
+           }, 2000)
+         }
+         else {
+           toast.error("Failed")
+         }
+       })
+   } catch (error) {
+    console.log(error);
+   }
     }
 
   return (

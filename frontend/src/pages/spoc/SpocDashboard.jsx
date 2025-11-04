@@ -4,6 +4,9 @@ import { FaUsers, FaClipboardList, FaUser } from 'react-icons/fa';
 import ProblemStatements from "../../components/ProblemStatements"
 import SPOCProfile from './SPOCProfile';
 import TeamList from './TeamList';
+import axios from 'axios';
+import URL from '../../Utils';
+import { useNavigate } from 'react-router-dom';
 
 const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: FaUsers },
@@ -11,6 +14,7 @@ const navItems = [
     { id: 'teamdetails', label: 'Team Details', icon: FaUser },
     { id: 'profile', label: 'Profile', icon: FaUser },
 ];
+
 
 const NavItem = ({ item, activeView, onClick }) => {
     const Icon = item.icon;
@@ -36,6 +40,21 @@ const SpocDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [activeView, setActiveView] = useState('dashboard');
     const teamsPerPage = 10;
+    const navigate = useNavigate()
+    const handlelogout = async () => {
+
+        try {
+            console.log("hey");
+            axios.defaults.withCredentials = true;
+            await axios.get(`${URL}/logout`)
+                .then(res => console.log(res),
+                    navigate("/")
+                )
+        } catch (error) {
+            console.log(error.message);
+
+        }
+    }
 
     // Dummy data for teams
     const teams = Array.from({ length: 42 }, (_, i) => ({
@@ -164,6 +183,8 @@ const SpocDashboard = () => {
                             </motion.div>
                         </>
                     )}
+
+                    <button onClick={handlelogout}>LOGOUT</button>
 
                     {activeView === 'problems' && <ProblemStatements />}
                     {activeView === 'profile' && <SPOCProfile />}

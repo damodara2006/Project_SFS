@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion"; // 👈 Added Framer Motion
 import axios from "axios";
 import URL from "../../Utils";
+import toast, { Toaster } from "react-hot-toast";
 
 const SPOCProfile = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -17,6 +18,11 @@ const SPOCProfile = () => {
   useEffect(() => {
     axios.defaults.withCredentials = true;
     axios.get(`${URL}/cookie`).then(res => {
+      console.log(res);
+      
+      if (res.data.message == 'jwt must be provided') {
+        toast.error("Please login")
+      }
       setdata(res.data)
     })
   },[])
@@ -52,6 +58,8 @@ const SPOCProfile = () => {
       initial="hidden"
       animate="visible"
     >
+      <Toaster position="top-right" />
+
       <motion.div className="max-w-4xl w-full" variants={cardVariants}>
         {/* Header */}
         <header className="mb-6 text-center">
