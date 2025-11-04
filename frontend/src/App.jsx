@@ -9,6 +9,7 @@ import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ProblemStatements from "./components/ProblemStatements.jsx";
 
 // Student Imports
 import SdDashboard from "./pages/student/SdDashboard";
@@ -61,6 +62,8 @@ function App() {
         <Route path="/spoc" element={<SpocDashboard />} />
 
         <Route path=" " element={<SPOCProfile />} />
+
+        <Route path="/problemstatements" element={<ProblemStatements />} />
 
         <Route path="/student/submit-solution" element={<Upload />} />
 
