@@ -1,10 +1,9 @@
-import {  useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // 👈 Added motion for animation
 import axios from "axios";
 
-
-/* Hardcoded problem data */
+/* Hardcoded problem data (used as fallback) */
 const sampleProblems = [
     {
         id: "P-001",
@@ -38,7 +37,15 @@ const sampleProblems = [
     },
 ];
 
-/* Simple modal */
+const fetchProblems = async () => {
+    // Let errors propagate so caller can show loading/error UI
+    const response = await axios.get("http://localhost:8000/get_problems", {
+        timeout: 8000,
+    });
+    // assume response.data.problems (backend)
+    return response.data.problems;
+};
+
 const Modal = ({ open, onClose, title, children }) => {
     if (!open) return null;
     return (
@@ -65,22 +72,14 @@ const Modal = ({ open, onClose, title, children }) => {
         </div>
     );
 };
-const fetchProblems = async () => {
-    try {
-        const response = await axios.get('http://localhost:8000/get_problems');
-        console.log("Fetched problems:", response.data);
-        return response.data.problems;
-    }
-    catch (error) {
-        console.error("Error fetching problems:", error);
-        return [];
-    }
-}
 
 const ProblemStatements = () => {
-    const [problems,setProblems] = useState([]);
+    const [problems, setProblems] = useState([]);
     const [selected, setSelected] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
     const navigate = useNavigate();
 
     const openModal = (problem) => {
@@ -92,10 +91,10 @@ const ProblemStatements = () => {
         setIsOpen(false);
         setSelected(null);
     };
-    
+
     const handleSubmit = () => {
         if (!selected) return;
-        const params = new URLSearchParams({ problemId: selected.id });
+        const params = new URLSearchParams({ problemId: selected.id || selected.ID });
         navigate(`/student/submit-solution?${params.toString()}`);
     };
 
@@ -109,15 +108,31 @@ const ProblemStatements = () => {
         hidden: { opacity: 0, x: -50 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.5, delay: 0.2 } },
     };
-     
-    useEffect(()=>{
-        const loadProblems = async () => {
+
+    const loadProblems = async () => {
+        setLoading(true);
+        setError(false);
+        try {
             const data = await fetchProblems();
-            console.log("Setting problems:", data);
-            setProblems(data);
-        };
+            if (Array.isArray(data) && data.length > 0) {
+                setProblems(data);
+            } else {
+                // fallback to sampleProblems if backend returns empty
+                setProblems(sampleProblems);
+            }
+        } catch (err) {
+            console.error("Error fetching problems:", err);
+            setError(true);
+            // use fallback sample data so UI is still functional
+            setProblems(sampleProblems);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         loadProblems();
-    },[])
+    }, []);
 
     return (
         <motion.div
@@ -128,47 +143,95 @@ const ProblemStatements = () => {
         >
             <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">Problems</h2>
 
-            <motion.div
-                className="overflow-x-auto rounded border bg-white shadow-sm"
-                variants={tableVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <table className="min-w-full divide-y">
-                    <thead className="bg-[#4a4a4a] text-[#ffffff]">
-                        <tr>
-                            <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium">Title</th>
-                            <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
-                            <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y bg-white">
-                        {problems.map((p, index) => (
-                            <motion.tr
-                                key={p.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                            >
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.ID}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.TITLE}</td>
-                                <td className="px-4 py-3 text-sm text-[#4a4a4a]">{p.SUB_DATE}</td>
-                                <td className="px-4 py-3 text-right">
-                                    <button
-                                        onClick={() => openModal(p)}
-                                        className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-[#ffffff] hover:bg-[#e57f00]"
-                                    >
-                                        View
-                                    </button>
-                                </td>
-                            </motion.tr>
-                        ))}
-                    </tbody>
-                </table>
-            </motion.div>
+            {/* Error banner */}
+            {error && (
+                <div className="mb-4 flex items-center justify-between rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    <div>Unable to reach backend. Showing cached/sample problems.</div>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={loadProblems}
+                            className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
+                        >
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            )}
 
-            <Modal open={isOpen} onClose={closeModal} title={selected ? selected.TITLE : "Problem"}>
+            {/* Loading state */}
+            {loading ? (
+                <div className="rounded border bg-white shadow-sm p-8 text-center">
+                    <svg
+                        className="mx-auto h-8 w-8 animate-spin text-[#0f62fe]"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                        />
+                        <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                    </svg>
+                    <div className="mt-3 text-sm text-[#4a4a4a]">Loading problems...</div>
+                </div>
+            ) : (
+                <motion.div
+                    className="overflow-x-auto rounded border bg-white shadow-sm"
+                    variants={tableVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <table className="min-w-full divide-y">
+                        <thead className="bg-[#4a4a4a] text-[#ffffff]">
+                            <tr>
+                                <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium">Title</th>
+                                <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
+                                <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y bg-white">
+                            {problems.map((p, index) => {
+                                // support both backend shape (uppercase) and fallback (lowercase)
+                                const id = p.ID || p.id;
+                                const title = p.TITLE || p.title;
+                                const date = p.SUB_DATE || p.date;
+                                return (
+                                    <motion.tr
+                                        key={id || index}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                    >
+                                        <td className="px-4 py-3 text-sm text-[#4a4a4a]">{id}</td>
+                                        <td className="px-4 py-3 text-sm text-[#4a4a4a]">{title}</td>
+                                        <td className="px-4 py-3 text-sm text-[#4a4a4a]">{date}</td>
+                                        <td className="px-4 py-3 text-right">
+                                            <button
+                                                onClick={() => openModal(p)}
+                                                className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-[#ffffff] hover:bg-[#e57f00]"
+                                            >
+                                                View
+                                            </button>
+                                        </td>
+                                    </motion.tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </motion.div>
+            )}
+
+            <Modal open={isOpen} onClose={closeModal} title={selected ? (selected.TITLE || selected.title) : "Problem"}>
                 {selected ? (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -176,29 +239,29 @@ const ProblemStatements = () => {
                         transition={{ duration: 0.3 }}
                     >
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>ID:</strong> {selected.ID}
+                            <strong>ID:</strong> {selected.ID || selected.id}
                         </div>
                         <div className="mb-3 text-sm text-[#4a4a4a]">
-                            <strong>Date:</strong> {selected.SUB_DATE}
+                            <strong>Date:</strong> {selected.SUB_DATE || selected.date}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
-                            <strong>Description:</strong> {selected.DESCRIPTION}
+                            <strong>Description:</strong> {selected.DESCRIPTION || selected.description}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
-                            <strong>Category:</strong> {selected.CATEGORY}
+                            <strong>Category:</strong> {selected.CATEGORY || selected.category}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
-                            <strong>Department:</strong> {selected.DEPT}
+                            <strong>Department:</strong> {selected.DEPT || selected.dept || "-"}
                         </div>
                         <div className="mt-4 text-sm text-[#4a4a4a]">
                             <strong>Resources:</strong>{" "}
                             <a
                                 className="hover:underline text-blue-600"
-                                href={selected.Links}
+                                href={selected.Links || selected.resources}
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                {selected.Links}
+                                {selected.Links || selected.resources}
                             </a>
                         </div>
                         <div className="mt-6 flex justify-end gap-3">

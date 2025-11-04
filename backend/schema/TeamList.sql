@@ -13,3 +13,14 @@ create table problems(
                       Links VARCHAR(256),
                       Reference VARCHAR(256)
 );
+
+create table submissions(
+                        ID INT PRIMARY KEY AUTO_INCREMENT,
+                        PROBLEM_ID INT,
+                        TEAM_ID INT,
+                        SUB_DATE DATE,
+                        STATUS VARCHAR(20) DEFAULT 'PENDING',
+                        SOL_LINK VARCHAR(256),
+                        FOREIGN KEY (PROBLEM_ID) REFERENCES problems(ID),
+                        FOREIGN KEY (TEAM_ID) REFERENCES Team_List(ID)
+);
