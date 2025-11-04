@@ -136,12 +136,12 @@ const ProblemStatements = () => {
 
     return (
         <motion.div
-            className="p-4"
+            className="p-4 min-h-screen"
             variants={pageVariants}
             initial="hidden"
             animate="visible"
         >
-            <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a]">Problems</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a] mt-30">Problems</h2>
 
             {/* Error banner */}
             {error && (
