@@ -18,6 +18,8 @@ create table submissions(
                         ID INT PRIMARY KEY AUTO_INCREMENT,
                         PROBLEM_ID INT,
                         TEAM_ID INT,
+                        SOL_TITLE VARCHAR(100),
+                        SOL_DESCRIPTION TEXT,
                         SUB_DATE DATE,
                         STATUS VARCHAR(20) DEFAULT 'PENDING',
                         SOL_LINK VARCHAR(256),
