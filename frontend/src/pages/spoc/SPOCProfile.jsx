@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion"; // 👈 Added Framer Motion
+import axios from "axios";
+import URL from "../../Utils";
 
 const SPOCProfile = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -10,6 +12,11 @@ const SPOCProfile = () => {
     college: "Knowledge Institute of Technology",
     email: "sample@kiot.ac.in",
   });
+
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+    axios.get(`${URL}/cookie`).then(res => console.log(res))
+  },[])
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

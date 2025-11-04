@@ -145,7 +145,7 @@ const ProblemStatements = () => {
 
             {/* Error banner */}
             {error && (
-                <div className="mb-4 flex items-center justify-between rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <div className="mb-4 flex items-center justify-between rounded border mt-10 border-red-200 bg-red-50 p-3 text-sm text-red-700">
                     <div>Unable to reach backend. Showing cached/sample problems.</div>
                     <div className="flex gap-2">
                         <button
@@ -190,7 +190,7 @@ const ProblemStatements = () => {
                     initial="hidden"
                     animate="visible"
                 >
-                    <table className="min-w-full divide-y">
+                    <table className="min-w-full divide-y ">
                         <thead className="bg-[#4a4a4a] text-[#ffffff]">
                             <tr>
                                 <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
