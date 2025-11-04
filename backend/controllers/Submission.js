@@ -18,4 +18,10 @@ const SubmitSolution = AsyncHandler(async (req, res) => {
 });
 
 
-export { SubmitSolution };
+const Get_solution = AsyncHandler(async (req, res) => {
+    const { teamId } = req.params;
+    const [result] = await connection.query(`SELECT * FROM submissions WHERE TEAM_ID = ?`, [teamId]);
+    res.status(200).json(result);
+});
+
+export { SubmitSolution, Get_solution };

@@ -1,9 +1,10 @@
 import AsyncHandler from "../utils/AsyncHandler.js";
 import connection from "../database/mysql.js";
 import nodemailer from "nodemailer"
-import { compare, hashSync, } from "bcrypt"
+import { compare, hashSync } from "bcrypt"
 import cookie from "cookie-parser"
 import jwt from "jsonwebtoken"
+
 const signup = AsyncHandler(async (req, res) => {
     const { email, password, role, college, college_code, name } = req.params;
     // console.log(req.params);
@@ -24,7 +25,6 @@ const signup = AsyncHandler(async (req, res) => {
         console.log(error)
         console.log("error")
         res.status(201).send("error")
-
     }
 
 })
