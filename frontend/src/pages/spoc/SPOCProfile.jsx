@@ -12,10 +12,13 @@ const SPOCProfile = () => {
     college: "Knowledge Institute of Technology",
     email: "sample@kiot.ac.in",
   });
+  const [data, setdata] = useState([])
 
   useEffect(() => {
     axios.defaults.withCredentials = true;
-    axios.get(`${URL}/cookie`).then(res => console.log(res))
+    axios.get(`${URL}/cookie`).then(res => {
+      setdata(res.data)
+    })
   },[])
 
   const handleImageChange = (e) => {
@@ -28,6 +31,8 @@ const SPOCProfile = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  console.log(data)
 
   // ✨ Animation variants (same style as dashboard)
   const pageVariants = {
@@ -159,7 +164,7 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="name"
-                  value={formData.name}
+                  value={ data.NAME ? data.NAME : ""}
                   onChange={handleChange}
                   placeholder="Enter your name"
                   className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
@@ -171,7 +176,7 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="phone"
-                  value={formData.phone}
+                  value={data.PHONE ? data.PHONE : ""}
                   onChange={handleChange}
                   placeholder="Enter your phone number"
                   className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
@@ -184,7 +189,7 @@ const SPOCProfile = () => {
               <input
                 type="text"
                 name="designation"
-                value={formData.designation}
+                value={data.COLLEGE ? data.COLLEGE : ""}
                 onChange={handleChange}
                 placeholder="Enter your designation"
                 className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
@@ -197,9 +202,9 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="college"
-                  value={formData.college}
-                  disabled
-                  className="mt-1 w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-500 cursor-not-allowed"
+                  value={data.EMAIL ? data.EMAIL : ""}
+                  
+                  className="mt-1 w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm "
                 />
               </div>
 
@@ -208,9 +213,9 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="email"
-                  value={formData.email}
-                  disabled
-                  className="mt-1 w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-500 cursor-not-allowed"
+                  value={data.COLLEGE_CODE ? data.COLLEGE_CODE : ""}
+                  className="mt-1 w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm "
+
                 />
               </div>
             </div>
