@@ -11,6 +11,7 @@ import {
   FaQuoteLeft,
   FaStar,
 } from "react-icons/fa";
+import FAQ from "./FAQ";
 
 const Homepage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -373,8 +374,11 @@ const Homepage = () => {
         </div>
       </section>
             
+      
+      <FAQ />
+
       {/* Call to Action Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-orange-50 via-white to-amber-100 text-center">
+      <section className="py-20 px-4  text-center">
         <motion.h2
           className="text-3xl md:text-4xl font-bold mb-8 text-orange-600"
           initial={{ opacity: 0, y: 8 }}

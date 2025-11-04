@@ -10,101 +10,96 @@ const FAQ = () => {
   const faqData = [
     {
       question: "What is Solve for Sakthi?",
-      answer: "Solve for Sakthi is an innovative platform that connects students with real-world manufacturing challenges. It empowers teams to collaborate, innovate, and solve industry problems using technology and creativity."
+      answer:
+        "Solve for Sakthi is an innovative initiative connecting students with real-world manufacturing challenges. It empowers them to collaborate, innovate, and solve problems using technology and creativity.",
     },
     {
       question: "Who can participate?",
-      answer: "Any student interested in problem-solving, innovation, and manufacturing can participate. Teams are formed from various disciplines to bring diverse perspectives to the challenges."
+      answer:
+        "Any student passionate about innovation and problem-solving can participate. Teams are encouraged to include members from diverse disciplines.",
     },
     {
       question: "How do I register?",
-      answer: "You can register by visiting our registration page and filling out the required details. Once registered, you'll be able to join teams and access problem statements."
+      answer:
+        "Visit our official registration page and complete the form with required details. Once registered, you can access problem statements and join a team.",
     },
     {
       question: "What types of problems are available?",
-      answer: "Problems range from supply chain optimization, manufacturing process improvements, to sustainable practices in industry. All problems are real-world challenges provided by industry partners."
+      answer:
+        "Challenges include supply chain optimization, manufacturing process improvements, and sustainable industry practices, provided directly by industry partners.",
     },
     {
       question: "How are submissions evaluated?",
-      answer: "Submissions are evaluated by expert evaluators who provide feedback based on innovation, feasibility, impact, and technical excellence. Teams receive detailed reviews to refine their solutions."
-    },
-    {
-      question: "Is there any cost to participate?",
-      answer: "Participation is free. The platform is designed to provide educational and experiential opportunities for students without any financial barriers."
-    },
-    {
-      question: "Can I work on multiple problems?",
-      answer: "Teams typically focus on one problem statement, but individuals can be part of multiple teams if they have the capacity. However, we encourage deep engagement with a single challenge."
-    },
-    {
-      question: "What support is available for teams?",
-      answer: "Teams have access to mentors, industry experts, and resources. Regular check-ins, workshops, and feedback sessions are provided throughout the process."
-    },
-    {
-      question: "How long does the program last?",
-      answer: "The duration varies by problem statement, but typically ranges from a few weeks to several months, allowing teams sufficient time to develop and refine their solutions."
-    },
-    {
-      question: "What happens after submission?",
-      answer: "After evaluation, top solutions may be presented to industry partners. Winners could receive recognition, internships, or opportunities to implement their ideas."
+      answer:
+        "Expert evaluators assess submissions based on innovation, feasibility, impact, and technical excellence. Constructive feedback is shared with all teams.",
     }
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 via-orange-100 to-orange text-gray-900 py-20 px-4">
-      <div className="max-w-4xl mx-auto mt-15" >
-        <h1 className="text-4xl md:text-5xl font-bold text-center text-orange-600 mb-12">
+    <div className="min-h-screen bg-white text-gray-900 py-20 px-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-orange-600 mb-8">
           Frequently Asked Questions
         </h1>
-        <p className="text-lg text-center text-gray-600 mb-16 leading-relaxed">
-          Find answers to common questions about Solve for Sakthi. If you don't see your question here, feel free to contact us.
+        <p className="text-lg text-center text-gray-600 mb-16 max-w-2xl mx-auto leading-relaxed">
+          Here you’ll find answers to the most common questions about Solve for Sakthi. 
+          If your question isn’t listed, please reach out to our support team.
         </p>
 
-        <div className="space-y-6">
+        {/* Accordion */}
+        <div className="space-y-4">
           {faqData.map((item, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-blue-100">
+            <div
+              key={index}
+              className="border border-gray-200 rounded-xl hover:shadow-md transition-all duration-300"
+            >
               <button
                 onClick={() => toggleAccordion(index)}
-                className="w-full text-left p-8 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-2xl"
+                className="w-full flex justify-between items-center p-6 text-left focus:outline-none  "
               >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-semibold text-gray-900 pr-4">
-                    {item.question}
-                  </h3>
-                  <svg
-                    className={`w-6 h-6 text-orange-600 transform transition-transform duration-300 ${
-                      openIndex === index ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                <h3 className="text-lg md:text-xl font-semibold text-gray-800">
+                  {item.question}
+                </h3>
+                <svg
+                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${
+                    openIndex === index ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
               </button>
               <div
                 className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  openIndex === index
+                    ? "max-h-64 opacity-100"
+                    : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="px-8 pb-8">
-                  <p className="text-gray-700 leading-relaxed">
-                    {item.answer}
-                  </p>
+                <div className="px-6 pb-6 text-gray-700 leading-relaxed text-base border-t border-gray-100 bg-orange-50">
+                  {item.answer}
                 </div>
               </div>
             </div>
           ))}
         </div>
 
+        {/* Contact Section */}
         <div className="text-center mt-16">
-          <p className="text-gray-600 mb-6">
-            Still have questions? We're here to help!
+          <p className="text-gray-600 mb-4">
+            Still have questions? Our team will be happy to assist you.
           </p>
           <a
             href="mailto:support@solveforsakthi.com"
-            className="inline-block bg-linear-to-br from-orange-500 to-orange-700 text-white font-semibold py-3 px-8 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300"
+            className="inline-block bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-orange-700 hover:shadow-lg transition-all duration-300"
           >
             Contact Support
           </a>
