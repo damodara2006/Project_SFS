@@ -106,8 +106,8 @@ const SpocDashboard = () => {
                 <main className="flex-1 p-10">
                     {activeView === 'dashboard' && (
                         <>
+                            <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-gray-300'>LOGOUT</button></div>
                             <h1 className="text-3xl font-bold mb-8 text-gray-800">SPOC Dashboard</h1>
-
                             {/* Stats Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                                 <motion.div
@@ -129,7 +129,7 @@ const SpocDashboard = () => {
                                     <p className="text-4xl font-bold text-[#fc8f00]">{totalTeamsSubmitted}</p>
                                 </motion.div>
                             </div>
-
+                            
                             {/* Teams Table */}
                             <motion.div
                                 className="bg-white p-6 rounded-lg shadow-lg"
@@ -180,11 +180,13 @@ const SpocDashboard = () => {
                                         </ul>
                                     </nav>
                                 </div>
+
+                                
                             </motion.div>
                         </>
                     )}
 
-                    <button onClick={handlelogout}>LOGOUT</button>
+                   
 
                     {activeView === 'problems' && <ProblemStatements />}
                     {activeView === 'profile' && <SPOCProfile />}
