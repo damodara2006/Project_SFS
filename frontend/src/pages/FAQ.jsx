@@ -104,7 +104,7 @@ const FAQ = () => {
           </p>
           <a
             href="mailto:support@solveforsakthi.com"
-            className="inline-block bg-gradient-to-br from-orange-500 to-orange-700 text-white font-semibold py-3 px-8 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300"
+            className="inline-block bg-linear-to-br from-orange-500 to-orange-700 text-white font-semibold py-3 px-8 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300"
           >
             Contact Support
           </a>
