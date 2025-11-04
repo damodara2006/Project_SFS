@@ -24,7 +24,7 @@ const PDFViewer = ({ url }) => {
   const file = url || samplePdf;
 
   return (
-    <div className="w-full h-[70vh] overflow-auto bg-gray-100 rounded-lg">
+    <div className="w-full h-[70vh] overflow-auto bg-gray-100 rounded-lg ">
       <object data={file} type="application/pdf" width="100%" height="100%">
         <div className="p-6 text-center text-gray-500">
           This browser does not support embedded PDFs.{' '}
@@ -63,7 +63,7 @@ const SubmissionDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#ffffff] py-10 px-6">
+    <div className="min-h-screen bg-[#ffffff] py-10 px-6 ml-52">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

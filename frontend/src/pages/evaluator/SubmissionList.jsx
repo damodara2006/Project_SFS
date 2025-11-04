@@ -124,7 +124,7 @@ const SubmissionList = () => {
       : submissions.filter((sub) => sub.status === filterStatus);
 
   return (
-    <div className="min-h-screen bg-[#ffffff] py-10 px-6 mt-14">
+    <div className="min-h-screen bg-[#ffffff] py-10 px-6 mt-14 ml-52">
       {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
