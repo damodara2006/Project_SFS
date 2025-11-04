@@ -12,7 +12,7 @@ const ProblemStatementForm = ({ isCreate }) => {
     id: "",
     title: "",
     description: "",
-    department: "",
+    theme: "",
     category: "",
     youtube: "",
     dataset: "",
@@ -214,19 +214,19 @@ const ProblemStatementForm = ({ isCreate }) => {
             />
           </div>
 
-          {/* Department */}
+          {/* Theme */}
           <div>
             <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Department
+              Theme
             </label>
             <input
               type="text"
-              name="department"
-              value={formData.department}
+              name="theme"
+              value={formData.theme}
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="e.g., Ministry of Health"
+              placeholder="e.g., Smart City"
             />
           </div>
 
