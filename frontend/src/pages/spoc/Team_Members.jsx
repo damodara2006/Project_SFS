@@ -21,48 +21,72 @@ function Team_Members() {
                   Back to Team
               </h2></div>
          
-          <table className="min-w-full border border-gray-200">
-              <thead className="bg-gray-100 border-b border-gray-200">
-                  <tr>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Role
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Name
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Phone
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Gender
-                      </th>
-                  </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                  {FullTeam.map((m, idx) => (
-                      <tr key={idx} className="hover:bg-gray-50 transition">
-                          <td className="px-6 py-4 text-sm text-gray-700">
-                              {m.ROLE}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-900">
-                              {m.NAME}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-600">
-                              {m.EMAIL}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-600">
-                              {m.PHONE}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-600">
-                              {m.GENDER}
-                          </td>
+          {
+              FullTeam.length >  0 ? <table className="min-w-full border border-gray-200">
+                  <thead className="bg-gray-100 border-b border-gray-200">
+                      <tr>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                              Role
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                              Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                              Email
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                              Phone
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                              Gender
+                          </th>
                       </tr>
-                  ))}
-              </tbody>
-          </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                      {FullTeam.map((m, idx) => (
+                          <tr key={idx} className="hover:bg-gray-50 transition">
+                              <td className="px-6 py-4 text-sm text-gray-700">
+                                  {m.ROLE}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-900">
+                                  {m.NAME}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                  {m.EMAIL}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                  {m.PHONE}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                  {m.GENDER}
+                              </td>
+                          </tr>
+                      ))}
+                  </tbody>
+              </table> : <div className="rounded border bg-white shadow-sm p-8 text-center">
+                  <svg
+                      className="mx-auto h-8 w-8 animate-spin text-[#0f62fe]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                  >
+                      <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                      />
+                      <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      />
+                  </svg>
+                  <div className="mt-3 text-sm text-[#4a4a4a]">Loading team details...</div>
+              </div>
+          }
     </div>
   )
 }
