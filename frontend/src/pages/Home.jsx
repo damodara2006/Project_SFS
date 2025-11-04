@@ -355,7 +355,7 @@ const Homepage = () => {
                   <div className="w-20 h-20 bg-gradient-to-br from-primary-accent to-amber-500 rounded-full flex items-center justify-center mx-auto shadow-lg group-hover:scale-110 transition-transform duration-300">
                     {item.icon}
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary-accent text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary-accent text-black rounded-full flex items-center justify-center text-xl font-bold">
                     {item.step}
                   </div>
                 </div>
