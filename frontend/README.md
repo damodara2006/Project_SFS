@@ -1,4 +1,3 @@
-// ...existing code...
 # Solve For Sakthi — Frontend (React + Vite)
 
 Short description
