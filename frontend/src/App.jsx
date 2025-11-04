@@ -1,10 +1,10 @@
 import React from "react"; // It's good practice to import React
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 
 // General Component Imports
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Homepage from "./pages/Homepage";
+import Homepage from "./pages/Home";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Header from "./components/Header";
