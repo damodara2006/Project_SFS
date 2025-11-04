@@ -172,3 +172,15 @@ const SpocDashboard = () => {
 };
 
 export default SpocDashboard;
+// import React from 'react'
+// import DashboardWithSide from './DashboardWithSide'
+
+// const SpocDashboard = () => {
+//   return (
+//     <div>
+//         <DashboardWithSide  />
+//     </div>
+//   )
+// }
+
+// export default SpocDashboard

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const SpocApprovalPage = () => {
+const SpocApprovals= () => {
   const [selectedAction, setSelectedAction] = useState(null); // 'approve' or 'reject'
   const [selectedCollege, setSelectedCollege] = useState(null);
   const [toast, setToast] = useState(null);
@@ -208,4 +208,4 @@ const SpocApprovalPage = () => {
   );
 };
 
-export default SpocApprovalPage;
+export default SpocApprovals;

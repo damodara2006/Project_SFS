@@ -21,7 +21,7 @@ const Login = () => {
         <h1 className="text-gray-800 text-3xl font-bold mb-6 text-center">Login</h1>
         <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           {/* Role Selection */}
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <label htmlFor="role" className="text-gray-800 mb-1 text-sm font-medium">
               Select Your Role
             </label>
@@ -36,7 +36,7 @@ const Login = () => {
               <option value="spoc" className="text-black">SPOC</option>
               <option value="student" className="text-black">Student</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Email */}
           <div className="flex flex-col">
