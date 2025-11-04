@@ -60,7 +60,7 @@ function App() {
 
         <Route path="/spoc" element={<SpocDashboard />} />
 
-        <Route path="/spoc/profile" element={<SPOCProfile />} />
+        <Route path=" " element={<SPOCProfile />} />
 
         <Route path="/student/submit-solution" element={<Upload />} />
 

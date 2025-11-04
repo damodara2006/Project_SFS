@@ -28,7 +28,8 @@ function TeamList() {
     function allteams() {
         axios
             .get(`${URL}/fetch_teams`)
-            .then((res) => setFullTeam(res.data))
+            .then((res) => {setFullTeam(res.data), console.log(res);
+            })
             .catch((err) => console.error("Error fetching teams:", err));
     }
 
@@ -201,7 +202,7 @@ function TeamList() {
                                 </button>
                             </div>
 
-                            <table className="min-w-full border border-gray-200">
+                            {FullTeam.length > 0 ? <table className="min-w-full border border-gray-200">
                                 <thead className="bg-gray-100 border-b border-gray-200">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -238,7 +239,7 @@ function TeamList() {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table> : <p>Loading...</p>}
                         </motion.div>
                     ) : null}
                 </AnimatePresence>

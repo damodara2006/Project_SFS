@@ -2,20 +2,39 @@ import React from 'react';
 import { useState } from 'react';
 import Header from './Header'
 import Footer from './Footer';
+import axios from 'axios';
+import URL from '../Utils';
+import { useNavigate } from 'react-router-dom';
+import toast,{Toaster} from 'react-hot-toast';
 const Login = () => {
 
     const[role,setRole]=useState("");
     const[email,setEmail]=useState("");
-    const[password,setPassword]=useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
-    const handleLogin = ()=>{
-       
+  const handleLogin = (e) => {
+    e.preventDefault()
+    axios.defaults.withCredentials = true;
+      axios.post(`${URL}/login`, { email, password })
+        .then(res => {
+          if (res.data) {
+            toast.success("Success",{style:{backgroundColor:"green"}})
+            setTimeout(() => {
+            navigate("/")
+          },2000)
+          }
+          else {
+            toast.error("Failed")
+          }
+      })
     }
 
   return (
     <div>
       <Header />
-    <div className="min-h-screen flex items-center justify-center ">
+      <div className="min-h-screen flex items-center justify-center ">
+        <Toaster position="top-right" />
       
       <div className="bg-white/10  p-10 rounded-3xl w-96 shadow-lg">
         <h1 className="text-gray-800 text-3xl font-bold mb-6 text-center">Login</h1>
@@ -73,7 +92,8 @@ const Login = () => {
 
           {/* Submit Button */}
           <button
-            type="submit"
+              type="submit"
+              onClick={handleLogin}
             className="bg-[#ff8a05] text-white font-semibold py-2 rounded-md mt-2 hover:bg-[#e07c00] transition duration-200"
           >
             Submit

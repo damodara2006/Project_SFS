@@ -2,7 +2,8 @@ const AsyncHandler = requestedfunction => async(req, res, next) => {
     try {
         return await requestedfunction(req, res, next);
     } catch (error) {
-        next(error)
+        console.log(error)
+        return res.send(error)
     }
 }
 

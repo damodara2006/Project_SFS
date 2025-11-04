@@ -5,13 +5,13 @@ import URL from '../../Utils';
 function Team_Members() {
     const params = useParams()
     const navigate = useNavigate()
-    console.log(params)
+    // console.log(params)
     const [FullTeam, setFullTeam] = useState([]);
     
-        console.log(params.id);
+        // console.log(params.id);
         axios.post(`${URL}/fetch_team_members/${params.id}`).then(res => setFullTeam(res.data))
 
-    console.log(FullTeam)
+    // console.log(FullTeam)
   return (
       <div className='min-h-screen min-w-screen border mt-20'>
           <div className='flex text-center items-center  justify-between h-10'> <h2 className="text-xl  font-semibold text-gray-800   ml-2">

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import URL from "../Utils";
 import toast, {Toaster} from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const RoleSelect = ({ value, onChange, error }) => (
   <div className="mb-4">
     <select
@@ -32,7 +33,9 @@ const Register = () => {
     collegeid: "",
     dept: "",
     id: "",
+    name:""
   });
+  const navigate = useNavigate()
   const [errors, setErrors] = useState({});
   const [otpSent, setOtpSent] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
@@ -58,7 +61,7 @@ const Register = () => {
           if (res.status == 200) {
             
             toast.dismiss(lodaing)
-            toast.success("OTP Sent", { style: { backgroundColor: "green" } })
+            toast.success("OTP Sent")
             setGeneratedOtp(res.data), console.log(res), setopt(res.data)
             setOtpSent(true);
 
@@ -78,8 +81,8 @@ const Register = () => {
     if (opt == form.otp) {
       setEmailVerified(true);
       setOtpSent(false);
-      toast.dismiss(lodaing)
-      toast.success("OTP Sent", {style:{backgroundColor:"green"}})
+      // toast.dismiss(lodaing)
+      toast.success("verified successfully!")
       // alert("Email verified successfully!");
     } else {
       setErrors({ otp: "Invalid OTP. Please try again." });
@@ -107,19 +110,37 @@ const Register = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    // console.log(form)
     const fieldErrors = validate(form);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;
+    
     }
 
-    console.log("Validated data:", form);
-    alert("Form submitted successfully!");
+   
+       axios.post(
+        `${URL}/register/${email}/${form.password}/${form.role}/${form.college}/${form.collegeid}/${form.name}`
+       ).then((res) => {
+        
+         if (res.status === 200) {
+           toast.success("Registered!", { style: { backgroundColor: "green" } });
+           setTimeout(() => {
+             navigate("/login");
+           }, 2000);
+         } else {
+           toast.error("Error creating", { style: { backgroundColor: "red" } });
+         }
+      })
+
+
+    
+
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-10 p-4">
-      <Toaster position="top-right"/>
+      <Toaster position="top-right"/> 
       <form
         onSubmit={onSubmit}
         className="w-full max-w-[420px] bg-[#ffffff] rounded-lg shadow-lg p-6"
@@ -214,12 +235,21 @@ const Register = () => {
               <>
                 <div className="mb-4">
                   <input
+                   name="name"
+                   type="text"
+                   value={form.name}
+                   onChange={onChange}
+                   placeholder="SPOC Name"
+                   className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a] "
+                   aria-invalid={!!errors.name}
+                 />
+                  <input
                     name="college"
                     type="text"
                     value={form.college}
                     onChange={onChange}
                     placeholder="College"
-                    className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
+                    className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a] mt-3"
                     aria-invalid={!!errors.college}
                   />
                   {errors.college && (
