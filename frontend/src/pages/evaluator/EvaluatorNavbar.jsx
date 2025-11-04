@@ -4,7 +4,7 @@ import { FaClipboardList, FaTasks } from "react-icons/fa";
 
 const EvaluatorNavbar = () => {
   return (
-    <aside className="w-52 bg-[#494949] text-white p-6 fixed h-full">
+    <aside className="w-64 bg-[#494949] text-white p-6">
       <nav>
         <ul>
           <li className="mb-4">
