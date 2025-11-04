@@ -141,7 +141,13 @@ const ProblemStatements = () => {
             initial="hidden"
             animate="visible"
         >
-            <h2 className="text-2xl font-semibold mb-4 text-[#4a4a4a] mt-30">Problems</h2>
+            <h2 className="text-3xl  mb-4 text-[#4a4a4a] mt-30 font-bold">Problem Statements</h2>
+
+            <div className="bg-[#4a4a4a] my-12 p-4 rounded text-center text-white font-bold text-2xl w-60 h-50 justify-center flex flex-col items-center ml-120">
+                <h1>Total Problem Statements</h1>
+                <br />
+                <h1 className="text-3xl"> {problems.length}</h1>
+            </div>
 
             {/* Error banner */}
             {error && (
