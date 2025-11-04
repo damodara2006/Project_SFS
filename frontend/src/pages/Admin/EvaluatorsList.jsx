@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   FiEye,
+
   FiEdit,
   FiTrash2,
   FiPlus,
@@ -10,6 +11,8 @@ import {
   FiUsers,
   FiUserCheck,
   FiUserX,
+  FiChevronLeft,
+  FiClipboard,
 } from "react-icons/fi";
 
 const EvaluatorList = () => {
@@ -20,6 +23,11 @@ const EvaluatorList = () => {
       email: "john@example.com",
       dept: "CSE",
       status: "active",
+      rank: 5,
+      problemStatement: "AI-Powered assistants",
+      experience: "5 years",
+      completed: 25,
+      pending: 5,
     },
     {
       id: "EV1002",
@@ -27,12 +35,78 @@ const EvaluatorList = () => {
       email: "jane@example.com",
       dept: "ECE",
       status: "inactive",
+      rank: 12,
+      problemStatement: "IoT sensor networks",
+      experience: "8 years",
+      completed: 42,
+      pending: 3,
+    },
+    {
+      id: "EV1003",
+      name: "Alex Johnson",
+      email: "alex.j@example.com",
+      dept: "MECH",
+      status: "active",
+      rank: 8,
+      problemStatement: "Robotics and Automation",
+      experience: "6 years",
+      completed: 33,
+      pending: 7,
+    },
+    {
+      id: "EV1004",
+      name: "Emily Davis",
+      email: "emily.d@example.com",
+      dept: "EEE",
+      status: "active",
+      rank: 15,
+      problemStatement: "Power Grid Optimization",
+      experience: "7 years",
+      completed: 29,
+      pending: 4,
+    },
+    {
+      id: "EV1005",
+      name: "Chris Lee",
+      email: "chris.lee@example.com",
+      dept: "CSE",
+      status: "inactive",
+      rank: 2,
+      problemStatement: "Cybersecurity Protocols",
+      experience: "10 years",
+      completed: 50,
+      pending: 1,
+    },
+    {
+        id: "EV1006",
+        name: "Patricia Wilson",
+        email: "patricia.w@example.com",
+        dept: "ECE",
+        status: "active",
+        rank: 20,
+        problemStatement: "Wireless Communication",
+        experience: "4 years",
+        completed: 18,
+        pending: 6,
+    },
+    {
+        id: "EV1007",
+        name: "Michael Brown",
+        email: "michael.b@example.com",
+        dept: "MECH",
+        status: "active",
+        rank: 9,
+        problemStatement: "Fluid Dynamics Simulation",
+        experience: "9 years",
+        completed: 45,
+        pending: 2,
     },
   ]);
 
   const [showCreatePopup, setShowCreatePopup] = useState(false);
-  const [showViewPopup, setShowViewPopup] = useState(null);
+  const [showDetailsPopup, setShowDetailsPopup] = useState(null);
   const [showEditPopup, setShowEditPopup] = useState(null);
+  const [viewingRecords, setViewingRecords] = useState(false); // State for popup view
   const [toast, setToast] = useState(null);
   const [newEvaluator, setNewEvaluator] = useState({
     id: "",
@@ -46,10 +120,8 @@ const EvaluatorList = () => {
     setTimeout(() => setToast(null), 3000);
   };
 
-  // Generate new Evaluator ID automatically
   const generateId = () => `EV${1000 + evaluators.length + 1}`;
 
-  // Handle new evaluator creation
   const handleCreate = (e) => {
     e.preventDefault();
     if (!newEvaluator.name || !newEvaluator.email || !newEvaluator.dept) {
@@ -57,20 +129,28 @@ const EvaluatorList = () => {
       return;
     }
     const id = generateId();
-    const newEval = { ...newEvaluator, id, status: "active" };
+    // Add default records for new evaluators
+    const newEval = {
+      ...newEvaluator,
+      id,
+      status: "active",
+      rank: "N/A",
+      problemStatement: "Not Assigned",
+      experience: "0 years",
+      completed: 0,
+      pending: 0,
+    };
     setEvaluators([...evaluators, newEval]);
     setNewEvaluator({ id: "", name: "", email: "", dept: "" });
     setShowCreatePopup(false);
     showToast("Evaluator created successfully!", "success");
   };
 
-  // Handle delete
   const handleDelete = (id) => {
     setEvaluators(evaluators.filter((ev) => ev.id !== id));
     showToast("Evaluator deleted successfully!", "success");
   };
 
-  // Toggle active/inactive
   const handleToggleStatus = (id) => {
     setEvaluators(
       evaluators.map((ev) =>
@@ -82,7 +162,6 @@ const EvaluatorList = () => {
     showToast("Evaluator status updated!", "success");
   };
 
-  // Handle edit save
   const handleEditSave = (updatedEval) => {
     setEvaluators(
       evaluators.map((ev) => (ev.id === updatedEval.id ? updatedEval : ev))
@@ -91,10 +170,19 @@ const EvaluatorList = () => {
     showToast("Evaluator updated successfully!", "success");
   };
 
-  // --- Stats ---
+  // Open the new details popup
+  const handleViewDetails = (evaluator) => {
+    setShowDetailsPopup(evaluator);
+    setViewingRecords(false); // Always start with the main details view
+  };
+
   const totalEvaluators = evaluators.length;
-  const activeEvaluators = evaluators.filter((e) => e.status === "active").length;
-  const inactiveEvaluators = evaluators.filter((e) => e.status === "inactive").length;
+  const activeEvaluators = evaluators.filter(
+    (e) => e.status === "active"
+  ).length;
+  const inactiveEvaluators = evaluators.filter(
+    (e) => e.status === "inactive"
+  ).length;
 
   return (
     <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
@@ -124,7 +212,9 @@ const EvaluatorList = () => {
           </div>
           <div>
             <p className="text-sm text-[#718096]">Total Evaluators</p>
-            <p className="text-xl font-bold text-[#1A202C]">{totalEvaluators}</p>
+            <p className="text-xl font-bold text-[#1A202C]">
+              {totalEvaluators}
+            </p>
           </div>
         </div>
         <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 flex items-center gap-3">
@@ -133,7 +223,9 @@ const EvaluatorList = () => {
           </div>
           <div>
             <p className="text-sm text-[#718096]">Active Evaluators</p>
-            <p className="text-xl font-bold text-[#1A202C]">{activeEvaluators}</p>
+            <p className="text-xl font-bold text-[#1A202C]">
+              {activeEvaluators}
+            </p>
           </div>
         </div>
         <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-4 flex items-center gap-3">
@@ -142,7 +234,9 @@ const EvaluatorList = () => {
           </div>
           <div>
             <p className="text-sm text-[#718096]">Inactive Evaluators</p>
-            <p className="text-xl font-bold text-[#1A202C]">{inactiveEvaluators}</p>
+            <p className="text-xl font-bold text-[#1A202C]">
+              {inactiveEvaluators}
+            </p>
           </div>
         </div>
       </div>
@@ -166,8 +260,18 @@ const EvaluatorList = () => {
                 key={ev.id}
                 className="hover:bg-gray-50 border-t border-[#E2E8F0] transition-all"
               >
-                <td className="py-3 px-4 font-medium text-[#1A202C]">{ev.id}</td>
-                <td className="py-3 px-4">{ev.name}</td>
+                <td
+                  onClick={() => handleViewDetails(ev)}
+                  className="py-3 px-4 font-medium text-[#1A202C] cursor-pointer hover:text-[#FF9900] transition-colors"
+                >
+                  {ev.id}
+                </td>
+                <td
+                  onClick={() => handleViewDetails(ev)}
+                  className="py-3 px-4 cursor-pointer hover:text-[#FF9900] transition-colors"
+                >
+                  {ev.name}
+                </td>
                 <td className="py-3 px-4 text-[#718096]">{ev.email}</td>
                 <td className="py-3 px-4 text-[#718096]">{ev.dept}</td>
                 <td className="py-3 px-4">
@@ -183,12 +287,6 @@ const EvaluatorList = () => {
                 </td>
                 <td className="py-3 px-4 text-center space-x-3">
                   <button
-                    onClick={() => setShowViewPopup(ev)}
-                    className="text-[#3182CE] hover:text-blue-700 transition-all"
-                  >
-                    <FiEye />
-                  </button>
-                  <button
                     onClick={() => setShowEditPopup(ev)}
                     className="text-[#FF9900] hover:text-[#E68500] transition-all"
                   >
@@ -196,7 +294,11 @@ const EvaluatorList = () => {
                   </button>
                   <button
                     onClick={() => handleToggleStatus(ev.id)}
-                    className="text-[#48BB78] hover:text-green-600 transition-all"
+                    className={`transition-all ${
+                      ev.status === "active"
+                        ? "text-yellow-500 hover:text-yellow-700"
+                        : "text-green-500 hover:text-green-700"
+                    }`}
                   >
                     {ev.status === "active" ? "Deactivate" : "Activate"}
                   </button>
@@ -213,6 +315,8 @@ const EvaluatorList = () => {
         </table>
       </div>
 
+      {/* --- POPUPS --- */}
+
       {/* Create Popup */}
       {showCreatePopup && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
@@ -221,6 +325,7 @@ const EvaluatorList = () => {
               Create New Evaluator
             </h2>
             <form onSubmit={handleCreate} className="space-y-4">
+              {/* Fields for name, email, dept */}
               <div>
                 <label className="text-sm text-[#4A5568] font-medium mb-1 block">
                   Evaluator Name
@@ -290,35 +395,112 @@ const EvaluatorList = () => {
         </div>
       )}
 
-      {/* View Popup */}
-      {showViewPopup && (
+      {/* Details & Records Popup */}
+      {showDetailsPopup && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md">
-            <h2 className="text-lg font-semibold text-[#1A202C] mb-4">
-              Evaluator Details
-            </h2>
-            <p>
-              <b>ID:</b> {showViewPopup.id}
-            </p>
-            <p>
-              <b>Name:</b> {showViewPopup.name}
-            </p>
-            <p>
-              <b>Email:</b> {showViewPopup.email}
-            </p>
-            <p>
-              <b>Department:</b> {showViewPopup.dept}
-            </p>
-            <p>
-              <b>Status:</b> {showViewPopup.status}
-            </p>
-            <div className="flex justify-end mt-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-lg transition-all">
+            {/* Conditional Header */}
+            <div className="flex items-center mb-4">
+              {viewingRecords && (
+                <button
+                  onClick={() => setViewingRecords(false)}
+                  className="mr-3 p-1 rounded-full hover:bg-gray-100"
+                >
+                  <FiChevronLeft />
+                </button>
+              )}
+              <h2 className="text-lg font-semibold text-[#1A202C]">
+                {viewingRecords ? "Evaluator Records" : "Evaluator Details"}
+              </h2>
+            </div>
+
+            {/* Conditional Content */}
+            {!viewingRecords ? (
+              // Details View
+              <div className="space-y-2 text-sm">
+                <p>
+                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                    ID:
+                  </b>{" "}
+                  {showDetailsPopup.id}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                    Name:
+                  </b>{" "}
+                  {showDetailsPopup.name}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                    Email:
+                  </b>{" "}
+                  {showDetailsPopup.email}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                    Department:
+                  </b>{" "}
+                  {showDetailsPopup.dept}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-24 inline-block">
+                    Status:
+                  </b>{" "}
+                  {showDetailsPopup.status}
+                </p>
+              </div>
+            ) : (
+              // Records View
+              <div className="space-y-2 text-sm">
+                <p>
+                  <b className="font-medium text-[#4A5568] w-32 inline-block">
+                    Overall Rank:
+                  </b>{" "}
+                  {showDetailsPopup.rank}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-32 inline-block">
+                    Experience:
+                  </b>{" "}
+                  {showDetailsPopup.experience}
+                </p>
+                <p>
+                  <b className="font-medium text-[#4A5568] w-32 inline-block">
+                    Problem Domain:
+                  </b>{" "}
+                  {showDetailsPopup.problemStatement}
+                </p>
+                <p>
+                  <b className="font-medium text-green-600 w-32 inline-block">
+                    Completed:
+                  </b>{" "}
+                  {showDetailsPopup.completed} problems
+                </p>
+                <p>
+                  <b className="font-medium text-red-600 w-32 inline-block">
+                    Pending:
+                  </b>{" "}
+                  {showDetailsPopup.pending} problems
+                </p>
+              </div>
+            )}
+
+            {/* Footer Buttons */}
+            <div className="flex justify-end space-x-3 mt-6">
               <button
-                onClick={() => setShowViewPopup(null)}
+                onClick={() => setShowDetailsPopup(null)}
                 className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm"
               >
                 Close
               </button>
+              {!viewingRecords && (
+                <button
+                  onClick={() => setViewingRecords(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#FF9900] hover:bg-[#E68500] text-white rounded-xl text-sm"
+                >
+                  <FiClipboard /> Show Records
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -338,6 +520,7 @@ const EvaluatorList = () => {
               }}
               className="space-y-4"
             >
+              {/* Edit form fields */}
               <input
                 type="text"
                 value={showEditPopup.name}
