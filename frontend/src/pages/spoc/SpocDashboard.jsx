@@ -119,8 +119,8 @@ const SpocDashboard = () => {
                     <p className='absolute bottom-16'>
                     {data.NAME }
                     </p>
-
-                                                        <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-white text-black  absolute bottom-0'>LOGOUT</button></div>
+                      {data.NAME?          
+                <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-white text-black  absolute bottom-0'>LOGOUT</button></div>:""}
 
                 </aside>
 
