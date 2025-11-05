@@ -10,6 +10,7 @@ const Login = () => {
     const[email,setEmail]=useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate()
+  const [Password, setpassword] = useState(false)
 
   const handleLogin = async(e) => {
    try {
@@ -97,11 +98,13 @@ const Login = () => {
               Password
             </label>
             <input
-              type="password"
+              type={Password ? "text" : "password"}
               id="password"
               className="p-2 rounded-md bg-transparent border border-gray-300 text-gray-800 focus:outline-none focus:border-[#fc8f00]"
               onChange={(e)=>setPassword(e.target.value)}
-           />
+              />
+              <div className='flex w-full gap-1 mt-1'><input type="checkbox" onClick={()=>setpassword(!Password)} className='ml-2' id='check' />
+                <label htmlFor="check" className='text-sm' unselectable="on">Show password</label></div>
           </div>
 
           {/* Forgot Password */}
