@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 // General Component Imports
 import Login from "./components/Login";
@@ -52,36 +53,11 @@ function App() {
     setIsAuthenticated(!!token);
   }, []);
 
-  const showToast = (message) => {
-    const id = "app-toast";
-    if (document.getElementById(id)) return;
-    const el = document.createElement("div");
-    el.id = id;
-    el.textContent = message;
-    Object.assign(el.style, {
-      position: "fixed",
-      bottom: "24px",
-      left: "50%",
-      transform: "translateX(-50%)",
-      background: "rgba(0,0,0,0.8)",
-      color: "#fff",
-      padding: "10px 14px",
-      borderRadius: "6px",
-      zIndex: 9999,
-      fontSize: "14px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-    });
-    document.body.appendChild(el);
-    setTimeout(() => {
-      el.style.transition = "opacity 300ms";
-      el.style.opacity = "0";
-      setTimeout(() => el.remove(), 300);
-    }, 2500);
-  };
+  // react-hot-toast will display messages, no custom DOM toast needed
 
   function ProtectedRoute({ children }) {
     useEffect(() => {
-      if (!isAuthenticated) showToast("Please login to your account");
+      if (!isAuthenticated) toast.error("Please login to your account");
     }, [isAuthenticated]);
 
     if (!isAuthenticated) return <Navigate to="/" replace />;
@@ -91,6 +67,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
+      <Toaster position="top-center" />
 
       <Routes>
         <Route path="/" element={<Homepage />} />
