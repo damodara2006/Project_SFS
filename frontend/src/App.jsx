@@ -99,17 +99,9 @@ function App() {
 
         <Route path="/faq" element={<FAQ />} />
 
-        <Route path="/login" element={
-          <ProtectedRoute>
-            <Login />
-          </ProtectedRoute>
-        } />
+        <Route path="/login" element={<Login />} />
 
-        <Route path="/register" element={
-          <ProtectedRoute>
-            <Register />
-          </ProtectedRoute>
-        } />
+        <Route path="/register" element={<Register />} />
 
         <Route path="/student" element={
           <ProtectedRoute>

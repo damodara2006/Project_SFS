@@ -315,7 +315,7 @@ const Register = () => {
                 </div>
               </>
             )}
-
+            
             <button
               type="submit"
               className="w-full p-3 rounded bg-[#fc8f00] hover:bg-[#e07a00] text-[#ffffff] font-semibold transition"
@@ -324,7 +324,12 @@ const Register = () => {
             </button>
           </>
         )}
+        <p>Already Registered?
+            <a href="/login" className="text-blue-500 hover:underline"> Login here</a>
+            </p>
       </form>
+      
+
     </div>
   );
 };
