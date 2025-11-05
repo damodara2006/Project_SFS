@@ -28,6 +28,15 @@ const Login = () => {
              if (res.data.user[0].ROLE == 'SPOC') {
                navigate("/spoc")
              }
+             else if (res.data.user[0].ROLE == 'Evaluator') {
+               navigate("/evaluator")
+             }
+             else if (res.data.user[0].ROLE == 'Admin') {
+               navigate("/admin")
+             }
+             else if (res.data.user[0].ROLE == 'Student') {
+               navigate("/student")
+             }
              else {
                navigate("/")
              }
