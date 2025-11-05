@@ -11,8 +11,8 @@ import { Get_cookies } from "../controllers/Cookie.js";
 const router = Router();
 
 
-router.route("/add_members").post(Add_Team_Members)
-router.route("/fetch_teams").get(Fetch_Teams)
+router.route("/add_members/:id").post(Add_Team_Members)
+router.route("/fetch_teams/:id").post(Fetch_Teams)
 router.route("/fetch_team_members/:id").post(Fetch_Team_Members)
 router.route("/register/:email/:password/:role/:college/:college_code/:name").post(signup)
 router.route("/verify_email/:email").post(Verify_OTP)

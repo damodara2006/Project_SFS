@@ -76,81 +76,62 @@ function App() {
 
         <Route path="/faq" element={<FAQ />} />
 
-        <Route path="/login" element={
-          <ProtectedRoute>
-            <Login />
-          </ProtectedRoute>
-        } />
+        <Route path="/login" element={<Login />} />
 
-        <Route path="/register" element={
-          <ProtectedRoute>
-            <Register />
-          </ProtectedRoute>
-        } />
+        <Route path="/register" element={<Register />} />
 
-        <Route path="/student" element={
-          <ProtectedRoute>
-            <SdDashboard />
-          </ProtectedRoute>
-        } />
+        <Route path="/student" element={<SdDashboard />} />
 
-        <Route path="/spoc" element={
-          <ProtectedRoute>
-            <SpocDashboard />
-          </ProtectedRoute>
-        } />
+        <Route path="/spoc" element={<SpocDashboard />} />
 
-        <Route path="/spoc/profile" element={
-          <ProtectedRoute>
-            <SPOCProfile />
-          </ProtectedRoute>
-        } />
+        <Route path=" " element={<SPOCProfile />} />
 
         <Route path="/problemstatements" element={<ProblemStatements />} />
 
-        <Route path="/student/submit-solution" element={
-          <ProtectedRoute>
-            <Upload />
-          </ProtectedRoute>
-        } />
+        <Route path="/student/submit-solution" element={<Upload />} />
 
-        <Route path="/spoc/team_details/:id" element={
-          <ProtectedRoute>
-            <Team_Members />
-          </ProtectedRoute>
-        } />
+        <Route path="/spoc/team_details/:id" element={<Team_Members />} />
 
-        <Route path="/spoc/team" element={
-          <ProtectedRoute>
-            <TeamList />
-          </ProtectedRoute>
-        } />
+        <Route path="/spoc/team" element={<TeamList />} />
 
-        <Route path="/evaluator" element={
-          <ProtectedRoute>
-            <EvaluatorLayout />
-          </ProtectedRoute>
-        }>
+        <Route path="/evaluator" element={<EvaluatorLayout />}>
           <Route index element={<AssignedProblem />} />
+
           <Route path="submissions" element={<SubmissionList />} />
+
           <Route path="submission/:teamId" element={<SubmissionDetail />} />
         </Route>
 
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <AdminLayout />
-          </ProtectedRoute>
-        }>
+        {/* --- COMPLETE ADMIN ROUTING BLOCK --- */}
+
+        <Route
+          path="/admin"
+          element={
+            isAuthenticated ? <AdminLayout /> : <Navigate to="/login" replace />
+          }
+        >
+          {/* Default Admin Route */}
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="spoc-approvals" element={<SpocApprovals />} />
+          {/* Problem Statement Management (CRUD) */}
           <Route path="problems" element={<ProblemStatementsList />} />
           <Route path="problems/create" element={<ProblemStatementCreate />} />
           <Route path="problems/edit/:id" element={<ProblemStatementEdit />} />
+          {/* Evaluator Management (CRUD & Assignment) */}
           <Route path="evaluators" element={<EvaluatorsList />} />
-          <Route path="evaluators/create" element={<EvaluatorManage />} />
-          <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
+          <Route path="evaluators/create" element={<EvaluatorManage />} />{" "}
+          {/* For creation */}
+          <Route
+            path="evaluators/manage/:id"
+            element={<EvaluatorManage />}
+          />{" "}
+          {/* For assignment/editing */}
         </Route>
+
+        {/* --- END ADMIN ROUTING BLOCK --- */}
+
+        {/* ssss */}
       </Routes>
 
       <Footer />

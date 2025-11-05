@@ -21,9 +21,11 @@ const Login = () => {
          console.log(res);
 
          if (res.data.data) {
-           toast.success("Success", { style: { backgroundColor: "green" } })
+           toast.success("Login Successful", { style: { backgroundColor: "green" } })
            setTimeout(() => {
              if (res.data.user[0].ROLE == 'SPOC') {
+               console.log("heee");
+               
                navigate("/spoc")
              }
              else if (res.data.user[0].ROLE == 'EVALUATOR') {
@@ -41,7 +43,7 @@ const Login = () => {
            }, 2000)
          }
          else {
-           toast.error("Failed")
+           toast.error("Invalid Credentials")
          }
        })
    } catch (error) {

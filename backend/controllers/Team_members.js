@@ -5,12 +5,15 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const Add_Team_Members = AsyncHandler(async (req, res) => {
-    const Teamdata = req.body
+  const Teamdata = req.body;
+  const { id } = req.params;
+  console.log(id);
+  
     // console.log(data.members)
     const TeamName = Teamdata.teamName;
     const TeamMemberData = Teamdata.members;
     let leademail;
-    const [result] = await connection.query(`insert into Team_List(NAME, SPOC_ID) VALUES ('${TeamName}', 2)`)
+    const [result] = await connection.query(`insert into Team_List(NAME, SPOC_ID) VALUES (?,?)`,[TeamName, id])
     console.log(result.insertId)
     for (let i = 0; i < TeamMemberData.length; i++){
         let singledata = TeamMemberData[i];
@@ -20,7 +23,7 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
             await connection.query(`UPDATE Team_List SET LEAD_PHONE = '${singledata.phone}' WHERE ID = ${result.insertId}`)
             leademail = singledata.email
         }
-        const [res] = await connection.query(`insert into Team_Members_List(ROLE, NAME, EMAIL, PHONE, GENDER, SPOC_ID, TEAM_ID) values ('${singledata.role}','${singledata.name}', '${singledata.email}', '${singledata.phone}', '${singledata.gender}', 2, ${result.insertId})`)
+        const [res] = await connection.query(`insert into Team_Members_List(ROLE, NAME, EMAIL, PHONE, GENDER, SPOC_ID, TEAM_ID) values ('${singledata.role}','${singledata.name}', '${singledata.email}', '${singledata.phone}', '${singledata.gender}', ${id}, ${result.insertId})`)
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
