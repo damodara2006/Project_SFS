@@ -5,10 +5,15 @@ import URL from '../../Utils';
 function Team_Members() {
     const params = useParams()
     const navigate = useNavigate()
+    const [spoc_id, setspoc_id] = useState()
     // console.log(params)
     const [FullTeam, setFullTeam] = useState([]);
     
-        // console.log(params.id);
+    // console.log(params.id);
+    axios.defaults.withCredentials = true
+    axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
+    
+    
         axios.post(`${URL}/fetch_team_members/${params.id}`).then(res => setFullTeam(res.data))
 
     // console.log(FullTeam)

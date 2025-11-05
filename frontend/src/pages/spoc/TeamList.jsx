@@ -12,6 +12,8 @@ function TeamList() {
     const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
     const [activeView, setActiveView] = useState("teamlist");
+        const [spoc_id, setspoc_id] = useState(0)
+    
     const navigate = useNavigate();
 
     const [teamFormData, setTeamFormData] = useState({
@@ -23,11 +25,18 @@ function TeamList() {
             { role: "Member 3", name: "", email: "", phone: "", gender: "" },
         ],
     });
+    axios.defaults.withCredentials = true
+    axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
 
     // Fetch all teams
+
+    console.log(spoc_id);
+    
     function allteams() {
+        console.log(spoc_id);
+        
         axios
-            .get(`${URL}/fetch_teams`)
+            .post(`${URL}/fetch_teams/${spoc_id }`)
             .then((res) => {setFullTeam(res.data), console.log(res);
             })
             .catch((err) => console.error("Error fetching teams:", err));
@@ -39,8 +48,11 @@ function TeamList() {
     }
 
     useEffect(() => {
-        allteams();
-    }, []);
+        if (spoc_id ) {
+            
+            allteams();
+        }
+    },[spoc_id]);
 
     // Handle form
     const handleMemberChange = (index, field, value) => {
@@ -64,7 +76,7 @@ function TeamList() {
 
         }, 2000);
         axios
-            .post(`${URL}/add_members`, teamFormData)
+            .post(`${URL}/add_members/${spoc_id}`, teamFormData)
             .then((res) => {
                 if (res.status === 200) {
                     // Dismiss loading toast and show success toast
@@ -181,7 +193,7 @@ function TeamList() {
             {/* ===== Main Content ===== */}
             <div className="flex-1 m-30 mt-30">
                 <AnimatePresence mode="wait">
-                    {!selectedTeam ? (
+                    {!selectedTeam ? 
                         <motion.div
                             key="team-list"
                             variants={tableVariants}
@@ -201,8 +213,9 @@ function TeamList() {
                                     + Create Team
                                 </button>
                             </div>
+                            {!FullTeam ? "Loadin" : ""}
 
-                            {FullTeam.length > 0 ? <table className="min-w-full border border-gray-200">
+                            {FullTeam.length == 0 ? <p>No Teams created</p>: <table className="min-w-full border border-gray-200">
                                 <thead className="bg-gray-100 border-b border-gray-200">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -239,31 +252,9 @@ function TeamList() {
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table> : <div className="rounded border bg-white shadow-sm p-8 text-center">
-                                <svg
-                                    className="mx-auto h-8 w-8 animate-spin text-[#0f62fe]"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    />
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                    />
-                                </svg>
-                                <div className="mt-3 text-sm text-[#4a4a4a]">Loading Teams...</div>
-                            </div>}
+                            </table>}
                         </motion.div>
-                    ) : null}
+                    : "" }
                 </AnimatePresence>
             </div>
 
