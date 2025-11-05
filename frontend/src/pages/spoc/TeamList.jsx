@@ -12,7 +12,7 @@ function TeamList() {
     const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
     const [activeView, setActiveView] = useState("teamlist");
-        const [spoc_id, setspoc_id] = useState(0)
+        const [spoc_id, setspoc_id] = useState()
     
     const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ function TeamList() {
 
     // Navigate to selected team
     function SelectedTeam(team) {
-        navigate(`/spoc/team_details/${team.ID}`);
+        navigate(`/spoc/team_details`,{state:{id:team.ID}});
     }
 
     useEffect(() => {

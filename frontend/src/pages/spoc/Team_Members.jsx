@@ -2,10 +2,13 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import URL from '../../Utils';
+import { useLocation } from 'react-router-dom';
 function Team_Members() {
     const params = useParams()
     const navigate = useNavigate()
     const [spoc_id, setspoc_id] = useState()
+    const location = useLocation()
+    const ID = location.state.id
     // console.log(params)
     const [FullTeam, setFullTeam] = useState([]);
     
@@ -14,7 +17,7 @@ function Team_Members() {
     axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
     
     
-        axios.post(`${URL}/fetch_team_members/${params.id}`).then(res => setFullTeam(res.data))
+        axios.post(`${URL}/fetch_team_members`,{id:ID}).then(res => setFullTeam(res.data))
 
     // console.log(FullTeam)
   return (

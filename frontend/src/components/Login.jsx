@@ -24,7 +24,7 @@ const Login = () => {
            toast.success("Login Successful", { style: { backgroundColor: "green" } })
            setTimeout(() => {
              if (res.data.user[0].ROLE == 'SPOC') {
-               console.log("heee");
+              //  console.log("heee");
                
                navigate("/spoc")
              }

@@ -66,7 +66,7 @@ function App() {
 
         <Route path="/student/submit-solution" element={<Upload />} />
 
-        <Route path="/spoc/team_details/:id" element={<Team_Members />} />
+        <Route path="/spoc/team_details" element={<Team_Members />} />
 
         <Route path="/spoc/team" element={<TeamList />} />
 
