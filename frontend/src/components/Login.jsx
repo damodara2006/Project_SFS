@@ -26,13 +26,13 @@ const Login = () => {
              if (res.data.user[0].ROLE == 'SPOC') {
                navigate("/spoc")
              }
-             else if (res.data.user[0].ROLE == 'Evaluator') {
+             else if (res.data.user[0].ROLE == 'EVALUATOR') {
                navigate("/evaluator")
              }
-             else if (res.data.user[0].ROLE == 'Admin') {
+             else if (res.data.user[0].ROLE == 'ADMIN') {
                navigate("/admin")
              }
-             else if (res.data.user[0].ROLE == 'Student') {
+             else if (res.data.user[0].ROLE == 'STUDENT') {
                navigate("/student")
              }
              else {
