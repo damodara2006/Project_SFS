@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaClipboardList, FaUser } from 'react-icons/fa';
 import ProblemStatements from "../../components/ProblemStatements"
@@ -7,6 +7,7 @@ import TeamList from './TeamList';
 import axios from 'axios';
 import URL from '../../Utils';
 import { useNavigate } from 'react-router-dom';
+import toast,{Toaster} from 'react-hot-toast';
 
 const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: FaUsers },
@@ -41,6 +42,8 @@ const SpocDashboard = () => {
     const [activeView, setActiveView] = useState('dashboard');
     const teamsPerPage = 10;
     const navigate = useNavigate()
+    const [data, setdata] = useState([])
+    
     const handlelogout = async () => {
 
         try {
@@ -55,6 +58,18 @@ const SpocDashboard = () => {
 
         }
     }
+
+    useEffect(() => {
+    axios.defaults.withCredentials = true;
+    axios.get(`${URL}/cookie`).then(res => {
+      console.log(res);
+      
+      if (res.data.message == 'jwt must be provided') {
+        toast.error("Please login")
+      }
+      setdata(res.data)
+    })
+  },[])
 
     // Dummy data for teams
     const teams = Array.from({ length: 42 }, (_, i) => ({
@@ -90,6 +105,7 @@ const SpocDashboard = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
+            <Toaster position="top-right" />
             <div className="flex flex-1 pt-20">
                 {/* Sidebar */}
                 <aside className="w-56 bg-[#494949] text-white p-6 sticky top-20 h-[calc(100vh-5rem)]">
@@ -100,13 +116,19 @@ const SpocDashboard = () => {
                             ))}
                         </ul>
                     </nav>
+                    <p className='absolute bottom-16'>
+                    {data.NAME }
+                    </p>
+
+                                                        <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-white text-black  absolute bottom-0'>LOGOUT</button></div>
+
                 </aside>
 
                 {/* Main Content */}
                 <main className="flex-1 p-10">
                     {activeView === 'dashboard' && (
                         <>
-                            <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-gray-300'>LOGOUT</button></div>
+                            {/* <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-gray-300'>LOGOUT</button></div> */}
                             <h1 className="text-3xl font-bold mb-8 text-gray-800">SPOC Dashboard</h1>
                             {/* Stats Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
