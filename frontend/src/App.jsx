@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 // General Component Imports
 import Login from "./components/Login";
@@ -39,11 +41,33 @@ import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
 import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
 
 function App() {
-  const isAuthenticated = true;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return match ? decodeURIComponent(match[2]) : null;
+  };
+
+  useEffect(() => {
+    const token = getCookie("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  // react-hot-toast will display messages, no custom DOM toast needed
+
+  function ProtectedRoute({ children }) {
+    useEffect(() => {
+      if (!isAuthenticated) toast.error("Please login to your account");
+    }, [isAuthenticated]);
+
+    if (!isAuthenticated) return <Navigate to="/" replace />;
+    return children;
+  }
 
   return (
     <BrowserRouter>
       <Header />
+      <Toaster position="top-center" />
 
       <Routes>
         <Route path="/" element={<Homepage />} />
