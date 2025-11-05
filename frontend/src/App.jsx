@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 
 // General Component Imports
 import Login from "./components/Login";
@@ -39,35 +38,54 @@ import TeamList from "./pages/spoc/TeamList.jsx";
 import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
 import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
 import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
+import { auth } from "./Utils.js";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  
+  
 
-  const getCookie = (name) => {
-    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-    return match ? decodeURIComponent(match[2]) : null;
+  const showToast = (message) => {
+    const id = "app-toast";
+    if (document.getElementById(id)) return;
+    const el = document.createElement("div");
+    el.id = id;
+    el.textContent = message;
+    Object.assign(el.style, {
+      position: "fixed",
+      bottom: "24px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      background: "rgba(0,0,0,0.8)",
+      color: "#fff",
+      padding: "10px 14px",
+      borderRadius: "6px",
+      zIndex: 9999,
+      fontSize: "14px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+    });
+    document.body.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = "opacity 300ms";
+      el.style.opacity = "0";
+      setTimeout(() => el.remove(), 300);
+    }, 2500);
   };
 
-  useEffect(() => {
-    const token = getCookie("token");
-    setIsAuthenticated(!!token);
-  }, []);
-
-  // react-hot-toast will display messages, no custom DOM toast needed
-
   function ProtectedRoute({ children }) {
-    useEffect(() => {
-      if (!isAuthenticated) toast.error("Please login to your account");
-    }, [isAuthenticated]);
+    // console.log(isAuthenticated);
 
-    if (!isAuthenticated) return <Navigate to="/" replace />;
+    
+      if (!auth()) showToast("Please login to your account") ;
+   
+
+    if (!auth()) return <div><Navigate to="/login" replace /></div>;
     return children;
   }
 
   return (
     <BrowserRouter>
       <Header />
-      <Toaster position="top-center" />
 
       <Routes>
         <Route path="/" element={<Homepage />} />
@@ -80,58 +98,69 @@ function App() {
 
         <Route path="/register" element={<Register />} />
 
-        <Route path="/student" element={<SdDashboard />} />
+        <Route path="/student" element={
+          <ProtectedRoute>
+            <SdDashboard />
+          </ProtectedRoute>
+        } />
 
-        <Route path="/spoc" element={<SpocDashboard />} />
+        <Route path="/spoc" element={
+          <ProtectedRoute>
+            <SpocDashboard />
+          </ProtectedRoute>
+        } />
 
-        <Route path=" " element={<SPOCProfile />} />
+        <Route path="/spoc/profile" element={
+          <ProtectedRoute>
+            <SPOCProfile />
+          </ProtectedRoute>
+        } />
 
         <Route path="/problemstatements" element={<ProblemStatements />} />
 
-        <Route path="/student/submit-solution" element={<Upload />} />
+        <Route path="/student/submit-solution" element={
+          <ProtectedRoute>
+            <Upload />
+          </ProtectedRoute>
+        } />
 
-        <Route path="/spoc/team_details" element={<Team_Members />} />
+        <Route path="/spoc/team_details" element={
+          <ProtectedRoute>
+            <Team_Members />
+          </ProtectedRoute>
+        } />
 
-        <Route path="/spoc/team" element={<TeamList />} />
+        <Route path="/spoc/team" element={
+          <ProtectedRoute>
+            <TeamList />
+          </ProtectedRoute>
+        } />
 
-        <Route path="/evaluator" element={<EvaluatorLayout />}>
+        <Route path="/evaluator" element={
+          <ProtectedRoute>
+            <EvaluatorLayout />
+          </ProtectedRoute>
+        }>
           <Route index element={<AssignedProblem />} />
-
           <Route path="submissions" element={<SubmissionList />} />
-
           <Route path="submission/:teamId" element={<SubmissionDetail />} />
         </Route>
 
-        {/* --- COMPLETE ADMIN ROUTING BLOCK --- */}
-
-        <Route
-          path="/admin"
-          element={
-            isAuthenticated ? <AdminLayout /> : <Navigate to="/login" replace />
-          }
-        >
-          {/* Default Admin Route */}
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="spoc-approvals" element={<SpocApprovals />} />
-          {/* Problem Statement Management (CRUD) */}
           <Route path="problems" element={<ProblemStatementsList />} />
           <Route path="problems/create" element={<ProblemStatementCreate />} />
           <Route path="problems/edit/:id" element={<ProblemStatementEdit />} />
-          {/* Evaluator Management (CRUD & Assignment) */}
           <Route path="evaluators" element={<EvaluatorsList />} />
-          <Route path="evaluators/create" element={<EvaluatorManage />} />{" "}
-          {/* For creation */}
-          <Route
-            path="evaluators/manage/:id"
-            element={<EvaluatorManage />}
-          />{" "}
-          {/* For assignment/editing */}
+          <Route path="evaluators/create" element={<EvaluatorManage />} />
+          <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
         </Route>
-
-        {/* --- END ADMIN ROUTING BLOCK --- */}
-
-        {/* ssss */}
       </Routes>
 
       <Footer />

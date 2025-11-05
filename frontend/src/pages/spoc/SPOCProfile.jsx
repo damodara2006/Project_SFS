@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion"; // 👈 Added Framer Motion
 import axios from "axios";
-import URL from "../../Utils";
+import {URL} from "../../Utils";
 import toast, { Toaster } from "react-hot-toast";
 
 const SPOCProfile = () => {

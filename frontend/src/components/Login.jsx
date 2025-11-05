@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Header from './Header'
 import axios from 'axios';
-import URL from '../Utils';
+import {URL} from '../Utils';
 import { useNavigate } from 'react-router-dom';
 import toast,{Toaster} from 'react-hot-toast';
 const Login = () => {

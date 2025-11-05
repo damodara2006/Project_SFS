@@ -5,7 +5,7 @@ import ProblemStatements from "../../components/ProblemStatements"
 import SPOCProfile from './SPOCProfile';
 import TeamList from './TeamList';
 import axios from 'axios';
-import URL from '../../Utils';
+import {URL} from '../../Utils';
 import { useNavigate } from 'react-router-dom';
 import toast,{Toaster} from 'react-hot-toast';
 

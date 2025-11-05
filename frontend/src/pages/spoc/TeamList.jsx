@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import URL from "../../Utils";
+import {URL} from "../../Utils";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,7 +12,8 @@ function TeamList() {
     const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
     const [activeView, setActiveView] = useState("teamlist");
-        const [spoc_id, setspoc_id] = useState()
+    const [spoc_id, setspoc_id] = useState()
+    const [fetched, setfetched] = useState(false)
     
     const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ function TeamList() {
         
         axios
             .post(`${URL}/fetch_teams/${spoc_id }`)
-            .then((res) => {setFullTeam(res.data), console.log(res);
+            .then((res) => {setFullTeam(res.data), console.log(res), setfetched(true);
             })
             .catch((err) => console.error("Error fetching teams:", err));
     }
@@ -213,48 +214,74 @@ function TeamList() {
                                     + Create Team
                                 </button>
                             </div>
-                            {!FullTeam ? "Loadin" : ""}
+                            {!fetched ? <div className="rounded  bg-white shadow-sm p-8 text-center">
+                                <svg
+                                    className="mx-auto h-8 w-8 animate-spin text-[#0f62fe]"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    />
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    />
+                                </svg>
+                                <div className="mt-3 text-sm text-[#4a4a4a]">Loading Teams...</div>
+                            </div> :
 
-                            {FullTeam.length == 0 ? <p>No Teams created</p>: <table className="min-w-full border border-gray-200">
-                                <thead className="bg-gray-100 border-b border-gray-200">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Team ID
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Team Name
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Lead Email
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Lead Phone
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {FullTeam.map((team) => (
-                                        <tr
-                                            key={team.ID}
-                                            onClick={() => SelectedTeam(team)}
-                                            className="hover:bg-gray-50 cursor-pointer"
-                                        >
-                                            <td className="px-6 py-4 text-sm text-gray-700">{team.ID}</td>
-                                            <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                                                {team.NAME}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-600">
-                                                {team.LEAD_EMAIL}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-600">
-                                                {team.LEAD_PHONE}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>}
+                                <div>{
+                                    FullTeam.length == 0 ? <p>No Teams created</p> : <table className="min-w-full border border-gray-200">
+                                        <thead className="bg-gray-100 border-b border-gray-200">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Team ID
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Team Name
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Lead Email
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Lead Phone
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {FullTeam.map((team) => (
+                                                <tr
+                                                    key={team.ID}
+                                                    onClick={() => SelectedTeam(team)}
+                                                    className="hover:bg-gray-50 cursor-pointer"
+                                                >
+                                                    <td className="px-6 py-4 text-sm text-gray-700">{team.ID}</td>
+                                                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                                                        {team.NAME}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                                        {team.LEAD_EMAIL}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                                        {team.LEAD_PHONE}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                } </div>
+                            }
                         </motion.div>
-                    : "" }
+                        : ""}
+                    
                 </AnimatePresence>
             </div>
 

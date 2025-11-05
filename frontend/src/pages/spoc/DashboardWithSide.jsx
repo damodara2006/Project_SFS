@@ -4,7 +4,7 @@ import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import ProblemStatements from "../../components/ProblemStatements";
 import SPOCProfile from "./SPOCProfile";
 import axios from "axios"
-import URL from "../../Utils";
+import {URL} from "../../Utils";
 import { useNavigate } from "react-router-dom";
 const DashboardWithSide = () => {
   const [currentPage, setCurrentPage] = useState(1);
