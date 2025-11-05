@@ -1,7 +1,5 @@
-import React from 'react';
 import { useState } from 'react';
 import Header from './Header'
-import Footer from './Footer';
 import axios from 'axios';
 import URL from '../Utils';
 import { useNavigate } from 'react-router-dom';
