@@ -1,4 +1,3 @@
-import React from "react"; // It's good practice to import React
 import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 
 // General Component Imports
