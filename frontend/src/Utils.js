@@ -3,8 +3,9 @@
 const URL = "http://localhost:8000"
 const auth = () => {
     
-    const match = document.cookie.match(new RegExp("(^| )" + "login_creditionals" + "=([^;]+)"));
-        return match ? decodeURIComponent(match[2]) : null;
+    const match = document.cookie.match("login_creditionals");
+    // console.log()
+        return match ? match : null;
 
 }
 
