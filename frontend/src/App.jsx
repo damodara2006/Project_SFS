@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { auth } from "./Utils.js";
 
-// General Component Imports
+// General Components
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Homepage from "./pages/Home";
@@ -11,40 +12,34 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProblemStatements from "./components/ProblemStatements.jsx";
 
-// Student Imports
+// Student
 import SdDashboard from "./pages/student/SdDashboard";
 import Upload from "./pages/student/Upload";
+import TeamDetails from "./pages/student/TeamDetails.jsx";
 
-// SPOC Imports
+// SPOC
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";
+import Team_Members from "./pages/spoc/Team_Members.jsx";
+import TeamList from "./pages/spoc/TeamList.jsx";
 
-// Evaluator Imports
+// Evaluator
 import EvaluatorLayout from "./pages/evaluator/EvaluatorLayout.jsx";
+import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
+import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
+import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
 
-// Admin Imports
+// Admin
 import AdminLayout from "./components/admin/AdminLayout.jsx";
 import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
 import SpocApprovals from "./pages/Admin/SpocApprovals.jsx";
-
 import EvaluatorsList from "./pages/Admin/EvaluatorsList.jsx";
 import EvaluatorManage from "./pages/Admin/EvaluatorManage.jsx";
 import ProblemStatementsList from "./pages/Admin/ProblemStatementsList.jsx";
 import ProblemStatementCreate from "./pages/Admin/ProblemStatementCreate.jsx";
 import ProblemStatementEdit from "./pages/Admin/ProblemStatementEdit.jsx";
-import TeamDetails from "./pages/student/TeamDetails.jsx";
-import Team_Members from "./pages/spoc/Team_Members.jsx";
-import TeamList from "./pages/spoc/TeamList.jsx";
-import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
-import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
-import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
-import { auth } from "./Utils.js";
 
 function App() {
-  
-  
-  
-
   const showToast = (message) => {
     const id = "app-toast";
     if (document.getElementById(id)) return;
@@ -72,85 +67,135 @@ function App() {
     }, 2500);
   };
 
-  function ProtectedRoute({ children }) {
-    // console.log(isAuthenticated);
+  function ProtectedRoute({ children, allowedRoles }) {
+    const [role, setRole] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    
-      if (!auth()) showToast("Please login to your account") ;
-   
+    useEffect(() => {
+      const fetchAuth = async () => {
+        try {
+          const res = await auth();
+          if (!res) {
+            showToast("Please login to your account");
+          } else {
+            setRole(res);
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("Please login to your account");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAuth();
+    }, []);
 
-    if (!auth()) return <div><Navigate to="/login" replace /></div>;
+    if (loading) return <div>Loading...</div>;
+    if (!role) return <Navigate to="/login" replace />;
+
+    if (allowedRoles && !allowedRoles.includes(role)) {
+      showToast("Unauthorized access");
+      return <Navigate to="/" replace />;
+    }
+
     return children;
   }
 
   return (
     <BrowserRouter>
       <Header />
-
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Homepage />} />
-
         <Route path="/about" element={<About />} />
-
         <Route path="/faq" element={<FAQ />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
-
-        <Route path="/student" element={
-          <ProtectedRoute>
-            <SdDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/spoc" element={
-          <ProtectedRoute>
-            <SpocDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/spoc/profile" element={
-          <ProtectedRoute>
-            <SPOCProfile />
-          </ProtectedRoute>
-        } />
-
         <Route path="/problemstatements" element={<ProblemStatements />} />
 
-        <Route path="/student/submit-solution" element={
-          <ProtectedRoute>
-            <Upload />
-          </ProtectedRoute>
-        } />
+        {/* Student Routes */}
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute allowedRoles={["STUDENT"]}>
+              <SdDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/submit-solution"
+          element={
+            <ProtectedRoute allowedRoles={["STUDENT"]}>
+              <Upload />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/team-details"
+          element={
+            <ProtectedRoute allowedRoles={["STUDENT"]}>
+              <TeamDetails />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/spoc/team_details" element={
-          <ProtectedRoute>
-            <Team_Members />
-          </ProtectedRoute>
-        } />
+        {/* SPOC Routes */}
+        <Route
+          path="/spoc"
+          element={
+            <ProtectedRoute allowedRoles={["SPOC"]}>
+              <SpocDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/spoc/profile"
+          element={
+            <ProtectedRoute allowedRoles={["SPOC"]}>
+              <SPOCProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/spoc/team"
+          element={
+            <ProtectedRoute allowedRoles={["SPOC"]}>
+              <TeamList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/spoc/team_details"
+          element={
+            <ProtectedRoute allowedRoles={["SPOC"]}>
+              <Team_Members />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/spoc/team" element={
-          <ProtectedRoute>
-            <TeamList />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/evaluator" element={
-          <ProtectedRoute>
-            <EvaluatorLayout />
-          </ProtectedRoute>
-        }>
+        {/* Evaluator Routes */}
+        <Route
+          path="/evaluator"
+          element={
+            <ProtectedRoute allowedRoles={["EVALUATOR"]}>
+              <EvaluatorLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AssignedProblem />} />
           <Route path="submissions" element={<SubmissionList />} />
           <Route path="submission/:teamId" element={<SubmissionDetail />} />
         </Route>
 
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <AdminLayout />
-          </ProtectedRoute>
-        }>
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="spoc-approvals" element={<SpocApprovals />} />
@@ -162,7 +207,6 @@ function App() {
           <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
         </Route>
       </Routes>
-
       <Footer />
     </BrowserRouter>
   );
