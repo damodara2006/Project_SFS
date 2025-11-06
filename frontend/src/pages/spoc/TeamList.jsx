@@ -104,9 +104,10 @@ function TeamList() {
             axios.post(`${URL}/update_team`, { team: teamFormData, id: team_id })
                 .then(res => {
                     if (res.data == "Updated") {
-                        toast.dismiss(load)
-                        toast.success("Updated !")
-                        setShowCreateTeamModal(false)
+                        toast.dismiss(load);
+                        toast.success("Updated !");
+                        setShowCreateTeamModal(false);
+                        allteams();
                     }
                 })
         }
