@@ -1,28 +1,50 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Document, Page, pdfjs } from 'react-pdf';
 import Button from '../../components/common/Button';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { getSubmissionById, mockSubmissions } from '../../mockData';
-import { FiFile, FiDownload, FiEdit, FiSave, FiArrowLeft } from 'react-icons/fi';
+import { FiEdit, FiSave, FiArrowLeft, FiChevronLeft, FiChevronRight, FiDownload } from 'react-icons/fi';
+import sample from '../../assets/sample.pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Set up the worker for react-pdf
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const SubmissionDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const submission = getSubmissionById(id);
-  const problemId = submission.problemId;
-  // const [searchTerm, setSearchTerm] = useState('');
-  const [marks, setMarks] = useState(submission.marks || '');
-  const [comments, setComments] = useState(submission.comments || '');
+  const [marks, setMarks] = useState(submission?.marks || '');
+  const [comments, setComments] = useState(submission?.comments || '');
   const [isEditing, setIsEditing] = useState(false);
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
 
   if (!submission) {
-    return <div className="min-h-screen bg-gray-50 py-10"><div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8"><h1>Submission not found</h1></div></div>;
+    return (
+      <div className="min-h-screen bg-gray-50 py-10">
+        <div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8">
+          <h1>Submission not found</h1>
+        </div>
+      </div>
+    );
   }
 
-
-
-  const totalFiles = submission.files.length;
   const displayStatus = submission.marks ? 'Evaluated' : 'Submitted';
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+
+  const goToPrevPage = () => {
+    setPageNumber((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setPageNumber((prev) => Math.min(prev + 1, numPages));
+  };
 
   return (
     <div className="min-h-screen bg-[#F7F8FC] py-10 px-8 transition-all duration-300">
@@ -37,6 +59,7 @@ const SubmissionDetail = () => {
             <span>Back</span>
           </Button>
         </div>
+
         {/* Submission Information Table */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-[#1A202C]">Submission Information</h2>
@@ -140,28 +163,76 @@ const SubmissionDetail = () => {
           </table>
         </div>
 
-        {/* Attached Files Section */}
+        {/* PDF Preview Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center text-[#1A202C]">
-            <FiFile className="w-5 h-5 mr-2 text-[#FF9900]" />
-            Attached Files ({totalFiles})
-          </h2>
-          <div className="space-y-2">
-            {submission.files.map((file, index) => (
-              <div key={index} className="flex items-center justify-between bg-[#F7F8FC] p-4 rounded-xl border border-[#E2E8F0]">
-                <div className="flex items-center">
-                  <FiFile className="w-5 h-5 mr-3 text-[#FF9900]" />
-                  <span className="text-[#1A202C] font-medium">{file}</span>
-                </div>
+          <h2 className="text-xl font-semibold mb-4 text-[#1A202C]">PDF Preview</h2>
+          <div className="border border-[#E2E8F0] rounded-xl overflow-hidden bg-[#F7F8FC]">
+            <div className="flex justify-center items-center p-4">
+              <Document
+                file={submission.pdfUrl || '/sample.pdf'}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={(error) => console.error('Error loading PDF:', error)}
+                loading={
+                  <div className="flex items-center justify-center h-96">
+                    <div className="text-[#1A202C]">Loading PDF...</div>
+                  </div>
+                }
+              >
+                <Page 
+                  pageNumber={pageNumber} 
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                  className="shadow-lg"
+                />
+              </Document>
+            </div>
+            
+            {/* PDF Navigation Controls */}
+            {numPages && (
+              <div className="flex items-center justify-between bg-white px-6 py-3 border-t border-[#E2E8F0]">
                 <Button
-                  onClick={() => alert(`Downloading ${file}`)}
-                  className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl text-sm flex items-center space-x-1 shadow-md transition-all"
+                  onClick={goToPrevPage}
+                  disabled={pageNumber <= 1}
+                  className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${
+                    pageNumber <= 1
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
+                  }`}
                 >
-                  <FiDownload className="w-4 h-4" />
-                  <span>Download</span>
+                  <FiChevronLeft className="w-5 h-5" />
+                  <span>Previous</span>
+                </Button>
+
+                <div className="text-[#1A202C] font-medium">
+                  Page {pageNumber} of {numPages}
+                </div>
+
+                <Button
+                  onClick={goToNextPage}
+                  disabled={pageNumber >= numPages}
+                  className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${
+                    pageNumber >= numPages
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
+                  }`}
+                >
+                  <span>Next</span>
+                  <FiChevronRight className="w-5 h-5" />
                 </Button>
               </div>
-            ))}
+            )}
+
+            {/* Download Button */}
+            <div className="flex justify-center bg-white px-6 py-3 border-t border-[#E2E8F0]">
+              <a
+                href={submission.pdfUrl || '/sample.pdf'}
+                download
+                className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+              >
+                <FiDownload className="w-5 h-5" />
+                <span>Download PDF</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
