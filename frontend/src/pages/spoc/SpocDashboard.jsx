@@ -120,7 +120,7 @@ const SpocDashboard = () => {
                     {data.NAME }
                     </p>
                       {data.NAME?          
-                <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-white text-black  absolute bottom-0'>LOGOUT</button></div>:""}
+                <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-white text-black  absolute bottom-0 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white'>LOGOUT</button></div>:""}
 
                 </aside>    
 
