@@ -17,12 +17,13 @@ const Get_problem_by_id = AsyncHandler(async (req, res) => {
 })
 
 const Post_problem = AsyncHandler(async (req, res) => {
-    const { title, description, sub_date, category, dept, links, reference } = req.body;
+    const { title, description, sub_date, dept, reference } = req.body;
+    console.log(title, description, sub_date, dept, reference);
 
-    const query = `INSERT INTO problems (TITLE, DESCRIPTION, SUB_DATE, CATEGORY, DEPT, Links, Reference)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO problems (TITLE, DESCRIPTION, SUB_DEADLINE,  DEPT,  Reference)
+                   VALUES (?, ?, ?, ?, ?)`;
 
-    const params = [title, description, sub_date, category, dept, links, reference];
+    const params = [title, description, sub_date, dept, reference];
 
     // execute with your DB client, e.g.:
     const [result] = await connection.execute(query, params);

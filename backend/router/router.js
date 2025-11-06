@@ -19,7 +19,7 @@ router.route("/register/:email/:password/:role/:college/:college_code/:name").po
 router.route("/verify_email/:email").post(Verify_OTP)
 router.route("/login").post(login)
 router.route("/logout").get(logout)
-router.route("/problems").post(Post_problem)
+router.route("/addproblems").post(Post_problem)
 router.route("/get_problems").get(Get_problems)
 router.route("/problems/:id").get(Get_problem_by_id)
 router.route("/cookie").get(Get_cookies)
