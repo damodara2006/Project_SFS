@@ -21,6 +21,7 @@ import SPOCProfile from "./pages/spoc/SPOCProfile";
 
 // Evaluator Imports
 import EvaluatorLayout from "./pages/evaluator/EvaluatorLayout.jsx";
+import AddProblemStatement from "./pages/evaluator/AddProblemStatement.jsx";
 
 // Admin Imports
 import AdminLayout from "./components/admin/AdminLayout.jsx";
@@ -144,6 +145,8 @@ function App() {
           <Route index element={<AssignedProblem />} />
           <Route path="submissions" element={<SubmissionList />} />
           <Route path="submission/:teamId" element={<SubmissionDetail />} />
+                    <Route path="AddProblemStatement" element={<AddProblemStatement />}></Route>
+
         </Route>
 
         <Route path="/admin" element={
