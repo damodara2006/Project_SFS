@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import samplePdf from "../../assets/sample.pdf";
 
@@ -184,58 +184,54 @@ const SubmissionList = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredSubmissions.map((submission, index) => (
-                <Link
-                  to={`/evaluator/submission/${submission.teamId}`}
+                <motion.tr
                   key={submission.teamId}
-                  className="contents"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/evaluator/submission/${submission.teamId}`)}
                 >
-                  <motion.tr
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                    className="hover:bg-gray-50 cursor-pointer"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {submission.teamId}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {submission.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(submission.submittedAt).toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusPill
-                        status={submission.status}
-                        onClick={(newStatus) =>
-                          handleStatusChange(submission.teamId, newStatus)
-                        }
-                      />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-4">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/evaluator/submission/${submission.teamId}`);
-                        }}
-                        className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
-                      >
-                        View
-                      </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {submission.teamId}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {submission.title}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(submission.submittedAt).toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusPill
+                      status={submission.status}
+                      onClick={(newStatus) =>
+                        handleStatusChange(submission.teamId, newStatus)
+                      }
+                    />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/evaluator/submission/${submission.teamId}`);
+                      }}
+                      className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
+                    >
+                      View
+                    </button>
 
-                      {/* Preview button uses object tag in modal */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPreviewPdf(submission.pdfLink);
-                        }}
-                        className="text-[#0b74ff] hover:text-[#095ecf] transition-colors duration-300"
-                      >
-                        Preview
-                      </button>
-                    </td>
-                  </motion.tr>
-                </Link>
+                    {/* Preview button uses object tag in modal */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewPdf(submission.pdfLink);
+                      }}
+                      className="text-[#0b74ff] hover:text-[#095ecf] transition-colors duration-300"
+                    >
+                      Preview
+                    </button>
+                  </td>
+                </motion.tr>
               ))}
 
               {filteredSubmissions.length === 0 && (
