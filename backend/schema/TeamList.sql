@@ -21,7 +21,7 @@ create table submissions(
                         SOL_TITLE VARCHAR(100),
                         SOL_DESCRIPTION TEXT,
                         SUB_DATE DATE,
-                        STATUS VARCHAR(20) DEFAULT 'PENDING',
+                        SUB_STATUS VARCHAR(20) DEFAULT 'PENDING',
                         SOL_LINK VARCHAR(256),
                         FOREIGN KEY (PROBLEM_ID) REFERENCES problems(ID),
                         FOREIGN KEY (TEAM_ID) REFERENCES Team_List(ID)

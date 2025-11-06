@@ -44,6 +44,29 @@ const Register = () => {
   const [opt, setopt] = useState("")
 
 
+
+  const handleVerifyOtp = () => {
+
+
+    // const lodaing = toast.loading("Sending OTP")
+    console.log(generatedOtp, "ffg", form.otp, opt)
+    if (opt == form.otp) {
+      setEmailVerified(true);
+      setOtpSent(false);
+      // toast.dismiss(lodaing)
+      toast.success("verified successfully!")
+      // alert("Email verified successfully!");
+    } else {
+      setErrors({ otp: "Invalid OTP. Please try again." });
+    }
+  }
+
+  const handleemail = (e) => {
+    e.preventDefault()
+    console.log(e.target.value);
+    setemail(e.target.value)
+
+  }
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -52,6 +75,11 @@ const Register = () => {
 
   // ✅ Simulate sending OTP
   const handleSendOtp = () => {
+    console.log(email.trim().includes("@"));
+
+    if (email.trim().includes("@")) {
+      // console.log(email);
+      
     const lodaing = toast.loading("Sending OTP")
 
     console.log(email)
@@ -69,24 +97,18 @@ const Register = () => {
          });
 
     }
+    
 
     setOtpSent(true);
     // alert(`OTP sent to ${email}`); // For demo only
-  };
+    }
+    else {
+  toast.error("Enter valid email")
+}
 
   // ✅ Verify OTP entered by user
-  const handleVerifyOtp = () => {
-    // const lodaing = toast.loading("Sending OTP")
-    console.log(generatedOtp, "ffg", form.otp, opt)
-    if (opt == form.otp) {
-      setEmailVerified(true);
-      setOtpSent(false);
-      // toast.dismiss(lodaing)
-      toast.success("verified successfully!")
-      // alert("Email verified successfully!");
-    } else {
-      setErrors({ otp: "Invalid OTP. Please try again." });
-    }
+  
+   
   };
 
   const validate = (data) => {
@@ -134,7 +156,6 @@ const Register = () => {
       })
 
 
-    
 
   };
 
@@ -154,9 +175,10 @@ const Register = () => {
             name="email"
             type="email"
             value={email}
-            onChange={(e)=>setemail(e.target.value)}
+            onChange={handleemail}
             placeholder="Email"
             disabled={emailVerified}
+            required
             className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
             aria-invalid={!!errors.email}
           />

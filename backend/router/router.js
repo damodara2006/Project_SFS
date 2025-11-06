@@ -7,6 +7,7 @@ import { Post_problem } from "../controllers/Problems.js";
 import { Get_problems } from "../controllers/Problems.js";
 import { Get_problem_by_id } from "../controllers/Problems.js";
 import { Get_cookies } from "../controllers/Cookie.js";
+import { Get_all_submissions } from "../controllers/Submission.js";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.route("/problems").post(Post_problem)
 router.route("/get_problems").get(Get_problems)
 router.route("/problems/:id").get(Get_problem_by_id)
 router.route("/cookie").get(Get_cookies)
+router.route("/submissions").get(Get_all_submissions)
 
 export default router

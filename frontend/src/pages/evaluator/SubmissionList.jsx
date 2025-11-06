@@ -1,47 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { URL } from "../../Utils";
 
+// samplePdf kept for fallback previews
 import samplePdf from "../../assets/sample.pdf";
-
-const submissionsData = [
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM001",
-    title: "Eco-Friendly Product Recommendation System",
-    submittedAt: "2025-11-10T14:48:00.000Z",
-    status: "In Review",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-1",
-  },
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM002",
-    title: "Sustainable Shopping Assistant",
-    submittedAt: "2025-11-10T18:30:00.000Z",
-    status: "In Review",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-2",
-  },
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM003",
-    title: "GreenChoice Product Analyzer",
-    submittedAt: "2025-11-11T09:15:00.000Z",
-    status: "Evaluated",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-3",
-  },
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM004",
-    title: "EcoCart: A Path to Greener Purchases",
-    submittedAt: "2025-11-11T11:45:00.000Z",
-    status: "In Review",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-4",
-  },
-];
 
 const StatusPill = ({ status, onClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -104,10 +68,12 @@ const StatusPill = ({ status, onClick }) => {
 };
 
 const SubmissionList = () => {
-  const [submissions, setSubmissions] = useState(submissionsData);
+  const [submissions, setSubmissions] = useState([]);
   const [filterStatus, setFilterStatus] = useState("All");
   const [previewPdf, setPreviewPdf] = useState(null); // <-- preview state
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleStatusChange = (teamId, newStatus) => {
     setSubmissions((prevSubmissions) =>
@@ -116,6 +82,34 @@ const SubmissionList = () => {
       )
     );
   };
+
+  // fetch submissions from backend
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    axios
+      .get(`${URL}/submissions`)
+      .then((res) => {
+        if (!mounted) return;
+        const rows = res.data || [];
+        const mapped = rows.map((r) => ({
+          problemId: r.PROBLEM_ID || r.problemId,
+          teamId: r.TEAM_ID || r.teamId,
+          title: r.SOL_TITLE || r.title || "Untitled",
+          submittedAt: r.SUB_DATE || r.submittedAt || new Date().toISOString(),
+          status: r.STATUS || r.status || "PENDING",
+          pdfLink: r.SOL_LINK || r.pdfLink || samplePdf,
+          liveLink: r.LIVE_LINK || r.liveLink || null,
+        }));
+        setSubmissions(mapped);
+      })
+      .catch((err) => {
+        console.error("Failed to load submissions:", err);
+        if (mounted) setError(err?.message || "Failed to load");
+      })
+      .finally(() => mounted && setLoading(false));
+    return () => (mounted = false);
+  }, []);
 
   // Filter logic
   const filteredSubmissions =
@@ -154,6 +148,14 @@ const SubmissionList = () => {
         </div>
       </div>
 
+      {loading && (
+        <div className="max-w-6xl mx-auto py-6 text-center text-gray-600">Loading submissions…</div>
+      )}
+
+      {error && (
+        <div className="max-w-6xl mx-auto py-6 text-center text-red-600">{error}</div>
+      )}
+
       {/* Submissions Table */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -184,58 +186,54 @@ const SubmissionList = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredSubmissions.map((submission, index) => (
-                <Link
-                  to={`/evaluator/submission/${submission.teamId}`}
-                  key={submission.teamId}
-                  className="contents"
+                <motion.tr
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/evaluator/submission/${submission.teamId}`)}
                 >
-                  <motion.tr
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                    className="hover:bg-gray-50 cursor-pointer"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {submission.teamId}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {submission.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(submission.submittedAt).toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusPill
-                        status={submission.status}
-                        onClick={(newStatus) =>
-                          handleStatusChange(submission.teamId, newStatus)
-                        }
-                      />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-4">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/evaluator/submission/${submission.teamId}`);
-                        }}
-                        className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
-                      >
-                        View
-                      </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {submission.teamId}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {submission.title}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(submission.submittedAt).toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusPill
+                      status={submission.status}
+                      onClick={(newStatus) =>
+                        handleStatusChange(submission.teamId, newStatus)
+                      }
+                    />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/evaluator/submission/${submission.teamId}`);
+                      }}
+                      className="text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
+                    >
+                      View
+                    </button>
 
-                      {/* Preview button uses object tag in modal */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPreviewPdf(submission.pdfLink);
-                        }}
-                        className="text-[#0b74ff] hover:text-[#095ecf] transition-colors duration-300"
-                      >
-                        Preview
-                      </button>
-                    </td>
-                  </motion.tr>
-                </Link>
+                    {/* Preview button uses object tag in modal */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewPdf(submission.pdfLink);
+                      }}
+                      className="text-[#0b74ff] hover:text-[#095ecf] transition-colors duration-300"
+                    >
+                      Preview
+                    </button>
+                  </td>
+                </motion.tr>
               ))}
 
               {filteredSubmissions.length === 0 && (

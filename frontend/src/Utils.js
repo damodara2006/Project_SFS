@@ -1,13 +1,21 @@
 // import { Get_cookies } from "../../backend/controllers/Cookie"
 
-const URL = "http://localhost:8000"
-const auth = () => {
-    
-    const match = document.cookie.match("login_creditionals");
-    // console.log()
-        return match ? match : null;
+import axios from "axios";
 
-}
+const URL = "http://localhost:8000"
+const auth = async () => {
+    const match = document.cookie.match("login_creditionals");
+
+    if (!match) return null; 
+    try {
+        const res = await axios.get(`${URL}/cookie`, { withCredentials: true });
+        console.log(res.data.ROLE);
+        return res.data.ROLE; 
+    } catch (error) {
+        console.error("Error during auth:", error);
+        return null;
+    }
+};
 
 
 export { URL, auth }
