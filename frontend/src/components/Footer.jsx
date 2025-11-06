@@ -1,4 +1,4 @@
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6";
+import { FaFacebook, FaX, FaInstagram, FaLinkedin } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -8,10 +8,10 @@ const Footer = () => {
         {/* Social Section */}
         <div className="flex flex-col items-center md:items-start">
           <div className="flex justify-center md:justify-start gap-6 mb-5">
-            <FaFacebook size={30} className="hover:text-[#ff9100] cursor-pointer transition-all duration-200" />
-            <FaTwitter size={30} className="hover:text-[#ff9100] cursor-pointer transition-all duration-200" />
-            <FaInstagram size={30} className="hover:text-[#ff9100] cursor-pointer transition-all duration-200" />
-            <FaLinkedin size={30} className="hover:text-[#ff9100] cursor-pointer transition-all duration-200" />
+            <FaFacebook size={30} className="hover:text-blue-400 cursor-pointer transition-all duration-200" />
+            <FaX size={30} className="hover:text-black cursor-pointer transition-all duration-200" />
+            <FaInstagram size={30} className="hover:text-pink-600 cursor-pointer transition-all duration-200" />
+            <FaLinkedin size={30} className="hover:text-blue-500 cursor-pointer transition-all duration-200" />
           </div>
           <p className="text-sm text-gray-300">
             &copy; {new Date().getFullYear()} Solve for Sakthi. All rights reserved.
