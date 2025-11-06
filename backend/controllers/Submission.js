@@ -1,5 +1,5 @@
-import { AsyncHandler } from "../utils/AsyncHandler.js";
-import { connection } from "../database/mysql.js";
+import  AsyncHandler  from "../utils/AsyncHandler.js";
+import connection from "../database/mysql.js";
 
 const SubmitSolution = AsyncHandler(async (req, res) => {
     const { problemId, teamId, SOL_LINK, SOL_TITLE = null, SOL_DESCRIPTION = null } = req.body;
@@ -24,4 +24,17 @@ const Get_solution = AsyncHandler(async (req, res) => {
     res.status(200).json(result);
 });
 
-export { SubmitSolution, Get_solution };
+const Get_all_submissions = AsyncHandler(async (req, res) => {
+    const { problemId } = req.query;
+    let query = `SELECT * FROM submissions`;
+    const params = [];
+    if (problemId) {
+        query += ` WHERE PROBLEM_ID = ?`;
+        params.push(problemId);
+    }
+    query += ` ORDER BY SUB_DATE DESC`;
+    const [result] = await connection.query(query, params);
+    res.status(200).json(result);
+});
+
+export { SubmitSolution, Get_solution, Get_all_submissions };
