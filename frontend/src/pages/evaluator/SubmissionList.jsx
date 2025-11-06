@@ -1,47 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { URL } from "../../Utils";
 
+// samplePdf kept for fallback previews
 import samplePdf from "../../assets/sample.pdf";
-
-const submissionsData = [
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM001",
-    title: "Eco-Friendly Product Recommendation System",
-    submittedAt: "2025-11-10T14:48:00.000Z",
-    status: "In Review",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-1",
-  },
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM002",
-    title: "Sustainable Shopping Assistant",
-    submittedAt: "2025-11-10T18:30:00.000Z",
-    status: "In Review",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-2",
-  },
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM003",
-    title: "GreenChoice Product Analyzer",
-    submittedAt: "2025-11-11T09:15:00.000Z",
-    status: "Evaluated",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-3",
-  },
-  {
-    problemId: "PRB2025-07",
-    teamId: "TEAM004",
-    title: "EcoCart: A Path to Greener Purchases",
-    submittedAt: "2025-11-11T11:45:00.000Z",
-    status: "In Review",
-    pdfLink: samplePdf,
-    liveLink: "https://example.com/live-demo-4",
-  },
-];
 
 const StatusPill = ({ status, onClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -104,10 +68,12 @@ const StatusPill = ({ status, onClick }) => {
 };
 
 const SubmissionList = () => {
-  const [submissions, setSubmissions] = useState(submissionsData);
+  const [submissions, setSubmissions] = useState([]);
   const [filterStatus, setFilterStatus] = useState("All");
   const [previewPdf, setPreviewPdf] = useState(null); // <-- preview state
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleStatusChange = (teamId, newStatus) => {
     setSubmissions((prevSubmissions) =>
@@ -116,6 +82,34 @@ const SubmissionList = () => {
       )
     );
   };
+
+  // fetch submissions from backend
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    axios
+      .get(`${URL}/submissions`)
+      .then((res) => {
+        if (!mounted) return;
+        const rows = res.data || [];
+        const mapped = rows.map((r) => ({
+          problemId: r.PROBLEM_ID || r.problemId,
+          teamId: r.TEAM_ID || r.teamId,
+          title: r.SOL_TITLE || r.title || "Untitled",
+          submittedAt: r.SUB_DATE || r.submittedAt || new Date().toISOString(),
+          status: r.STATUS || r.status || "PENDING",
+          pdfLink: r.SOL_LINK || r.pdfLink || samplePdf,
+          liveLink: r.LIVE_LINK || r.liveLink || null,
+        }));
+        setSubmissions(mapped);
+      })
+      .catch((err) => {
+        console.error("Failed to load submissions:", err);
+        if (mounted) setError(err?.message || "Failed to load");
+      })
+      .finally(() => mounted && setLoading(false));
+    return () => (mounted = false);
+  }, []);
 
   // Filter logic
   const filteredSubmissions =
@@ -154,6 +148,14 @@ const SubmissionList = () => {
         </div>
       </div>
 
+      {loading && (
+        <div className="max-w-6xl mx-auto py-6 text-center text-gray-600">Loading submissions…</div>
+      )}
+
+      {error && (
+        <div className="max-w-6xl mx-auto py-6 text-center text-red-600">{error}</div>
+      )}
+
       {/* Submissions Table */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -185,7 +187,7 @@ const SubmissionList = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredSubmissions.map((submission, index) => (
                 <motion.tr
-                  key={submission.teamId}
+                  key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
