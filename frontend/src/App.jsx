@@ -38,6 +38,7 @@ import EvaluatorManage from "./pages/Admin/EvaluatorManage.jsx";
 import ProblemStatementsList from "./pages/Admin/ProblemStatementsList.jsx";
 import ProblemStatementCreate from "./pages/Admin/ProblemStatementCreate.jsx";
 import ProblemStatementEdit from "./pages/Admin/ProblemStatementEdit.jsx";
+import FallBack from "./pages/FallBack.jsx";
 
 function App() {
   const showToast = (message) => {
@@ -206,6 +207,8 @@ function App() {
           <Route path="evaluators/create" element={<EvaluatorManage />} />
           <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
         </Route>
+
+        <Route path="*" element={<FallBack/>}/>
       </Routes>
       <Footer />
     </BrowserRouter>
