@@ -5,7 +5,8 @@ import { createConnection } from "mysql2/promise"
         host: "3.92.51.181",
         database: "Sakthi_auto",
         user: "root",
-        password: "root@1234"
+        password: "root@1234",
+        waitForConnections:true
     })
 
     try {
