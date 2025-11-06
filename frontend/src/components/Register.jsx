@@ -208,7 +208,7 @@ const Register = () => {
               type="text"
               value={form.otp}
               onChange={onChange}
-              placeholder="Enter OTP"
+              placeholder="Enter OTP" 
               className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
               aria-invalid={!!errors.otp}
             />

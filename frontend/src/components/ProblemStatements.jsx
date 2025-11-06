@@ -406,6 +406,10 @@ const ProblemStatements = () => {
     load();
   }, []);
 
+  console.log(fetchProblems().then(res=>console.log(res)
+  ));
+  
+
   return (
     <motion.div
       className="min-h-screen bg-white/50 p-6"
@@ -421,13 +425,13 @@ const ProblemStatements = () => {
         </header>
 
         {/* Cards Section (like TeamDetails) */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-10">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 mb-10 ">
           {[
             { label: "Total Problems", value: problems.length },
-            { label: "Latest Date", value: problems[problems.length - 1]?.date || "N/A" },
-            { label: "Themes", value: [...new Set(problems.map((p) => p.theme))].length },
-            { label: "Categories", value: [...new Set(problems.map((p) => p.category))].length },
-            { label: "Status", value: error ? "Offline Mode" : "Online" },
+            // { label: "Latest Date", value: problems[problems.length - 1]?.date || "N/A" },
+            { label: "Themes", value: [...new Set(problems.map((p) => p.DEPT))].length },
+            { label: "Categories", value: [...new Set(problems.map((p) => p.CATEGORY))].length },
+            // { label: "Status", value: error ? "Offline Mode" : "Online" },
           ].map((item) => (
             <div
               key={item.label}
@@ -484,11 +488,12 @@ const ProblemStatements = () => {
                     Category
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Date
+                    Deadline
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Actions
-                  </th>
+                    </th>
+                    
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -503,7 +508,7 @@ const ProblemStatements = () => {
                     <td className="px-6 py-4 text-sm text-gray-700">{p.ID}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.DATE}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE.split("T")[0]}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openModal(p)}
@@ -531,13 +536,13 @@ const ProblemStatements = () => {
                 <strong>ID:</strong> {selected.ID}
               </div>
               <div>
-                <strong>Date:</strong> {selected.DATE}
+                <strong>Date:</strong> {selected.SUB_DEADLINE.split("T")[0]}
               </div>
               <div>
                 <strong>Category:</strong> {selected.CATEGORY}
               </div>
               <div>
-                <strong>Theme:</strong> {selected.THEME}
+                <strong>Theme:</strong> {selected.DEPT}
               </div>
               <div>
                 <strong>Description:</strong> {selected.DESCRIPTION}
@@ -545,12 +550,12 @@ const ProblemStatements = () => {
               <div>
                 <strong>Resources:</strong>{" "}
                 <a
-                  href={selected.RESOURCES}
+                  href={selected.Reference}
                   className="text-blue-600 hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {selected.RESOURCES}
+                  {selected.Reference}
                 </a>
               </div>
               <div className="flex justify-end gap-3 mt-4">
