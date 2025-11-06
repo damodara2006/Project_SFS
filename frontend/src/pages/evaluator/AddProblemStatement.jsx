@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useState,useEffect } from "react";
 import { URL } from "../../Utils";
+import {toast,Toaster} from 'react-hot-toast';
 const AddProblemStatement = () => {
 
     const[title,setTitle]=useState("");
@@ -13,7 +14,7 @@ const AddProblemStatement = () => {
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
-        console.log(title,description,dept,reference,subDate);
+        // console.log(title,description,dept,reference,subDate);
         try{
            const response = await axios.post(`${URL}/addproblems`,{
             title:title,
@@ -23,10 +24,12 @@ const AddProblemStatement = () => {
             reference:reference
             
            });
-           console.log("Problem Statement Added:",response.data);
+            toast.success("Problem Statement Added Successfully",{position:"top-center"});
+          //  console.log("Problem Statement Added:",response.data);
         }
         catch(error){
             console.error("Error adding problem statement:",error);
+            toast.error("Failed to Add Problem Statement",{position:"top-center"});
         }
     }
 
@@ -129,6 +132,7 @@ const AddProblemStatement = () => {
           </form>
         </div>
       </div>
+      <Toaster/>
     </div>
   );
 };
