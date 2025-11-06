@@ -7,8 +7,9 @@ const AddProblemStatement = () => {
     const[title,setTitle]=useState("");
     const[description,setDescription]=useState("");
     const[dept,setDept]=useState("");
-    const[reference,setReference]=useState("");
     const[subDate,setSubDate]=useState("");
+
+    const[reference,setReference]=useState("");
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
@@ -17,9 +18,10 @@ const AddProblemStatement = () => {
            const response = await axios.post(`${URL}/addproblems`,{
             title:title,
             description:description,
+            sub_date:subDate,
             dept:dept,
-            reference:reference,
-            sub_date:subDate
+            reference:reference
+            
            });
            console.log("Problem Statement Added:",response.data);
         }
@@ -89,7 +91,7 @@ const AddProblemStatement = () => {
                 type="text"
                 placeholder="https://youtube.com/watch?v=..."
                 className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
-                onChange={(e)=>setSubDate(e.target.value)}
+                onChange={(e)=>setReference(e.target.value)}
               />
             </div>
 
@@ -102,7 +104,7 @@ const AddProblemStatement = () => {
                 type="date"
                 placeholder="Submission Deadline"
                 className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
-                onChange={(e)=>setReference(e.target.value)}
+                onChange={(e)=>setSubDate(e.target.value)}
               />
             </div>
 
