@@ -313,7 +313,7 @@ function TeamList() {
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-2xl font-bold text-gray-800">
-                                Create New Team
+                                {fetched_s ? "Create New Team" : "Modify Team"}
                             </h3>
                             <button
                                 onClick={() => {
