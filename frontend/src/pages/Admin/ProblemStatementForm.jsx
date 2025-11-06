@@ -12,8 +12,6 @@ const ProblemStatementForm = ({ isCreate }) => {
     id: "",
     title: "",
     description: "",
-    theme: "",
-    category: "",
     youtube: "",
     dataset: "",
   });
@@ -24,11 +22,11 @@ const ProblemStatementForm = ({ isCreate }) => {
 
   // Example data for popup list
   const problemStatements = [
-    { id: "IC10001", title: "AI-powered Traffic Control System", category: "Smart City" },
-    { id: "IC10002", title: "Blockchain Voting App", category: "E-Governance" },
-    { id: "IC10003", title: "Smart Agriculture Drone", category: "Agritech" },
-    { id: "IC10004", title: "IoT-based Waste Management", category: "Environment" },
-    { id: "IC10005", title: "Virtual Healthcare Assistant", category: "HealthTech" },
+    { id: "IC10001", title: "AI-powered Traffic Control System" },
+    { id: "IC10002", title: "Blockchain Voting App" },
+    { id: "IC10003", title: "Smart Agriculture Drone" },
+    { id: "IC10004", title: "IoT-based Waste Management" },
+    { id: "IC10005", title: "Virtual Healthcare Assistant" },
   ];
 
   // Show popup automatically when user types
@@ -58,8 +56,7 @@ const ProblemStatementForm = ({ isCreate }) => {
   const filteredProblems = problemStatements.filter(
     (p) =>
       p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchTerm.toLowerCase())
+      p.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -111,7 +108,6 @@ const ProblemStatementForm = ({ isCreate }) => {
                   <tr>
                     <th className="p-3 font-semibold border-b">ID</th>
                     <th className="p-3 font-semibold border-b">Title</th>
-                    <th className="p-3 font-semibold border-b">Category</th>
                     <th className="p-3 font-semibold border-b text-center">
                       Action
                     </th>
@@ -126,7 +122,6 @@ const ProblemStatementForm = ({ isCreate }) => {
                       >
                         <td className="p-3 border-b">{p.id}</td>
                         <td className="p-3 border-b">{p.title}</td>
-                        <td className="p-3 border-b">{p.category}</td>
                         <td className="p-3 border-b text-center">
                           <button
                             onClick={() => {
@@ -134,7 +129,6 @@ const ProblemStatementForm = ({ isCreate }) => {
                                 ...formData,
                                 id: p.id,
                                 title: p.title,
-                                category: p.category,
                               });
                               setSearchTerm("");
                               setShowPopup(false);
@@ -149,7 +143,7 @@ const ProblemStatementForm = ({ isCreate }) => {
                   ) : (
                     <tr>
                       <td
-                        colSpan="4"
+                        colSpan="3"
                         className="text-center p-4 text-gray-500 italic"
                       >
                         No matching problem statements found.
@@ -212,42 +206,6 @@ const ProblemStatementForm = ({ isCreate }) => {
               className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
               placeholder="Describe the problem statement"
             />
-          </div>
-
-          {/* Theme */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Theme
-            </label>
-            <input
-              type="text"
-              name="theme"
-              value={formData.theme}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="e.g., Smart City"
-            />
-          </div>
-
-          {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Category
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-            >
-              <option value="">Select Category</option>
-              <option value="Software">Software</option>
-              <option value="Hardware">Hardware</option>
-              <option value="Data">Data</option>
-              <option value="Other">Other</option>
-            </select>
           </div>
 
           {/* YouTube */}

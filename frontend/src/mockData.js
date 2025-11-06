@@ -1,11 +1,11 @@
 // src/mockData.js
 
 export const mockUsers = [
-  { id: 'u1', email: 'admin@sakthi.com', role: 'Admin', collegeId: null, teamName: null },
-  { id: 'u2', email: 'eval1@sakthi.com', role: 'Evaluator', collegeId: null, teamName: null },
-  { id: 'u3', email: 'eval2@sakthi.com', role: 'Evaluator', collegeId: null, teamName: null },
-  { id: 'u4', email: 'spoc1@collegea.edu', role: 'SPOC', collegeId: 'c1', teamName: null },
-  { id: 'u5', email: 'team1@collegea.edu', role: 'Team', collegeId: 'c1', teamName: 'Innovators' },
+  { id: 'u1', email: 'admin@sakthi.com', role: 'Admin', collegeId: null, teamName: null, phone: null },
+  { id: 'u2', email: 'eval1@sakthi.com', role: 'Evaluator', collegeId: null, teamName: null, phone: '123-456-7890' },
+  { id: 'u3', email: 'eval2@sakthi.com', role: 'Evaluator', collegeId: null, teamName: null, phone: '987-654-3210' },
+  { id: 'u4', email: 'spoc1@collegea.edu', role: 'SPOC', collegeId: 'c1', teamName: null, phone: null },
+  { id: 'u5', email: 'team1@collegea.edu', role: 'Team', collegeId: 'c1', teamName: 'Innovators', phone: null },
 ];
 
 export const mockColleges = [
@@ -18,7 +18,7 @@ export const mockProblemStatements = [
     id: 'p1',
     title: 'Optimizing CNC Machining Efficiency',
     description: 'Develop a machine learning model to predict and minimize tool wear...',
-    theme: 'Ministry of Industry',
+    theme: 'Ministry of Education',
     category: 'Software',
     youtube: '',
     dataset: '',
@@ -32,7 +32,7 @@ export const mockProblemStatements = [
     id: 'p2',
     title: 'Supply Chain Risk Assessment Dashboard',
     description: 'Create a web-based dashboard for visualizing and assessing material supplier risks.',
-    theme: 'Ministry of Commerce',
+    theme: 'Ministry of Education',
     category: 'Data',
     youtube: '',
     dataset: '',

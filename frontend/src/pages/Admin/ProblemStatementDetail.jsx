@@ -64,14 +64,6 @@ const ProblemStatementDetail = () => {
                 <td className="p-4 text-[#1A202C]">{problem.description}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
-                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Theme</td>
-                <td className="p-4 text-[#1A202C]">{problem.theme}</td>
-              </tr>
-              <tr className="border-b border-[#E2E8F0]">
-                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Category</td>
-                <td className="p-4 text-[#1A202C]">{problem.category}</td>
-              </tr>
-              <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">YouTube Link</td>
                 <td className="p-4 text-[#1A202C]">{problem.youtube || 'N/A'}</td>
               </tr>

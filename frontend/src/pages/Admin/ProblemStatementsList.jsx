@@ -1,8 +1,8 @@
 // src/pages/admin/ProblemStatementsList.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSearch, FiFilter, FiUsers, FiFileText, FiPlus } from 'react-icons/fi';
-import { mockProblemStatements, getEvaluatorUsers, getSubmissionsByProblemId } from '../../mockData';
+import { FiSearch, FiFilter, FiUsers, FiFileText, FiPlus, FiUpload } from 'react-icons/fi';
+import { mockProblemStatements, getEvaluatorUsers, getSubmissionsByProblemId, mockSubmissions } from '../../mockData';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import Button from '../../components/common/Button';
 
@@ -16,11 +16,11 @@ const ProblemStatementsList = () => {
     navigate(`/admin/problems/${problem.id}/details`);
   };
 
-  const getEvaluatorIdForProblem = (problem) => {
-    if (problem.assignedEvaluators && problem.assignedEvaluators.length > 0) {
-      return evaluators.find(e => e.id === problem.assignedEvaluators[0])?.id || 'N/A';
-    }
-    return 'E0001';
+  const getEvaluatorForProblem = (problem) => {
+    const evaluatorId = (problem.assignedEvaluators && problem.assignedEvaluators.length > 0)
+      ? problem.assignedEvaluators[0]
+      : 'E0001'; // Default fallback
+    return evaluators.find(e => e.id === evaluatorId) || null;
   };
 
   const getEvaluatedCount = (problemId) => {
@@ -44,7 +44,7 @@ const ProblemStatementsList = () => {
       if (sortOrder === 'oldest') return new Date(a.created) - new Date(b.created);
       const countA = a.submissionsCount || 1;
       const countB = b.submissionsCount || 1;
-      return sortOrder === 'asc' ? countA - countB : countB - countA;
+      return sortOrder === 'asc' ? countA - countB : countB - a;
     });
 
   return (
@@ -76,36 +76,36 @@ const ProblemStatementsList = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
           <div className="bg-white shadow-sm border border-[#E2E8F0] rounded-2xl p-5">
             <div className="flex items-center gap-3">
-              <FiUsers className="text-[#FF9900] text-2xl" />
+              <FiFileText className="text-[#FF9900] text-2xl" />
               <div>
                 <h2 className="text-[#4A5568] font-medium text-base">
-                  Teams Enrolled
+                  Total Problem Statements
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">30</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{mockProblemStatements.length}</p>
               </div>
             </div>
           </div>
 
           <div className="bg-white shadow-sm border border-[#E2E8F0] rounded-2xl p-5">
             <div className="flex items-center gap-3">
-              <FiFileText className="text-[#48BB78] text-2xl" />
+              <FiUsers className="text-[#48BB78] text-2xl" />
               <div>
                 <h2 className="text-[#4A5568] font-medium text-base">
-                  Teams Submitted
+                  Total Teams
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">15</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{new Set(mockSubmissions.map(s => s.teamId)).size}</p>
               </div>
             </div>
           </div>
 
           <div className="bg-white shadow-sm border border-[#E2E8F0] rounded-2xl p-5">
             <div className="flex items-center gap-3">
-              <FiFilter className="text-[#3182CE] text-2xl" />
+              <FiUpload className="text-[#3182CE] text-2xl" />
               <div>
                 <h2 className="text-[#4A5568] font-medium text-base">
-                  Active Categories
+                  Total Submissions
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">5</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{mockSubmissions.length}</p>
               </div>
             </div>
           </div>
@@ -146,55 +146,48 @@ const ProblemStatementsList = () => {
               <tr>
                 <th className="p-4 font-semibold">PS ID</th>
                 <th className="p-4 font-semibold">Problem Statement</th>
-                <th className="p-4 text-center font-semibold">Category</th>
                 <th className="p-4 text-center font-semibold">Evaluator ID</th>
+                <th className="p-4 text-center font-semibold">Evaluator Phone</th>
                 <th className="p-4 text-center font-semibold">Submissions</th>
                 <th className="p-4 text-center font-semibold">Created</th>
                 <th className="p-4 text-center font-semibold">Evaluated</th>
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((problem) => (
-                <tr
-                  key={problem.id}
-                  className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all"
-                >
-                  <td className="p-4 text-[#1A202C] font-medium">{problem.id}</td>
-                  <td className="p-4">
-                    <span
-                      className="text-[#2B6CB0] hover:underline cursor-pointer"
-                      onClick={() => handleProblemClick(problem)}
-                    >
-                      {problem.title}
-                    </span>
-                  </td>
-                  <td className="p-4 text-center">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        problem.category === 'Software'
-                          ? 'bg-blue-100 text-blue-700'
-                          : problem.category === 'Data'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {problem.category}
-                    </span>
-                  </td>
-                  <td className="p-4 text-center text-[#1A202C]">
-                    {getEvaluatorIdForProblem(problem)}
-                  </td>
-                  <td className="p-4 text-center text-[#1A202C]">
-                    {problem.submissionsCount || 1}
-                  </td>
-                  <td className="p-4 text-center text-[#718096]">
-                    {formatDateTime(problem.created)}
-                  </td>
-                  <td className="p-4 text-center text-[#1A202C]">
-                    {getEvaluatedCount(problem.id) > 0 ? '✅' : '⏳'}
-                  </td>
-                </tr>
-              ))}
+              {filteredData.map((problem) => {
+                const evaluator = getEvaluatorForProblem(problem);
+                return (
+                  <tr
+                    key={problem.id}
+                    className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all"
+                  >
+                    <td className="p-4 text-[#1A202C] font-medium">{problem.id}</td>
+                    <td className="p-4">
+                      <span
+                        className="text-[#2B6CB0] hover:underline cursor-pointer"
+                        onClick={() => handleProblemClick(problem)}
+                      >
+                        {problem.title}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center text-[#1A202C]">
+                      {evaluator ? evaluator.id : 'N/A'}
+                    </td>
+                    <td className="p-4 text-center text-[#1A202C]">
+                      {evaluator ? evaluator.phone : 'N/A'}
+                    </td>
+                    <td className="p-4 text-center text-[#1A202C]">
+                      {problem.submissionsCount || 1}
+                    </td>
+                    <td className="p-4 text-center text-[#718096]">
+                      {formatDateTime(problem.created)}
+                    </td>
+                    <td className="p-4 text-center text-[#1A202C]">
+                      {getEvaluatedCount(problem.id) > 0 ? '✅' : '⏳'}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
