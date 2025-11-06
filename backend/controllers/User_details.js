@@ -44,7 +44,7 @@ const login = async (req, res) => {
     // console.log(await jwt.verify(data, process.env.JWT_SCERET))
     // console.log(data)
     await res.cookie("login_creditionals", data, {
-        maxAge: 864000,
+        maxAge: 86400000,
         secure: true,
         // httpOnly:
     })

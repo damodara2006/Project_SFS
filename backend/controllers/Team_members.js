@@ -90,4 +90,22 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
     
 })
 
-export {Add_Team_Members}
+const Update_team = async(req,res) => {
+  const { team, id } = req.body;
+  const { teamName, members } = team;
+
+  const [result] = await connection.query(`UPDATE Team_List SET NAME = ? WHERE ID = ?`,[teamName, id])
+  for (const member of members) {
+    const [result] = await connection.query("UPDATE Team_Members_List SET NAME = ?, EMAIL = ?, PHONE = ?, GENDER = ? WHERE TEAM_ID = ? AND ROLE = ?", [member.name, member.email, member.phone, member.gender, id, member.role])
+    console.log(result);
+    
+  
+      
+  }
+
+  res.send("Updated")
+  
+  
+}
+
+export {Add_Team_Members, Update_team}

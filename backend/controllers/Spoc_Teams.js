@@ -18,4 +18,10 @@ const Fetch_Team_Members = AsyncHandler(async (req, res) => {
     res.send(result)
 })
 
-export { Fetch_Teams, Fetch_Team_Members }
+const Delete_team = AsyncHandler(async (req, res) => {
+    const { id } = req.body;
+    const [result] = await connection.query("DELETE FROM Team_List WHERE ID = ?", [id])
+    res.send(result)
+})
+
+export { Fetch_Teams, Fetch_Team_Members, Delete_team }

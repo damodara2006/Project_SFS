@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import {URL} from "../../Utils";
+import { URL } from "../../Utils";
 import { useNavigate } from "react-router-dom";
 import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { IoTrashBinOutline } from "react-icons/io5";
+import { FaRegEdit } from "react-icons/fa";
 function TeamList() {
     const [FullTeam, setFullTeam] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
@@ -14,7 +15,10 @@ function TeamList() {
     const [activeView, setActiveView] = useState("teamlist");
     const [spoc_id, setspoc_id] = useState()
     const [fetched, setfetched] = useState(false)
-    
+    const [fetch_team_members, setfetch_team_members] = useState([])
+    const [fetched_s, setfetched_s] = useState(true)
+    const [team_id, setteam_id] = useState()
+
     const navigate = useNavigate();
 
     const [teamFormData, setTeamFormData] = useState({
@@ -32,28 +36,29 @@ function TeamList() {
     // Fetch all teams
 
     console.log(spoc_id);
-    
+
     function allteams() {
         console.log(spoc_id);
-        
+
         axios
-            .post(`${URL}/fetch_teams/${spoc_id }`)
-            .then((res) => {setFullTeam(res.data), console.log(res), setfetched(true);
+            .post(`${URL}/fetch_teams/${spoc_id}`)
+            .then((res) => {
+                setFullTeam(res.data), console.log(res), setfetched(true);
             })
             .catch((err) => console.error("Error fetching teams:", err));
     }
 
     // Navigate to selected team
     function SelectedTeam(team) {
-        navigate(`/spoc/team_details`,{state:{id:team.ID}});
+        navigate(`/spoc/team_details`, { state: { id: team.ID } });
     }
 
     useEffect(() => {
-        if (spoc_id ) {
-            
+        if (spoc_id) {
+
             allteams();
         }
-    },[spoc_id]);
+    }, [spoc_id]);
 
     // Handle form
     const handleMemberChange = (index, field, value) => {
@@ -63,60 +68,100 @@ function TeamList() {
                 i === index ? { ...member, [field]: value } : member
             ),
         }));
+        console.log(teamFormData);
+
     };
+
+    const handleEditMembers = (e) => {
+        console.log(e);
+        // console.log(FullTeam[e]);
+        axios.post(`${URL}/fetch_team_members`, { id: e.ID }).then(res => {
+            setteam_id(e.ID)
+            setfetch_team_members(res.data)
+            setTeamFormData({
+                teamName: e.NAME,
+                members: [
+                    { role: "Team Lead", name: res.data[0].NAME, email: res.data[0].EMAIL, phone: res.data[0].PHONE, gender: res.data[0].GENDER },
+                    { role: "Member 1", name: res.data[1].NAME, email: res.data[1].EMAIL, phone: res.data[1].PHONE, gender: res.data[1].GENDER },
+                    { role: "Member 2", name: res.data[2].NAME, email: res.data[2].EMAIL, phone: res.data[2].PHONE, gender: res.data[2].GENDER },
+                    { role: "Member 3", name: res.data[3].NAME, email: res.data[3].EMAIL, phone: res.data[3].PHONE, gender: res.data[3].GENDER }
+                ]
+            })
+        })
+        setShowCreateTeamModal(true)
+        setfetched_s(false)
+    }
+
+    console.log(team_id);
+
 
     const handleCreateTeam = (e) => {
         e.preventDefault();
 
-        // Show loading toast
-        const loadingToast = toast.loading('Creating team...');
-        let mailToast;
-        setTimeout(() => {
-            toast.dismiss(loadingToast);
-         mailToast  = toast.loading('Sending mails...');
+        if (e.target[18].innerText == "Update team") {
+            let load = toast.loading("Updating team...")
+            console.log(teamFormData);
+            axios.post(`${URL}/update_team`, { team: teamFormData, id: team_id })
+                .then(res => {
+                    if (res.data == "Updated") {
+                        toast.dismiss(load)
+                        toast.success("Updated !")
+                        setShowCreateTeamModal(false)
+                    }
+                })
+        }
+        else {
 
-        }, 2000);
-        axios
-            .post(`${URL}/add_members/${spoc_id}`, teamFormData)
-            .then((res) => {
-                if (res.status === 200) {
-                    // Dismiss loading toast and show success toast
-                    toast.dismiss(mailToast)
-                    toast.success('Mail sent successfully!', {
-                        duration: 3000,
-                        position: 'top-right',
-                        style: {
-                            backgroundColor: "green",
-                            color: "white"
-                        }
-                    });
-                    toast.success('Team created successfully!', {
-                        duration: 3000,
-                        position: 'top-right',
-                    });
-
-                    setShowCreateTeamModal(false);
-                    setTeamFormData({
-                        teamName: "",
-                        members: [
-                            { role: "Team Lead", name: "", email: "", phone: "", gender: "" },
-                            { role: "Member 1", name: "", email: "", phone: "", gender: "" },
-                            { role: "Member 2", name: "", email: "", phone: "", gender: "" },
-                            { role: "Member 3", name: "", email: "", phone: "", gender: "" },
-                        ],
-                    });
-                    allteams();
-                }
-            })
-            .catch((error) => {
-                // Dismiss loading toast and show error toast
+            // Show loading toast
+            const loadingToast = toast.loading('Creating team...');
+            let mailToast;
+            setTimeout(() => {
                 toast.dismiss(loadingToast);
-                toast.error('Failed to create team. Please try again.', {
-                    duration: 4000,
-                    position: 'top-right',
+                mailToast = toast.loading('Sending mails...');
+
+            }, 2000);
+            axios
+                .post(`${URL}/add_members/${spoc_id}`, teamFormData)
+                .then((res) => {
+                    if (res.status === 200) {
+                        // Dismiss loading toast and show success toast
+                        toast.dismiss(mailToast)
+                        toast.success('Mail sent successfully!', {
+                            duration: 3000,
+                            position: 'top-right',
+                            style: {
+                                backgroundColor: "green",
+                                color: "white"
+                            }
+                        });
+                        toast.success('Team created successfully!', {
+                            duration: 3000,
+                            position: 'top-right',
+                        });
+
+                        setShowCreateTeamModal(false);
+                        setTeamFormData({
+                            teamName: "",
+                            members: [
+                                { role: "Team Lead", name: "", email: "", phone: "", gender: "" },
+                                { role: "Member 1", name: "", email: "", phone: "", gender: "" },
+                                { role: "Member 2", name: "", email: "", phone: "", gender: "" },
+                                { role: "Member 3", name: "", email: "", phone: "", gender: "" },
+                            ],
+                        });
+                        allteams();
+                    }
+                })
+                .catch((error) => {
+                    // Dismiss loading toast and show error toast
+                    toast.dismiss(loadingToast);
+                    toast.error('Failed to create team. Please try again.', {
+                        duration: 4000,
+                        position: 'top-right',
+                    });
+                    console.error("Error creating team:", error);
                 });
-                console.error("Error creating team:", error);
-            });
+        }
     };
 
     const tableVariants = {
@@ -124,77 +169,40 @@ function TeamList() {
         visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
     };
 
+
+    const deleteteam = (team) => {
+        if (window.confirm("Confirm delete ?")) {
+            // console.log("hee");
+            const del = toast.loading("Deleting team")
+
+            axios.post(`${URL}/delete_team`, { id: team.ID })
+                .then(res => {
+                    console.log(res);
+                    allteams();
+                    toast.dismiss(del)
+                    toast.success("Team deleted")
+                })
+                .catch(error => {
+                    console.error("Error deleting team:", error);
+                    toast.error('Failed to delete team');
+                });
+        }
+    }
+
+
+
+
     return (
         <div className="flex bg-gray-50 min-h-screen relative">
             {/* Toast Container */}
             <Toaster />
 
-            {/* ===== Sidebar ===== */}
-            {/* <motion.aside
-                onMouseEnter={() => setIsSidebarExpanded(true)}
-                onMouseLeave={() => setIsSidebarExpanded(false)}
-                animate={{ width: isSidebarExpanded ? 200 : 70 }}
-                transition={{ duration: 0.3 }}
-                className="fixed left-5 top-1/2 -translate-y-1/2 bg-[#494949] text-white rounded-2xl shadow-xl flex flex-col items-center py-6 z-20"
-            >
-                <nav className="w-full">
-                    <ul className="flex flex-col gap-4 px-2 mx-auto">
-                        <li>
-                            <button
-                                onClick={() => navigate("/spoc")}
-                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "dashboard" ? "bg-gray-700" : "hover:bg-gray-700"
-                                    }`}
-                            >
-                                <FaUsers className="text-xl mx-auto" />
-                                {isSidebarExpanded && (
-                                    <span className="ml-3 text-sm font-medium">Dashboard</span>
-                                )}
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                onClick={() => navigate("/spoc")}
-                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "problems" ? "bg-gray-700" : "hover:bg-gray-700"
-                                    }`}
-                            >
-                                <FaClipboardList className="text-xl mx-auto" />
-                                {isSidebarExpanded && (
-                                    <span className="ml-3 text-sm font-medium">Problems</span>
-                                )}
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                onClick={() => navigate("/spoc")}
-                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "profile" ? "bg-gray-700" : "hover:bg-gray-700"
-                                    }`}
-                            >
-                                <FaUser className="text-xl mx-auto" />
-                                {isSidebarExpanded && (
-                                    <span className="ml-3 text-sm font-medium">Profile</span>
-                                )}
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                onClick={() => setActiveView("teamlist")}
-                                className={`flex items-center w-full p-3 rounded-lg transition-all duration-300 ${activeView === "teamlist" ? "bg-gray-700" : "hover:bg-gray-700"
-                                    }`}
-                            >
-                                <FaUsers className="text-xl mx-auto" />
-                                {isSidebarExpanded && (
-                                    <span className="ml-3 text-sm font-medium">Team List</span>
-                                )}
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
-            </motion.aside> */}
+
 
             {/* ===== Main Content ===== */}
             <div className="flex-1 m-30 mt-30">
                 <AnimatePresence mode="wait">
-                    {!selectedTeam ? 
+                    {!selectedTeam ?
                         <motion.div
                             key="team-list"
                             variants={tableVariants}
@@ -254,24 +262,33 @@ function TeamList() {
                                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                                     Lead Phone
                                                 </th>
+                                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider" >Edit</th>
+                                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider" >Delete</th>
+
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-100">
                                             {FullTeam.map((team) => (
                                                 <tr
                                                     key={team.ID}
-                                                    onClick={() => SelectedTeam(team)}
+
                                                     className="hover:bg-gray-50 cursor-pointer"
                                                 >
-                                                    <td className="px-6 py-4 text-sm text-gray-700">{team.ID}</td>
-                                                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                                                    <td className="px-6 py-4 text-sm text-gray-700" onClick={() => SelectedTeam(team)}>{team.ID}</td>
+                                                    <td className="px-6 py-4 text-sm font-medium text-gray-900" onClick={() => SelectedTeam(team)}>
                                                         {team.NAME}
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                                    <td className="px-6 py-4 text-sm text-gray-600" onClick={() => SelectedTeam(team)}>
                                                         {team.LEAD_EMAIL}
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                                    <td className="px-6 py-4 text-sm text-gray-600" onClick={() => SelectedTeam(team)}>
                                                         {team.LEAD_PHONE}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-green-600  text-center ">
+                                                        <button onClick={() => handleEditMembers(team)}><FaRegEdit className="cursor-pointer" /></button>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-red-600 text-center ">
+                                                        <button onClick={() => deleteteam(team)}> <IoTrashBinOutline className="cursor-pointer" /></button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -281,7 +298,7 @@ function TeamList() {
                             }
                         </motion.div>
                         : ""}
-                    
+
                 </AnimatePresence>
             </div>
 
@@ -299,7 +316,18 @@ function TeamList() {
                                 Create New Team
                             </h3>
                             <button
-                                onClick={() => setShowCreateTeamModal(false)}
+                                onClick={() => {
+                                    setShowCreateTeamModal(false), setfetched_s(true),
+                                        setTeamFormData({
+                                            teamName: "",
+                                            members: [
+                                                { role: "Team Lead", name: "", email: "", phone: "", gender: "" },
+                                                { role: "Member 1", name: "", email: "", phone: "", gender: "" },
+                                                { role: "Member 2", name: "", email: "", phone: "", gender: "" },
+                                                { role: "Member 3", name: "", email: "", phone: "", gender: "" },
+                                            ],
+                                        })
+                                }}
                                 className="text-gray-500 hover:text-gray-700 text-xl"
                             >
                                 ✕
@@ -390,7 +418,18 @@ function TeamList() {
                             <div className="flex justify-end space-x-4">
                                 <button
                                     type="button"
-                                    onClick={() => setShowCreateTeamModal(false)}
+                                    onClick={() => {
+                                        setShowCreateTeamModal(false), setfetched_s(true),
+                                            setTeamFormData({
+                                                teamName: "",
+                                                members: [
+                                                    { role: "Team Lead", name: "", email: "", phone: "", gender: "" },
+                                                    { role: "Member 1", name: "", email: "", phone: "", gender: "" },
+                                                    { role: "Member 2", name: "", email: "", phone: "", gender: "" },
+                                                    { role: "Member 3", name: "", email: "", phone: "", gender: "" },
+                                                ],
+                                            }), setteam_id(0)
+                                    }}
                                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                     Cancel
@@ -399,7 +438,7 @@ function TeamList() {
                                     type="submit"
                                     className="px-6 py-2 bg-[#fc8f00] text-white rounded-lg hover:bg-orange-600 transition-colors"
                                 >
-                                    Create Team
+                                    {fetched_s ? "Create team" : "Update team"}
                                 </button>
                             </div>
                         </form>

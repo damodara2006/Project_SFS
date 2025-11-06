@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { Add_Team_Members } from "../controllers/Team_members.js";
-import { Fetch_Teams, Fetch_Team_Members } from "../controllers/Spoc_Teams.js";
+import { Add_Team_Members, Update_team } from "../controllers/Team_members.js";
+import { Fetch_Teams, Fetch_Team_Members, Delete_team } from "../controllers/Spoc_Teams.js";
 import { login, logout, signup } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
 import { Post_problem } from "../controllers/Problems.js";
@@ -24,5 +24,7 @@ router.route("/get_problems").get(Get_problems)
 router.route("/problems/:id").get(Get_problem_by_id)
 router.route("/cookie").get(Get_cookies)
 router.route("/submissions").get(Get_all_submissions)
+router.route("/update_team").post(Update_team)
+router.route("/delete_team").post(Delete_team)
 
 export default router
