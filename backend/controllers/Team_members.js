@@ -19,11 +19,11 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
         let singledata = TeamMemberData[i];
         // console.log(singledata)
         if (singledata.role == "Team Lead") {
-            await connection.query(`UPDATE Team_List SET LEAD_EMAIL = '${singledata.email}' WHERE ID = ${result.insertId}`)
-            await connection.query(`UPDATE Team_List SET LEAD_PHONE = '${singledata.phone}' WHERE ID = ${result.insertId}`)
+            await connection.query(`UPDATE Team_List SET LEAD_EMAIL = ? WHERE ID = ?`,[singledata.email, result.insertId])
+            await connection.query(`UPDATE Team_List SET LEAD_PHONE = ? WHERE ID = ?`,[singledata.phone, result.insertId])
             leademail = singledata.email
         }
-        const [res] = await connection.query(`insert into Team_Members_List(ROLE, NAME, EMAIL, PHONE, GENDER, SPOC_ID, TEAM_ID) values ('${singledata.role}','${singledata.name}', '${singledata.email}', '${singledata.phone}', '${singledata.gender}', ${id}, ${result.insertId})`)
+        const [res] = await connection.query(`insert into Team_Members_List(ROLE, NAME, EMAIL, PHONE, GENDER, SPOC_ID, TEAM_ID) values (?,?,?,?,?,?,?)`,[singledata.role, singledata.name, singledata.email, singledata.phone, singledata.gender, id, result.insertId])
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
