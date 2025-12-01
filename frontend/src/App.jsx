@@ -2,7 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { auth } from "./Utils.js";
 
-// General Components
+// --- LAYOUT IMPORTS ---
+// Your existing AdminLayout (which does NOT have a Header/Footer)
+
+// The new MainLayout we just created (which DOES have a Header/Footer)
+import MainLayout from './components/layout/MainLayout.jsx';
+
+// General Page Imports
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Homepage from "./pages/Home";
@@ -15,9 +21,8 @@ import ProblemStatements from "./components/ProblemStatements.jsx";
 // Student
 import SdDashboard from "./pages/student/SdDashboard";
 import Upload from "./pages/student/Upload";
-import TeamDetails from "./pages/student/TeamDetails.jsx";
-
-// SPOC
+                                                    
+// SPOC Imports
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";
 import Team_Members from "./pages/spoc/Team_Members.jsx";
@@ -39,7 +44,14 @@ import EvaluatorManage from "./pages/Admin/EvaluatorManage.jsx";
 import ProblemStatementsList from "./pages/Admin/ProblemStatementsList.jsx";
 import ProblemStatementCreate from "./pages/Admin/ProblemStatementCreate.jsx";
 import ProblemStatementEdit from "./pages/Admin/ProblemStatementEdit.jsx";
-import FallBack from "./pages/FallBack.jsx";
+import ProblemStatementDetail from "./pages/Admin/ProblemStatementDetail.jsx";
+import SubmissionDetail2 from "./pages/Admin/SubmissionDetail.jsx";
+import TeamDetails from "./pages/student/TeamDetails.jsx";
+import Team_Members from "./pages/spoc/Team_Members.jsx";
+import TeamList from "./pages/spoc/TeamList.jsx";
+import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
+import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
+import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
 
 function App() {
   const showToast = (message) => {
@@ -105,7 +117,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header />
+      {/* The Header and Footer are now REMOVED from here */}
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Homepage />} />
@@ -203,6 +215,10 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="spoc-approvals" element={<SpocApprovals />} />
+          <Route path="problems/:id/details" element={<ProblemStatementDetail />} />
+          <Route path="submissions/:id/details" element={<SubmissionDetail2 />} />
+
+          {/* Problem Statement Management (CRUD) */}
           <Route path="problems" element={<ProblemStatementsList />} />
           <Route path="problems/create" element={<ProblemStatementCreate />} />
           <Route path="problems/edit/:id" element={<ProblemStatementEdit />} />
@@ -213,7 +229,6 @@ function App() {
 
         <Route path="*" element={<FallBack/>}/>
       </Routes>
-      <Footer />
     </BrowserRouter>
   );
 }

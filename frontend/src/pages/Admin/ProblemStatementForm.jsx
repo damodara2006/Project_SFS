@@ -1,162 +1,265 @@
-// src/pages/admin/ProblemStatementForm.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/common/button';
-import { getEvaluatorUsers } from '../../mockData';
-import { FiSave, FiList, FiUpload } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/common/Button";
+import { addProblemStatement, getEvaluatorUsers } from "../../mockData";
+import { FiSearch, FiSave, FiX } from "react-icons/fi";
 
-const ProblemStatementForm = ({ isCreate, initialData = {} }) => {
-    const navigate = useNavigate();
-    const evaluators = getEvaluatorUsers();
+const ProblemStatementForm = ({ isCreate }) => {
+  const navigate = useNavigate();
+  const evaluators = getEvaluatorUsers();
 
-    const [title, setTitle] = useState(initialData.title || '');
-    const [description, setDescription] = useState(initialData.description || '');
-    const [deadline, setDeadline] = useState(initialData.deadline ? initialData.deadline.substring(0, 10) : '');
-    const [status, setStatus] = useState(initialData.status || 'Open');
-    const [assignedEvaluators, setAssignedEvaluators] = useState(initialData.assignedEvaluators || []);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    id: "",
+    title: "",
+    description: "",
+    youtube: "",
+    dataset: "",
+  });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+  const [assignedEvaluators, setAssignedEvaluators] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
-        const formData = { title, description, deadline, status, assignedEvaluators };
+  // Example data for popup list
+  const problemStatements = [
+    { id: "IC10001", title: "AI-powered Traffic Control System" },
+    { id: "IC10002", title: "Blockchain Voting App" },
+    { id: "IC10003", title: "Smart Agriculture Drone" },
+    { id: "IC10004", title: "IoT-based Waste Management" },
+    { id: "IC10005", title: "Virtual Healthcare Assistant" },
+  ];
 
-        // API logic for creating/updating
-        if (isCreate) {
-            console.log("Creating new problem:", formData);
-            // In a real app: POST to /api/problems
-            alert(`Mock: Created new problem: ${title}`);
-        } else {
-            console.log(`Updating problem ${initialData.id}:`, formData);
-            // In a real app: PUT to /api/problems/:id
-            alert(`Mock: Updated problem: ${title}`);
-        }
+  // Show popup automatically when user types
+  useEffect(() => {
+    if (searchTerm.trim() !== "") {
+      setShowPopup(true);
+    } else {
+      setShowPopup(false);
+    }
+  }, [searchTerm]);
 
-        setIsSubmitting(false);
-        navigate('/admin/problems');
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleEvaluatorChange = (evaluatorId) => {
-        setAssignedEvaluators(prev =>
-            prev.includes(evaluatorId)
-                ? prev.filter(id => id !== evaluatorId)
-                : [...prev, evaluatorId]
-        );
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isCreate) addProblemStatement({ ...formData, assignedEvaluators });
+    alert(`${isCreate ? "Created" : "Updated"} problem statement successfully!`);
+    navigate("/admin/problems");
+  };
 
-    return (
-        <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                {isCreate ? 'Create New Problem Statement' : `Edit Problem: ${initialData.title}`}
-            </h1>
+  const handleCancel = () => navigate("/admin/problems");
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Core Details */}
-                <fieldset className="border p-4 rounded-lg space-y-4">
-                    <legend className="px-2 text-lg font-semibold text-indigo-600">Problem Details</legend>
-                    <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-                        <input
-                            id="title"
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                            className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3"
-                        />
-                    </div>
+  // Filtered list
+  const filteredProblems = problemStatements.filter(
+    (p) =>
+      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-                    <div>
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            rows="5"
-                            required
-                            className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3"
-                        ></textarea>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label htmlFor="deadline" className="block text-sm font-medium text-gray-700">Submission Deadline</label>
-                            <input
-                                id="deadline"
-                                type="date"
-                                value={deadline}
-                                onChange={(e) => setDeadline(e.target.value)}
-                                required
-                                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
-                            <select
-                                id="status"
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 bg-white"
-                            >
-                                <option value="Open">Open</option>
-                                <option value="In Review">In Review</option>
-                                <option value="Closed">Closed</option>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
-
-                {/* Evaluator Assignment */}
-                <fieldset className="border p-4 rounded-lg space-y-4">
-                    <legend className="px-2 text-lg font-semibold text-indigo-600">Assign Evaluators</legend>
-                    <p className="text-sm text-gray-600">Select all Evaluators who will be responsible for marking submissions for this problem statement.</p>
-                    <div className="space-y-2 max-h-40 overflow-y-auto p-2 border rounded-lg">
-                        {evaluators.map(evaluator => (
-                            <div key={evaluator.id} className="flex items-center">
-                                <input
-                                    id={`evaluator-${evaluator.id}`}
-                                    type="checkbox"
-                                    checked={assignedEvaluators.includes(evaluator.id)}
-                                    onChange={() => handleEvaluatorChange(evaluator.id)}
-                                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                                />
-                                <label htmlFor={`evaluator-${evaluator.id}`} className="ml-3 text-sm font-medium text-gray-700">
-                                    {evaluator.email}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
-                </fieldset>
-
-                {/* Attachments (Simplified File Upload Mock) */}
-                <fieldset className="border p-4 rounded-lg space-y-4">
-                    <legend className="px-2 text-lg font-semibold text-indigo-600">Attachments</legend>
-                    <div className="flex items-center space-x-4">
-                        <input
-                            type="file"
-                            multiple
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                        />
-                        <Button variant="secondary" size="md" className="flex items-center">
-                            <FiUpload className="w-5 h-5 mr-1" /> Upload Files
-                        </Button>
-                    </div>
-                    <p className="text-xs text-gray-500">Note: Actual file storage logic (e.g., S3 or MongoDB GridFS) would be implemented in the backend.</p>
-                </fieldset>
-
-
-                <div className="flex justify-end space-x-3 pt-4">
-                    <Button variant="secondary" onClick={() => navigate('/admin/problems')} className="flex items-center">
-                        <FiList className="w-5 h-5 mr-1" /> Cancel/View List
-                    </Button>
-                    <Button type="submit" variant="primary" disabled={isSubmitting} className="flex items-center">
-                        <FiSave className="w-5 h-5 mr-1" /> {isSubmitting ? 'Saving...' : 'Save Problem'}
-                    </Button>
-                </div>
-            </form>
+  return (
+    <div className="min-h-screen bg-[#F7F8FC] p-6 relative">
+      {/* ---------- Top Search Bar ---------- */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#1A202C]">
+            {isCreate ? "Create Problem Statement" : "Edit Problem Statement"}
+          </h1>
+          <p className="text-sm text-[#718096]">
+            Search existing statements or create a new one.
+          </p>
         </div>
-    );
+
+        <div className="mt-4 md:mt-0 flex gap-3">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search Problem Statements"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 rounded-full py-2 px-4 text-sm w-64 focus:ring-2 focus:ring-[#FF9900]/30 focus:outline-none"
+            />
+            <FiSearch className="absolute right-3 top-2.5 text-gray-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* ---------- Problem Statement Popup ---------- */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-3xl p-6 relative animate-fadeIn">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-[#1A202C]">
+                Problem Statement List
+              </h2>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="overflow-x-auto border rounded-xl border-gray-200">
+              <table className="w-full text-left text-sm border-collapse">
+                <thead className="bg-[#FFFAF0] text-[#1A202C]">
+                  <tr>
+                    <th className="p-3 font-semibold border-b">ID</th>
+                    <th className="p-3 font-semibold border-b">Title</th>
+                    <th className="p-3 font-semibold border-b text-center">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProblems.length > 0 ? (
+                    filteredProblems.map((p) => (
+                      <tr
+                        key={p.id}
+                        className="hover:bg-[#FFF7E6] transition-all duration-150"
+                      >
+                        <td className="p-3 border-b">{p.id}</td>
+                        <td className="p-3 border-b">{p.title}</td>
+                        <td className="p-3 border-b text-center">
+                          <button
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                id: p.id,
+                                title: p.title,
+                              });
+                              setSearchTerm("");
+                              setShowPopup(false);
+                            }}
+                            className="text-[#FF9900] hover:underline font-medium"
+                          >
+                            Select
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className="text-center p-4 text-gray-500 italic"
+                      >
+                        No matching problem statements found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- Form Section ---------- */}
+      <div className="bg-white shadow-sm rounded-2xl border p-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Problem ID */}
+          <div>
+            <label className="block text-sm font-medium text-[#2D3748] mb-2">
+              Problem Statement ID
+            </label>
+            <input
+              type="text"
+              name="id"
+              value={formData.id}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
+              placeholder="e.g., IC10001"
+            />
+          </div>
+
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-[#2D3748] mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
+              placeholder="Enter problem statement title"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-[#2D3748] mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              rows="4"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
+              placeholder="Describe the problem statement"
+            />
+          </div>
+
+          {/* YouTube */}
+          <div>
+            <label className="block text-sm font-medium text-[#2D3748] mb-2">
+              YouTube Link
+            </label>
+            <input
+              type="url"
+              name="youtube"
+              value={formData.youtube}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
+              placeholder="https://youtube.com/watch?v=..."
+            />
+          </div>
+
+          {/* Dataset */}
+          <div>
+            <label className="block text-sm font-medium text-[#2D3748] mb-2">
+              Dataset Link
+            </label>
+            <input
+              type="url"
+              name="dataset"
+              value={formData.dataset}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
+              placeholder="https://example.com/dataset"
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-4">
+            <Button
+              type="submit"
+              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all"
+            >
+              <FiSave className="w-4 h-4" />
+              <span>{isCreate ? "Create" : "Update"}</span>
+            </Button>
+            <Button
+              type="button"
+              onClick={handleCancel}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all"
+            >
+              <FiX className="w-4 h-4" />
+              <span>Cancel</span>
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default ProblemStatementForm;

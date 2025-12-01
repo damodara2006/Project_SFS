@@ -1,19 +1,43 @@
-// src/components/admin/AdminLayout.jsx
-import React from 'react';
-import AdminSidebar from './AdminSidebar';
-import AdminNavbar from './AdminNavbar';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import AdminSidebar from './AdminSidebar';
+import AdminHeader from './AdminHeader';
 
 const AdminLayout = () => {
+  // State for the mobile slide-in menu
+  const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  // State for the desktop hover-expandable menu
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminNavbar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-10">
-          <Outlet /> {/* Renders the current Admin page component */}
+    <div className="min-h-screen bg-gray-100">
+      <AdminSidebar
+        isMobileOpen={isMobileSidebarOpen}
+        setMobileOpen={setMobileSidebarOpen}
+        isExpanded={isSidebarExpanded}
+        setIsExpanded={setIsSidebarExpanded}
+      />
+
+      {/* Main Content Area */}
+      {/* THE FIX: Switched to full class names in the ternary for Tailwind JIT to work */}
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          isSidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'
+        }`}
+      >
+        <AdminHeader setIsOpen={setMobileSidebarOpen} />
+        <main className="p-6 lg:p-8">
+          <Outlet />
         </main>
       </div>
+
+      {/* Overlay for mobile view */}
+      {isMobileSidebarOpen && (
+        <div
+          onClick={() => setMobileSidebarOpen(false)}
+          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
+        />
+      )}
     </div>
   );
 };
