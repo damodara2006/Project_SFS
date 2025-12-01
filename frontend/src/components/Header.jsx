@@ -11,14 +11,10 @@ const Header = () => {
 
   const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'Problem Statement', path: '/student' },
     { name: 'About us', path: '/about' },
-    { name: 'FAQ', path: '/faq' },
-    { name: "Home", path: "/" },
-    { name: "About us", path: "/about" },
+
     { name: "Problem Statement", path: "/problemstatements" },
-    // { name: "FAQ", path: "/faq" },
-    { name: "Profile", path: "/profile" },
+  
   ];
 
   // A reusable NavLink component for both mobile and desktop

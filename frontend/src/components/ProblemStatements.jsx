@@ -300,6 +300,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const sampleProblems = [
   {
@@ -417,6 +419,7 @@ const ProblemStatements = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
+      <Header/>
       <div className="max-w-7xl mx-auto">
         <header className="mb-10">
           <h1 className="text-center text-3xl font-extrabold text-gray-900 mt-20">
@@ -577,7 +580,9 @@ const ProblemStatements = () => {
             <p>No details available.</p>
           )}
         </Modal>
+        <Footer/>
       </div>
+      
     </motion.div>
   );
 };

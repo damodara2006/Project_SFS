@@ -8,6 +8,8 @@ import axios from 'axios';
 import {URL} from '../../Utils';
 import { useNavigate } from 'react-router-dom';
 import toast,{Toaster} from 'react-hot-toast';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: FaUsers },
@@ -106,6 +108,7 @@ const SpocDashboard = () => {
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
             <Toaster position="top-right" />
+            <Header />
             <div className="flex flex-1 pt-20">
                 {/* Sidebar */}
                 <aside className="w-56 bg-[#494949] text-white p-6 sticky top-20 h-[calc(100vh-5rem)]">
@@ -215,6 +218,7 @@ const SpocDashboard = () => {
                     {activeView === 'teamdetails' && <TeamList />}
                 </main>
             </div>
+            <Footer />
         </div>
     );
 };

@@ -12,7 +12,8 @@ import {
   FaStar,
 } from "react-icons/fa";
 import FAQ from "./FAQ";
-
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 const Homepage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -106,6 +107,7 @@ const Homepage = () => {
       animate="visible"
       variants={pageVariants}
     >
+      <Header/>
       {/* Background Pattern & Wave Image */}
       <div className="absolute inset-0 opacity-15 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,153,0,0.3)_1px,transparent_0)] bg-[length:20px_20px]"></div>
@@ -413,6 +415,7 @@ const Homepage = () => {
           </Link>
         </div>
       </section>
+      <Footer />
     </motion.div>
   );
 };
