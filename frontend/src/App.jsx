@@ -25,7 +25,7 @@ import Upload from "./pages/student/Upload";
 // SPOC Imports
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";
-import Team_Members from "./pages/spoc/Team_Members.jsx";
+// import Team_Members from "./pages/spoc/Team_Members.jsx";
 import TeamList from "./pages/spoc/TeamList.jsx";
 
 // Evaluator
@@ -48,10 +48,10 @@ import ProblemStatementDetail from "./pages/Admin/ProblemStatementDetail.jsx";
 import SubmissionDetail2 from "./pages/Admin/SubmissionDetail.jsx";
 import TeamDetails from "./pages/student/TeamDetails.jsx";
 import Team_Members from "./pages/spoc/Team_Members.jsx";
-import TeamList from "./pages/spoc/TeamList.jsx";
-import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
-import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
-import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
+// import TeamList from "./pages/spoc/TeamList.jsx";
+// import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
+// import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
+// import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
 
 function App() {
   const showToast = (message) => {
@@ -227,7 +227,7 @@ function App() {
           <Route path="evaluators/manage/:id" element={<EvaluatorManage />} />
         </Route>
 
-        <Route path="*" element={<FallBack/>}/>
+        {/* <Route path="*" element={<FallBack/>}/> */}
       </Routes>
     </BrowserRouter>
   );

@@ -8,7 +8,7 @@ import { Get_problems } from "../controllers/Problems.js";
 import { Get_problem_by_id } from "../controllers/Problems.js";
 import { Get_cookies } from "../controllers/Cookie.js";
 import { Get_all_submissions,SubmitSolution } from "../controllers/Submission.js";
-import { Get_all_submissions,SubmitSolution } from "../controllers/Submission.js";
+// import { Get_all_submissions,SubmitSolution } from "../controllers/Submission.js";
 import { handleSpocApprove, Spoc_approve } from "../controllers/Spoc.js";
 
 const router = Router();

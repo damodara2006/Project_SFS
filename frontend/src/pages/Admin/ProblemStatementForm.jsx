@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/common/Button";
+import Button from "../../components/common/button";
 import { addProblemStatement, getEvaluatorUsers } from "../../mockData";
 import { FiSearch, FiSave, FiX } from "react-icons/fi";
 

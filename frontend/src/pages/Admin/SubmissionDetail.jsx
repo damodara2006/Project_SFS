@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
-import Button from '../../components/common/Button';
+import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { getSubmissionById, mockSubmissions } from '../../mockData';
 import { FiEdit, FiSave, FiArrowLeft, FiChevronLeft, FiChevronRight, FiDownload } from 'react-icons/fi';
@@ -178,26 +178,25 @@ const SubmissionDetail = () => {
                   </div>
                 }
               >
-                <Page 
-                  pageNumber={pageNumber} 
+                <Page
+                  pageNumber={pageNumber}
                   renderTextLayer={true}
                   renderAnnotationLayer={true}
                   className="shadow-lg"
                 />
               </Document>
             </div>
-            
+
             {/* PDF Navigation Controls */}
             {numPages && (
               <div className="flex items-center justify-between bg-white px-6 py-3 border-t border-[#E2E8F0]">
                 <Button
                   onClick={goToPrevPage}
                   disabled={pageNumber <= 1}
-                  className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${
-                    pageNumber <= 1
+                  className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${pageNumber <= 1
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                       : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
-                  }`}
+                    }`}
                 >
                   <FiChevronLeft className="w-5 h-5" />
                   <span>Previous</span>
@@ -210,11 +209,10 @@ const SubmissionDetail = () => {
                 <Button
                   onClick={goToNextPage}
                   disabled={pageNumber >= numPages}
-                  className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${
-                    pageNumber >= numPages
+                  className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${pageNumber >= numPages
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                       : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
-                  }`}
+                    }`}
                 >
                   <span>Next</span>
                   <FiChevronRight className="w-5 h-5" />

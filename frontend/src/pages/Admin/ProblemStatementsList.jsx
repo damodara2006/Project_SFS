@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiFilter, FiUsers, FiFileText, FiPlus, FiUpload } from 'react-icons/fi';
 import { mockProblemStatements, getEvaluatorUsers, getSubmissionsByProblemId, mockSubmissions } from '../../mockData';
 import Breadcrumb from '../../components/common/Breadcrumb';
-import Button from '../../components/common/Button';
+import Button from '../../components/common/button';
 
 const ProblemStatementsList = () => {
   const navigate = useNavigate();

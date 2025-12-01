@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Button from '../../components/common/Button';
+import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { getProblemStatementById, getSubmissionsByProblemId } from '../../mockData';
 import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft } from 'react-icons/fi';
@@ -175,13 +175,12 @@ const ProblemStatementDetail = () => {
                   </td>
                   <td className="p-4">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        sub.status === 'Evaluated'
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${sub.status === 'Evaluated'
                           ? 'bg-green-100 text-green-800'
                           : sub.status === 'Submitted'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
                     >
                       {sub.status}
                     </span>
