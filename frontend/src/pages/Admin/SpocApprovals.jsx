@@ -12,6 +12,8 @@ const SpocApprovals = () => {
   const [step, setStep] = useState("confirm");
   const [SpocData, setSpocData] = useState([])
 
+  // console.log(SpocData)
+
   let fetchspoc = () => {
     axios.get(`${URL}/spoc_users`)
       .then(res => {
@@ -87,7 +89,7 @@ const SpocApprovals = () => {
   const filteredData = SpocData.filter(
     (college) =>
       college.COLLEGE.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      college.EMAIL.toLowerCase().includes(searchQuery.toLowerCase())
+      college.EMAIL.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
 
   console.log(filteredData);
@@ -131,6 +133,7 @@ const SpocApprovals = () => {
             <tr>
               <th className="text-left py-3 px-4 font-medium">College Name</th>
               <th className="text-left py-3 px-4 font-medium">Email</th>
+              {/* <th className="text-left py-3 px-4 font-medium">Name</th> */}
               <th className="text-left py-3 px-4 font-medium">Date Requested</th>
               <th className="text-center py-3 px-4 font-medium">Actions</th>
             </tr>
@@ -147,6 +150,9 @@ const SpocApprovals = () => {
                   </td>
                   <td className="py-3 px-4 text-[#718096]">{college.EMAIL}</td>
                   <td className="py-3 px-4 text-[#A0AEC0]">{college.DATE}</td>
+                  {/* <td className="py-3 px-4 text-[#A0AEC0]">{college.DATE}</td> */}
+
+
                   <td className="py-3 px-4 text-center space-x-2">
                     <button
                       onClick={() => handleApprove(college, 1)}
