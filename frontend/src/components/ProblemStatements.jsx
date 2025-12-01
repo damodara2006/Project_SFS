@@ -408,13 +408,11 @@ const ProblemStatements = () => {
     load();
   }, []);
 
-  console.log(fetchProblems().then(res=>console.log(res)
-  ));
   
 
   return (
     <motion.div
-      className="min-h-screen bg-white/50 p-6"
+      className="min-h-screen bg-white/50 "
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -580,8 +578,8 @@ const ProblemStatements = () => {
             <p>No details available.</p>
           )}
         </Modal>
-        <Footer/>
       </div>
+        <Footer/>
       
     </motion.div>
   );
