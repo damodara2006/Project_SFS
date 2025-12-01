@@ -83,4 +83,9 @@ const logout = async(req, res) => {
     }
 }
 
-export { signup, login, logout }
+const GetAllUsers = AsyncHandler(async (req, res) => {
+    const [users] = await connection.query("SELECT * FROM Users");
+    res.status(200).json(users);
+});
+
+export { signup, login, logout, GetAllUsers }

@@ -1,38 +1,44 @@
 import { Router } from "express";
+
+// Controller Imports
 import { Add_Team_Members, Update_team } from "../controllers/Team_members.js";
 import { Fetch_Teams, Fetch_Team_Members, Delete_team } from "../controllers/Spoc_Teams.js";
-import { login, logout, signup } from "../controllers/User_details.js";
+import { login, logout, signup, GetAllUsers } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
-import { Post_problem } from "../controllers/Problems.js";
-import { Get_problems } from "../controllers/Problems.js";
-import { Get_problem_by_id } from "../controllers/Problems.js";
+import { Post_problem, Get_problems, Get_problem_by_id } from "../controllers/Problems.js";
 import { Get_cookies } from "../controllers/Cookie.js";
-import { Get_all_submissions,SubmitSolution } from "../controllers/Submission.js";
-// import { Get_all_submissions,SubmitSolution } from "../controllers/Submission.js";
+import { Get_all_submissions, SubmitSolution } from "../controllers/Submission.js";
 import { handleSpocApprove, Spoc_approve } from "../controllers/Spoc.js";
 
 const router = Router();
 
+// --- Public / Authentication Routes ---
+router.route("/login").post(login);
+router.route("/logout").get(logout);
+router.route("/register/:email/:password/:role/:college/:college_code/:name/:date").post(signup);
+router.route("/verify_email/:email").post(Verify_OTP);
+router.route("/cookie").get(Get_cookies); // Checks user authentication status
 
-router.route("/add_members/:id").post(Add_Team_Members)
-router.route("/fetch_teams/:id").post(Fetch_Teams)
-router.route("/fetch_team_members").post(Fetch_Team_Members)
-router.route("/register/:email/:password/:role/:college/:college_code/:name/:date").post(signup)
-router.route("/verify_email/:email").post(Verify_OTP)
-router.route("/login").post(login)
-router.route("/logout").get(logout)
-router.route("/addproblems").post(Post_problem)
-router.route("/get_problems").get(Get_problems)
-router.route("/problems/:id").get(Get_problem_by_id)
-router.route("/cookie").get(Get_cookies)
-router.route("/submissions").get(Get_all_submissions)
-router.route("/submit_solution").post(SubmitSolution)
-router.route("/submit_solution").post(SubmitSolution)
-router.route("/update_team").post(Update_team)
-router.route("/delete_team").post(Delete_team)
-router.route("/spoc_users").get(Spoc_approve)
-router.route("/handlespoc").post(handleSpocApprove)
+// --- Admin Routes ---
+router.route("/addproblems").post(Post_problem);
+router.route("/spoc_users").get(Spoc_approve); // Get pending SPOC approvals
+router.route("/handlespoc").post(handleSpocApprove); // Approve or reject a SPOC
+router.route("/get_all_users").get(GetAllUsers); // Get all users
+router.route("/submissions").get(Get_all_submissions); // Get all submissions from all teams
+
+// --- SPOC Routes ---
+router.route("/fetch_teams/:id").post(Fetch_Teams);
+router.route("/fetch_team_members").post(Fetch_Team_Members);
+router.route("/add_members/:id").post(Add_Team_Members);
+router.route("/update_team").post(Update_team);
+router.route("/delete_team").post(Delete_team);
+
+// --- Student Routes ---
+router.route("/submit_solution").post(SubmitSolution);
+
+// --- Common/Shared Routes ---
+router.route("/get_problems").get(Get_problems);
+router.route("/problems/:id").get(Get_problem_by_id);
 
 
-
-export default router
+export default router;
