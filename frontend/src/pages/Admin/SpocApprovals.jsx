@@ -23,13 +23,13 @@ const SpocApprovals = () => {
   }
   useEffect(() => {
     fetchspoc()
-  })
+  }, [])
 
   // console.log(SpocData);
   const handleApprove = (id, approve) => {
     axios.post(`${URL}/handlespoc`, { id: id, approve: approve })
       .then(res => {
-        console.log(res);
+     
         fetchspoc();
       }
     )
@@ -91,8 +91,6 @@ const SpocApprovals = () => {
       college.COLLEGE.toLowerCase().includes(searchQuery.toLowerCase()) ||
       college.EMAIL.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
-
-  console.log(filteredData);
   
 
   return (
