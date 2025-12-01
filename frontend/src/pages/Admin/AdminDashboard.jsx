@@ -2,6 +2,7 @@
  * @file AdminDashboard.jsx
  * @description The main dashboard for administrators, showing platform-wide statistics and activities.
  */
+
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -16,15 +17,13 @@ import RecentProblemsTable from '../../components/admin/RecentProblemsTable';
 const AdminDashboard = () => {
 
   const [data, setData] = useState({ problems: [], submissions: [], spocs: [], evaluators: [] });
- console.log(data);
+
   
   const fetchProblems = async()=>{
     try{
       const response = await fetch('http://localhost:8000/get_problems');
        const result = await response.json();
        setData(prevData => ({ ...prevData, problems: result.problems }));
-       console.log(result);
-       
     }
     catch(error){
       console.error('Error fetching problems:', error);
