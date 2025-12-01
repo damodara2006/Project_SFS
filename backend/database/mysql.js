@@ -1,7 +1,7 @@
-import { createConnection } from "mysql2/promise"
+import { createPool } from "mysql2/promise"
 
 
-    const connection = await createConnection({
+    const connection = await createPool({
         host: "54.234.143.213",
         database: "Sakthi_auto",
         user: "root",
@@ -9,12 +9,13 @@ import { createConnection } from "mysql2/promise"
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
-        connectTimeout: 15000
+        connectTimeout: 28800
     })
 
     try {
-        await connection.connect()
+        const con = await connection.getConnection();
         console.log("MySQL Database connected successfully")
+        con.release();
     } catch (error) {
         console.log(error)
     }

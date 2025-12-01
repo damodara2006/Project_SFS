@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiClipboard, FiUsers, FiCheckSquare, FiUpload, FiArrowRight, FiFilePlus } from 'react-icons/fi';
 
-// Import all required components
+
 import StatCard from '../../components/admin/StatCard';
 import SubmissionsChart from '../../components/admin/SubmissionsChart';
 import EvaluationChart from '../../components/admin/EvaluationChart';
@@ -19,15 +19,28 @@ import RecentProblemsTable from '../../components/admin/RecentProblemsTable';
 import { mockProblemStatements, mockSubmissions, mockSpocRequests, mockUsers } from '../../mockData';
 
 const AdminDashboard = () => {
-  // --- Data Calculations ---
+
+  const fetchProblems = async()=>{
+    try{
+      const response = await fetch('http://localhost:8000/get_problems');
+      const data = await response.json();
+      console.log('Fetched Problems:', data);
+    }
+    catch(error){
+      console.error('Error fetching problems:', error);
+    }
+  }
+  fetchProblems();
+
+
   const totalProblems = mockProblemStatements.length;
   const totalSubmissions = 340;
   const pendingApprovals = mockSpocRequests.filter(r => r.status === 'Pending').length;
   const totalEvaluators = mockUsers.length;
-  // For the new donut chart, let's assume a number of evaluated submissions
+  
   const evaluatedCount = 168;
 
-  // Mock data for the activity log
+  
   const recentActivities = [
     { text: 'Team "Innovators" submitted a solution.', time: '2h ago', icon: FiUpload },
     { text: 'SPOC request from PSG College approved.', time: '5h ago', icon: FiCheckSquare },
