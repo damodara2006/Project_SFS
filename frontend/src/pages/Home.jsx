@@ -1,3 +1,7 @@
+/**
+ * @file Home.jsx
+ * @description The main landing page of the application, accessible to all users.
+ */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import WaveImage from "../components/WaveImage";

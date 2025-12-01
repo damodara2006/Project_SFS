@@ -1,3 +1,7 @@
+/**
+ * @file EvaluatorsList.jsx
+ * @description Displays a list of all evaluators on the platform for administrative review.
+ */
 import React, { useState, useMemo } from "react";
 import {
   FiEdit,

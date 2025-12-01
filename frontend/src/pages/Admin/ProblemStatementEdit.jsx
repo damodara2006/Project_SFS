@@ -1,3 +1,7 @@
+/**
+ * @file ProblemStatementEdit.jsx
+ * @description A form for administrators to edit an existing problem statement.
+ */
 // src/pages/admin/ProblemStatementEdit.jsx
 import React from 'react';
 import { useParams } from 'react-router-dom';

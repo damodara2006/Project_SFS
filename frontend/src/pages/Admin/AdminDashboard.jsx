@@ -1,9 +1,7 @@
 /**
  * @file AdminDashboard.jsx
- * @description The main dashboard page for the admin panel, assembling all analytical components.
- *              This is the primary view for the admin, providing a comprehensive overview of platform activity.
+ * @description The main dashboard for administrators, showing platform-wide statistics and activities.
  */
-
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';

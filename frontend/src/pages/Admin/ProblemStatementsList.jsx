@@ -1,3 +1,7 @@
+/**
+ * @file ProblemStatementsList.jsx
+ * @description A page for admins to view and manage all problem statements on the platform.
+ */
 // src/pages/admin/ProblemStatementsList.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

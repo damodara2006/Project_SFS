@@ -1,3 +1,7 @@
+/**
+ * @file FAQ.jsx
+ * @description A static page displaying frequently asked questions and their answers.
+ */
 import { useState } from "react";
 
 const FAQ = () => {

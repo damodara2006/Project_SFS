@@ -1,3 +1,7 @@
+/**
+ * @file About.jsx
+ * @description A static page providing information about the project or organization.
+ */
 import React from "react";
 import { motion } from "framer-motion";
 import { FaGlobe, FaHandshake, FaLightbulb, FaGraduationCap, FaBuilding, FaTools, FaChartLine, FaCheckCircle, FaLaptopCode } from "react-icons/fa";
@@ -38,7 +42,7 @@ const teamData = [
 // Sub-components
 const HeroSection = () => (
   <section className="py-40 bg-white shadow-xl overflow-hidden relative border-b border-gray-100">
-    <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAnIGhlaWdodD0nMTAnIHZpZXdCb3g9JzAgMCAxMCAxMCc+CiAgPGcgb3BhY2l0eT0nMC41JyBmaWxsPScjNjM2MzYzJz4KICAgIDxyZWN0IHdpZHRoPScxMCcgaGVpZ2h0PScxMCcgeD0nMCcgeT0nMCcgLz4KICAgIDxwYXRoIGQ9J00xMCAwTDAgMTBWMTBaJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMC4zNScgLz4KICA8L2c+CgogIDwvc3ZnPg==')]" />
+    <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAnIGhlaWdodD0nMTAnIHZpZXdCb3g9JzAgMCAxMCAxMCc+CiAgPGcgb3BhY2l0eT0nMC41JyBmaWxsPScjNjM2MzYzJz4KICAgIDxyZWN0IHdpZHRoPScxMCcgaGVpZHRoPScxMCcgeD0nMCcgeT0nMCcgLz4KICAgIDxwYXRoIGQ9J00xMCAwTDAgMTBWMTBaJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMC4zNScgLz4KICA8L2c+CgogIDwvc3ZnPg==')]" />
     <div className="max-w-7xl mx-auto text-center px-8 relative z-10">
       <motion.h2
         initial="hidden"

@@ -1,3 +1,7 @@
+/**
+ * @file ProblemStatementDetail.jsx
+ * @description Displays the full details of a specific problem statement for administrative view.
+ */
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/button';

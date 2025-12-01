@@ -1,3 +1,7 @@
+/**
+ * @file ProblemStatementForm.jsx
+ * @description A reusable form component for creating or editing problem statements.
+ */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/common/button";

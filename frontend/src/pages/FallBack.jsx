@@ -1,3 +1,7 @@
+/**
+ * @file FallBack.jsx
+ * @description A fallback component to display for routes that are not found (404 Error Page).
+ */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'

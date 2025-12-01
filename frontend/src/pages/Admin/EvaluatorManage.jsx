@@ -1,3 +1,7 @@
+/**
+ * @file EvaluatorManage.jsx
+ * @description A page for admins to manage evaluators, including adding, removing, and viewing evaluator details.
+ */
 // src/pages/admin/EvaluatorManage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
