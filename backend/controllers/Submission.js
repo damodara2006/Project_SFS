@@ -7,6 +7,11 @@ const SubmitSolution = AsyncHandler(async (req, res) => {
         return res.status(400).json({ message: "problemId, teamId and SOL_LINK are required" });
     }
 
+    const [teamExists] = await connection.query('SELECT ID FROM Team_List WHERE ID = ?', [teamId]);
+    if (teamExists.length === 0) {
+        return res.status(404).json({ message: "Team not found" });
+    }
+
     const SUB_DATE = new Date().toISOString().slice(0, 10);
     const status = "PENDING"; 
     const query = `INSERT INTO submissions (PROBLEM_ID, TEAM_ID, SOL_TITLE, SOL_DESCRIPTION, SUB_DATE, STATUS, SOL_LINK) VALUES (?,?,?,?,?,?,?)`;

@@ -6,7 +6,10 @@ import { createConnection } from "mysql2/promise"
         database: "Sakthi_auto",
         user: "root",
         password: "root@1234",
-        waitForConnections:true
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+        connectTimeout: 15000
     })
 
     try {
