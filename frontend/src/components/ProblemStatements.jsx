@@ -419,7 +419,7 @@ const ProblemStatements = () => {
     >
       <div className="max-w-7xl mx-auto">
         <header className="mb-10">
-          <h1 className="text-center text-3xl font-extrabold text-gray-900 mt-8">
+          <h1 className="text-center text-3xl font-extrabold text-gray-900 mt-20">
             Problem Statements
           </h1>
         </header>

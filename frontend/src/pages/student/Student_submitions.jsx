@@ -33,6 +33,7 @@ export default function Student_submitions({ submission: propSubmission }) {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showViewer, setShowViewer] = useState(false);
 
   const query = useMemo(() => new URLSearchParams(window.location.search), []);
   const submissionId = query.get("submissionId");
@@ -83,6 +84,8 @@ export default function Student_submitions({ submission: propSubmission }) {
     SOL_LINK: samplePdf,
   });
 
+  const pdfSrc = s.pdfLink || samplePdf;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background-light px-4 py-8">
       <div className="w-full max-w-5xl rounded-2xl shadow-card p-6 md:p-10 bg-background-white border border-border-color transition-shadow hover:shadow-card-hover">
@@ -114,17 +117,15 @@ export default function Student_submitions({ submission: propSubmission }) {
             )}
 
             <div className="mt-4 flex flex-wrap gap-3">
-              <a
-                href={s.pdfLink || samplePdf}
-                target="_blank"
-                rel="noreferrer"
+              <button
+                onClick={() => setShowViewer(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary-accent text-white font-semibold shadow-sm hover:opacity-95"
               >
                 View PDF
-              </a>
+              </button>
 
               <a
-                href={s.pdfLink || samplePdf}
+                href={pdfSrc}
                 download
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border-color text-text-primary bg-white hover:bg-gray-50"
               >
@@ -132,7 +133,7 @@ export default function Student_submitions({ submission: propSubmission }) {
               </a>
 
               <button
-                onClick={() => window.open(s.pdfLink || samplePdf, '_blank')}
+                onClick={() => window.open(pdfSrc, '_blank')}
                 className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-text-secondary bg-gray-50 border border-border-color"
               >
                 Open in new tab
@@ -152,9 +153,15 @@ export default function Student_submitions({ submission: propSubmission }) {
             <div className="mt-4">
               <label className="text-sm text-text-secondary">Preview</label>
               <div className="w-full h-44 mt-2 rounded-md overflow-hidden border border-border-color bg-gray-50">
-                <object data={s.pdfLink || samplePdf} type="application/pdf" className="w-full h-full" aria-label="Submission preview">
-                  <div className="flex items-center justify-center h-full text-text-tertiary">Preview not available</div>
-                </object>
+                <iframe
+                  src={pdfSrc}
+                  title="Submission preview"
+                  className="w-full h-full border-0"
+                />
+                {/* fallback link when iframe cannot display */}
+                <div className="flex items-center justify-center h-full text-text-tertiary invisible">
+                  <a href={pdfSrc} target="_blank" rel="noreferrer" className="text-action-blue">Open PDF</a>
+                </div>
               </div>
             </div>
           </aside>
@@ -163,6 +170,27 @@ export default function Student_submitions({ submission: propSubmission }) {
         {loading && <div className="mt-6 text-sm text-text-secondary">Loading submission...</div>}
         {error && <div className="mt-6 text-sm text-red-500">{error}</div>}
       </div>
+
+      {/* Modal viewer */}
+      {showViewer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4">
+          <div className="w-full max-w-6xl h-[90vh] bg-white rounded-lg overflow-hidden relative shadow-lg">
+            <div className="absolute top-3 right-3 z-10">
+              <button
+                onClick={() => setShowViewer(false)}
+                className="px-3 py-1 bg-white rounded border"
+              >
+                Close
+              </button>
+            </div>
+            <iframe
+              src={pdfSrc}
+              title="PDF viewer"
+              className="w-full h-full border-0"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

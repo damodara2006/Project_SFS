@@ -2,7 +2,7 @@ import { createConnection } from "mysql2/promise"
 
 
     const connection = await createConnection({
-        host: "3.92.51.181",
+        host: "54.234.143.213",
         database: "Sakthi_auto",
         user: "root",
         password: "root@1234",

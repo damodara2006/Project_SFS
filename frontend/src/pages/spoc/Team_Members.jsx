@@ -15,9 +15,11 @@ function Team_Members() {
     // console.log(params.id);
     axios.defaults.withCredentials = true
     axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
+    console.log(ID);
     
     
-        axios.post(`${URL}/fetch_team_members`,{id:ID}).then(res => setFullTeam(res.data))
+    axios.post(`${URL}/fetch_team_members`, { id: ID }).then(res => { setFullTeam(res.data); console.log(res);
+    })
 
     // console.log(FullTeam)
   return (
