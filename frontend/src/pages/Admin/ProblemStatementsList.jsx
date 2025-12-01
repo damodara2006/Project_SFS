@@ -3,10 +3,10 @@
  * @description A page for admins to view and manage all problem statements on the platform.
  */
 // src/pages/admin/ProblemStatementsList.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiFilter, FiUsers, FiFileText, FiPlus, FiUpload } from 'react-icons/fi';
-import { mockProblemStatements, getEvaluatorUsers, getSubmissionsByProblemId, mockSubmissions } from '../../mockData';
+import { mockProblemStatements, getEvaluatorUsers, mockSubmissions } from '../../mockData';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import Button from '../../components/common/button';
 
@@ -14,7 +14,12 @@ const ProblemStatementsList = () => {
   const navigate = useNavigate();
   const evaluators = getEvaluatorUsers();
   const [searchTerm, setSearchTerm] = useState('');
+  const [problems, setProblems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const handleProblemClick = (problem) => {
     navigate(`/admin/problems/${problem.id}/details`);
@@ -28,8 +33,11 @@ const ProblemStatementsList = () => {
   };
 
   const getEvaluatedCount = (problemId) => {
-    const submissions = getSubmissionsByProblemId(problemId);
-    return submissions.filter(sub => sub.status === 'Evaluated').length;
+    const subs = (submissions && submissions.length > 0)
+      ? submissions.filter(s => String(s.problemId) === String(problemId))
+      : mockSubmissions.filter(s => String(s.problemId) === String(problemId));
+
+    return subs.filter(sub => String(sub.status).toLowerCase().includes('evaluat')).length;
   };
 
   const formatDateTime = (isoString) => {
@@ -37,18 +45,92 @@ const ProblemStatementsList = () => {
     return date.toLocaleString();
   };
 
-  const filteredData = mockProblemStatements
+  useEffect(() => {
+    const fetchProblems = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const base = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${base}/get_problems`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        console.log("Fetched Problems:", json);
+        // backend returns { problems: [...] } where fields are uppercase (ID, TITLE,...)
+        const mapped = (json.problems || []).map(p => ({
+          id: p.ID ? String(p.ID) : (p.id || ''),
+          title: p.TITLE || p.title || 'Untitled',
+          description: p.DESCRIPTION || p.description || '',
+          // backend doesn't have created timestamp; use SUB_DATE if present, else now
+          created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
+          // keep fields expected by the UI
+          deadline: p.SUB_DATE || p.deadline,
+          assignedEvaluators: p.assignedEvaluators || [],
+          submissionsCount: p.submissionsCount || 0,
+        }));
+        setProblems(mapped);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch');
+        setProblems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProblems();
+  }, []);
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      try {
+        const base = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${base}/submissions`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        // normalize submission fields to a consistent shape
+        const mapped = (json || []).map(s => ({
+          id: s.ID ? String(s.ID) : (s.id || ''),
+          problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
+          teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
+          status: String(s.STATUS ?? s.SUB_STATUS ?? s.Sub_status ?? s.sub_status ?? s.status ?? '').trim(),
+          submittedDate: s.SUB_DATE ?? s.submittedDate ?? s.submitted_date ?? null,
+        }));
+        setSubmissions(mapped);
+      } catch (err) {
+        // keep fallback mock submissions if fetch fails
+        setSubmissions([]);
+      }
+    };
+
+    fetchSubmissions();
+  }, []);
+
+  const dataSource = problems && problems.length > 0 ? problems : mockProblemStatements;
+
+  const totalSubmissions = (submissions && submissions.length > 0) ? submissions.length : mockSubmissions.length;
+  const totalTeams = (submissions && submissions.length > 0)
+    ? new Set(submissions.map(s => String(s.teamId))).size
+    : new Set(mockSubmissions.map(s => s.teamId)).size;
+
+  const filteredData = dataSource
     .filter(problem => {
       const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         problem.id.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesSearch;
+      if (!matchesSearch) return false;
+
+      if (statusFilter === 'evaluated') {
+        return getEvaluatedCount(problem.id) > 0;
+      }
+      if (statusFilter === 'pending') {
+        return getEvaluatedCount(problem.id) === 0;
+      }
+      return true;
     })
     .sort((a, b) => {
       if (sortOrder === 'newest') return new Date(b.created) - new Date(a.created);
       if (sortOrder === 'oldest') return new Date(a.created) - new Date(b.created);
       const countA = a.submissionsCount || 1;
       const countB = b.submissionsCount || 1;
-      return sortOrder === 'asc' ? countA - countB : countB - a;
+      return sortOrder === 'asc' ? countA - countB : countB - countA;
     });
 
   return (
@@ -85,7 +167,7 @@ const ProblemStatementsList = () => {
                 <h2 className="text-[#4A5568] font-medium text-base">
                   Total Problem Statements
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">{mockProblemStatements.length}</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{dataSource.length}</p>
               </div>
             </div>
           </div>
@@ -97,7 +179,7 @@ const ProblemStatementsList = () => {
                 <h2 className="text-[#4A5568] font-medium text-base">
                   Total Teams
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">{new Set(mockSubmissions.map(s => s.teamId)).size}</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{totalTeams}</p>
               </div>
             </div>
           </div>
@@ -109,7 +191,7 @@ const ProblemStatementsList = () => {
                 <h2 className="text-[#4A5568] font-medium text-base">
                   Total Submissions
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">{mockSubmissions.length}</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{totalSubmissions}</p>
               </div>
             </div>
           </div>
@@ -130,6 +212,17 @@ const ProblemStatementsList = () => {
 
           <div className="flex items-center gap-3">
             <label className="text-[#4A5568] font-medium text-base">Filter:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2 border border-[#E2E8F0] rounded-xl text-base focus:ring-2 focus:ring-[#FF9900] focus:outline-none transition-all"
+            >
+              <option value="all">All</option>
+              <option value="evaluated">Evaluated</option>
+              <option value="pending">Not Evaluated</option>
+            </select>
+
+            <label className="text-[#4A5568] font-medium text-base">Sort:</label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
