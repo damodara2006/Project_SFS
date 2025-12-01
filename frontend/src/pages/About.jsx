@@ -1,6 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaGlobe, FaHandshake, FaLightbulb, FaGraduationCap, FaBuilding, FaTools, FaChartLine, FaCheckCircle, FaLaptopCode } from "react-icons/fa";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // Animation variant for a consistent fade-in-up effect
 const fadeInUp = {
@@ -223,11 +225,13 @@ const TeamSection = () => (
 const About = () => {
   return (
     <div className={`min-h-screen ${LIGHT_BG} ${TEXT_COLOR} scroll-smooth`}>
+      <Header />
       <HeroSection />
       <MissionSection />
       <VisionSection />
       <ImpactSection />
       <TeamSection />
+      <Footer />
     </div>
   );
 };
