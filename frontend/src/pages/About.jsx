@@ -62,7 +62,7 @@ const HeroSection = () => (
       <motion.button
         initial="hidden"
         whileInView="visible"
-        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.4, ease: "easeOut" } } }}
+        variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7} } }}
         className={`mt-10 px-8 py-3 text-lg font-semibold rounded-full ${ACCENT_BG} text-white shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105`}
       >
         <a href="/problemstatements"  rel="noopener noreferrer">Explore Our Challenges</a>
