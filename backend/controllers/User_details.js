@@ -6,7 +6,7 @@ import cookie from "cookie-parser"
 import jwt from "jsonwebtoken"
 
 const signup = AsyncHandler(async (req, res) => {
-    const { email, password, role, college, college_code, name } = req.params;
+    const { email, password, role, college, college_code, name, date } = req.params;
     // console.log(req.params);
     [email, password, role, college, college_code, name].some((data) => {
         console.log(data.trim())
@@ -17,8 +17,11 @@ const signup = AsyncHandler(async (req, res) => {
     let bcryptpass = hashSync(password, 10);
     // console.log(await compare('111', bcryptpass))
     // console.log(bcryptpass)
+
+    console.log(date);
+    
     try {
-        let [result, cod] = await connection.query(`INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE,NAME)VALUES('${email}','${bcryptpass}','${role.toUpperCase()}','${college}', '${college_code}','${name}');`);
+        let [result, cod] = await connection.query(`INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE,NAME,DATE)VALUES('${email}','${bcryptpass}','${role.toUpperCase()}','${college}', '${college_code}','${name}','${date}');`);
         res.status(200).send(result)
 
     } catch (error) {
@@ -37,21 +40,31 @@ const login = async (req, res) => {
 
     let response = await compare(password, result[0].PASSWORD)
 
-
-    console.log(process.env.JWT_SCERET)
-
-    const data = jwt.sign(result[0], process.env.JWT_SCERET)
-    // console.log(await jwt.verify(data, process.env.JWT_SCERET))
-    // console.log(data)
-    await res.cookie("login_creditionals", data, {
-        maxAge: 86400000,
-        secure: true,
-        // httpOnly:
-    })
-    console.log("done");
+    let rs = result[0].STATUS
+    if (rs=="ACTIVE" && response) {
+        
+        console.log(process.env.JWT_SCERET)
     
+        const data = jwt.sign(result[0], process.env.JWT_SCERET)
+        // console.log(await jwt.verify(data, process.env.JWT_SCERET))
+        // console.log(data)
+        await res.cookie("login_creditionals", data, {
+            maxAge: 86400000,
+            secure: true,
+            // httpOnly:
+        })
+        console.log("done");
+        
+    
+        res.json({data:response, user:result})
+    }
+    else if (rs == 'PENDING') {
+        res.json({ data: "PENDING", user: result })
+    }
+    else {
+        res.json({ data: "REJECTED", user: result })
+    }
 
-    res.json({data:response, user:result})
 }
 
 const logout = async(req, res) => {

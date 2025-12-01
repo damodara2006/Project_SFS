@@ -21,7 +21,15 @@ const Login = () => {
        .then(res => {
          console.log(res);
 
-         if (res.data.data) {
+         if (res.data.data == "PENDING") {
+           toast.success("Please try again after some time",{duration:7000})
+           toast.success("Your request for login is sent",{duration:7000})
+
+          }
+          else if (res.data.data == "REJECTED") {
+            toast.error("You are not allowed to access as a spoc")
+          }
+         else if (res.data.data) {
            toast.success("Login Successful", { style: { backgroundColor: "green" } })
            setTimeout(() => {
              if (res.data.user[0].ROLE == 'SPOC') {

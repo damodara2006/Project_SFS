@@ -11,10 +11,12 @@ const Spoc_approve = AsyncHandler(async (req, res) => {
 
 const handleSpocApprove = AsyncHandler(async (req, res) => {
     const { id, approve } = req.body;
+    console.log(id);
+    
     if (approve) {
-        var [data, err] = await connection.query(`UPDATE Users SET STATUS='ACTIVE' WHERE ID=?`,[id])
+        var [data, err] = await connection.query(`UPDATE Users SET STATUS='ACTIVE' WHERE ID=?`,[id.ID])
     } else {
-        var [data, err] = await connection.query(`UPDATE Users SET STATUS='REJECTED' WHERE ID=?`, [id])
+        var [data, err] = await connection.query(`UPDATE Users SET STATUS='REJECTED' WHERE ID=?`, [id.ID])
     }
     console.log(data)
     res.send(data)

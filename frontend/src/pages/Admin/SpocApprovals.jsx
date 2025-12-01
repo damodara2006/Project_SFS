@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import { URL } from "../../Utils";
 
 const SpocApprovals = () => {
   const [selectedAction, setSelectedAction] = useState(null);
@@ -7,8 +9,29 @@ const SpocApprovals = () => {
   const [toast, setToast] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [step, setStep] = useState("confirm"); // 'confirm' or 'sent'
+  const [step, setStep] = useState("confirm");
+  const [SpocData, setSpocData] = useState([])
 
+  let fetchspoc = () => {
+    axios.get(`${URL}/spoc_users`)
+      .then(res => {
+        setSpocData(res.data)
+      }
+      )
+  }
+  useEffect(() => {
+    fetchspoc()
+  })
+
+  // console.log(SpocData);
+  const handleApprove = (id, approve) => {
+    axios.post(`${URL}/handlespoc`, { id: id, approve: approve })
+      .then(res => {
+        console.log(res);
+        fetchspoc();
+      }
+    )
+  }
   const data = [
     {
       id: 1,
@@ -61,11 +84,14 @@ const SpocApprovals = () => {
     }, 2000); // 2 seconds before auto-closing
   };
 
-  const filteredData = data.filter(
+  const filteredData = SpocData.filter(
     (college) =>
-      college.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      college.email.toLowerCase().includes(searchQuery.toLowerCase())
+      college.COLLEGE.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      college.EMAIL.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  console.log(filteredData);
+  
 
   return (
     <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
@@ -84,7 +110,7 @@ const SpocApprovals = () => {
         <h2 className="text-lg font-medium text-[#1A202C] mb-2">
           Total Approvals Received
         </h2>
-        <p className="text-3xl font-bold text-[#FF9900]">{data.length}</p>
+        <p className="text-3xl font-bold text-[#FF9900]">{SpocData.length}</p>
       </div>
 
       {/* Search Bar */}
@@ -113,23 +139,23 @@ const SpocApprovals = () => {
             {filteredData.length > 0 ? (
               filteredData.map((college) => (
                 <tr
-                  key={college.id}
+                  key={college.ID}
                   className="hover:bg-gray-50 border-t border-[#E2E8F0] transition-all"
                 >
                   <td className="py-3 px-4 text-[#1A202C] font-medium">
-                    {college.name}
+                    {college.COLLEGE}
                   </td>
-                  <td className="py-3 px-4 text-[#718096]">{college.email}</td>
-                  <td className="py-3 px-4 text-[#A0AEC0]">{college.date}</td>
+                  <td className="py-3 px-4 text-[#718096]">{college.EMAIL}</td>
+                  <td className="py-3 px-4 text-[#A0AEC0]">{college.DATE}</td>
                   <td className="py-3 px-4 text-center space-x-2">
                     <button
-                      onClick={() => handleAction(college, "approve")}
+                      onClick={() => handleApprove(college, 1)}
                       className="bg-[#48BB78] hover:bg-green-600 text-white px-4 py-1.5 rounded-xl text-sm transition-all"
                     >
                       Approve
                     </button>
                     <button
-                      onClick={() => handleAction(college, "reject")}
+                      onClick={() => handleApprove(college, 0)}
                       className="text-red-600 border border-red-300 hover:bg-red-50 px-4 py-1.5 rounded-xl text-sm transition-all"
                     >
                       Reject
@@ -196,7 +222,7 @@ const SpocApprovals = () => {
                   </p>
                   <div className="flex justify-end mt-6 space-x-3">
                     <button
-                      onClick={() => setShowPopup(false)}
+                      onClick={() => handleAction(false)}
                       className="px-4 py-1.5 text-[#1A202C] bg-gray-100 hover:bg-gray-200 rounded-xl text-sm transition-all"
                     >
                       Cancel

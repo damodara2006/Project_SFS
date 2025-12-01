@@ -33,7 +33,8 @@ const Register = () => {
     collegeid: "",
     dept: "",
     id: "",
-    name:""
+    name: "",
+    date: new Date().toString().split(" ").slice(1, 4).join(" ")
   });
   const navigate = useNavigate()
   const [errors, setErrors] = useState({});
@@ -139,11 +140,14 @@ const Register = () => {
       return;
     
     }
+    console.log(form);
+    
 
    
        axios.post(
-        `${URL}/register/${email}/${form.password}/${form.role}/${form.college}/${form.collegeid}/${form.name}`
+        `${URL}/register/${email}/${form.password}/${form.role}/${form.college}/${form.collegeid}/${form.name}/${form.date}`
        ).then((res) => {
+        console.log(res);
         
          if (res.status === 200) {
            toast.success("Registered!", { style: { backgroundColor: "green" } });
