@@ -4,7 +4,7 @@
  *              This is the primary view for the admin, providing a comprehensive overview of platform activity.
  */
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiClipboard, FiUsers, FiCheckSquare, FiUpload, FiArrowRight, FiFilePlus } from 'react-icons/fi';
@@ -15,29 +15,61 @@ import SubmissionsChart from '../../components/admin/SubmissionsChart';
 import EvaluationChart from '../../components/admin/EvaluationChart';
 import RecentProblemsTable from '../../components/admin/RecentProblemsTable';
 
-// Mock data - Ensure these paths are correct for your project
-import { mockProblemStatements, mockSubmissions, mockSpocRequests, mockUsers } from '../../mockData';
-
 const AdminDashboard = () => {
 
+  const [data, setData] = useState({ problems: [], submissions: [], spocs: [], evaluators: [] });
+ console.log(data);
+  
   const fetchProblems = async()=>{
     try{
       const response = await fetch('http://localhost:8000/get_problems');
-      const data = await response.json();
-      console.log('Fetched Problems:', data);
+       const result = await response.json();
+       setData(prevData => ({ ...prevData, problems: result.problems }));
+       console.log(result);
+       
     }
     catch(error){
       console.error('Error fetching problems:', error);
     }
   }
-  fetchProblems();
+
+  const fetchSubmissions = async()=>{
+    try{
+      const response = await fetch('http://localhost:8000/submissions');
+      const result = await response.json();
+      setData(prevData => ({ ...prevData, submissions: result }));
+      
+    }
+    catch(error){
+      console.log("Error fetching Submissions:", err);
+    }
+  }
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/get_all_users');
+      const result = await response.json();
+      setData(prevData => ({
+        ...prevData,
+        spocs: result.filter(user => user.ROLE === 'SPOC'),
+        evaluators: result.filter(user => user.ROLE === 'EVALUATOR')
+      }));
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProblems();
+    fetchSubmissions();
+    fetchUsers();
+  }, []);
 
 
-  const totalProblems = mockProblemStatements.length;
-  const totalSubmissions = 340;
-  const pendingApprovals = mockSpocRequests.filter(r => r.status === 'Pending').length;
-  const totalEvaluators = mockUsers.length;
-  
+  const totalProblems = data.problems.length;
+  const totalSubmissions = data.submissions.length;
+  const pendingApprovals = data.spocs.filter(r => r.STATUS === 'PENDING').length;
+  const totalEvaluators = data.evaluators.length;
   const evaluatedCount = 168;
 
   
