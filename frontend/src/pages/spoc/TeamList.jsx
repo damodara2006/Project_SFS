@@ -47,7 +47,7 @@ function TeamList() {
             })
             .catch((err) => console.error("Error fetching teams:", err));
     }
-
+    console.log(FullTeam);
     // Navigate to selected team
     function SelectedTeam(team) {
         navigate(`/spoc/team_details`, { state: { id: team.ID } });

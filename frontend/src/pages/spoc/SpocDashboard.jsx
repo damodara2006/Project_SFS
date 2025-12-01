@@ -45,6 +45,7 @@ const SpocDashboard = () => {
     const teamsPerPage = 10;
     const navigate = useNavigate()
     const [data, setdata] = useState([])
+
     
     const handlelogout = async () => {
 
