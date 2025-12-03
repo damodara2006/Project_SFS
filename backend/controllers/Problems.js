@@ -10,10 +10,15 @@ const Get_problems = AsyncHandler(async (req, res) => {
 
 const Get_problem_by_id = AsyncHandler(async (req, res) => {
     const { id } = req.params;
-    const [problems] =  await connection.query(`SELECT * FROM problems WHERE ID = ${id}`);
-    res.status(200).json({
-        problems
-    })
+    // validate id to be an integer to avoid SQL injection and invalid queries
+    const parsedId = parseInt(id, 10);
+    if (Number.isNaN(parsedId)) {
+        return res.status(400).json({ message: 'Invalid problem id' });
+    }
+
+    // use parameterized query to prevent SQL injection
+    const [problems] = await connection.query("SELECT * FROM problems WHERE ID = ?", [parsedId]);
+    res.status(200).json({ problems });
 })
 
 const Post_problem = AsyncHandler(async (req, res) => {
