@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const URL = "http://localhost:8000"
+const URL = "https://project-sfs-backend.onrender.com"
 const auth = async () => {
     const match = document.cookie.match("login_creditionals");
 
