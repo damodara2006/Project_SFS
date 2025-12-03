@@ -129,7 +129,7 @@ const SubmissionList = () => {
         <h1 className="text-4xl font-bold text-[#4a4a4a]">
           Submissions for Eco-Friendly Product Recommendation System
         </h1>
-        <p className="text-lg text-gray-600 mt-2">Problem ID: PRB2025-07</p>
+        <p className="text-lg text-gray-600 mt-2">Problem ID: SFS_15</p>
       </motion.div>
 
       {/* Filter Dropdown */}
@@ -195,7 +195,7 @@ const SubmissionList = () => {
                   onClick={() => navigate(`/evaluator/submission/${submission.teamId}`)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {submission.teamId}
+                    Tid_{submission.teamId}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {submission.title}
