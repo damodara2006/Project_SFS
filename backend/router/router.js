@@ -3,7 +3,7 @@ import { Router } from "express";
 // Controller Imports
 import { Add_Team_Members, Update_team } from "../controllers/Team_members.js";
 import { Fetch_Teams, Fetch_Team_Members, Delete_team } from "../controllers/Spoc_Teams.js";
-import { login, logout, signup, GetAllUsers } from "../controllers/User_details.js";
+import { login, logout, signup, GetAllUsers, GetAllEvaluators } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
 import { Post_problem, Get_problems, Get_problem_by_id } from "../controllers/Problems.js";
 import { Get_cookies } from "../controllers/Cookie.js";
@@ -40,5 +40,6 @@ router.route("/submit_solution").post(SubmitSolution);
 router.route("/get_problems").get(Get_problems);
 router.route("/problems/:id").get(Get_problem_by_id);
 
+router.route("/evaluators").get(GetAllEvaluators);
 
 export default router;

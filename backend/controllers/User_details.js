@@ -88,4 +88,9 @@ const GetAllUsers = AsyncHandler(async (req, res) => {
     res.status(200).json(users);
 });
 
-export { signup, login, logout, GetAllUsers }
+const GetAllEvaluators = AsyncHandler(async (req, res) => {
+    const [users, error] = await connection.query("SELECT * FROM Users WHERE ROLE='EVALUATOR'")
+    res.send(users)
+})
+
+export { signup, login, logout, GetAllUsers, GetAllEvaluators }

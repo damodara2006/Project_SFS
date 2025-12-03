@@ -3,6 +3,8 @@
  * @description Displays a list of all evaluators on the platform for administrative review.
  */
 import React, { useState, useMemo } from "react";
+import { useEffect } from "react";
+import axios from "axios"
 import {
   FiEdit,
   FiTrash2,
@@ -13,6 +15,7 @@ import {
   FiClipboard,
   FiX,
 } from "react-icons/fi";
+import { URL } from "../../Utils";
 
 const EvaluatorList = () => {
   const [evaluators, setEvaluators] = useState([
@@ -27,80 +30,25 @@ const EvaluatorList = () => {
       completed: 25,
       pending: 5,
       password: "password123", // Added for existing evaluators
-    },
-    {
-      id: "EV1002",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      dept: "ECE",
-      status: "inactive",
-      problemStatementId: "PSIoT02",
-      problemStatement: "IoT sensor networks",
-      completed: 42,
-      pending: 3,
-      password: "password123", // Added
-    },
-    {
-      id: "EV1003",
-      name: "Alex Johnson",
-      email: "alex.j@example.com",
-      dept: "MECH",
-      status: "active",
-      problemStatementId: "PSRA03",
-      problemStatement: "Robotics and Automation",
-      completed: 33,
-      pending: 7,
-      password: "password123", // Added
-    },
-    {
-      id: "EV1004",
-      name: "Emily Davis",
-      email: "emily.d@example.com",
-      dept: "EEE",
-      status: "active",
-      problemStatementId: "PSPGO04",
-      problemStatement: "Power Grid Optimization",
-      completed: 29,
-      pending: 4,
-      password: "password123", // Added
-    },
-    {
-      id: "EV1005",
-      name: "Chris Lee",
-      email: "chris.lee@example.com",
-      dept: "CSE",
-      status: "inactive",
-      problemStatementId: "PSCS05",
-      problemStatement: "Cybersecurity Protocols",
-      completed: 50,
-      pending: 1,
-      password: "password123", // Added
-    },
-    {
-      id: "EV1006",
-      name: "Patricia Wilson",
-      email: "patricia.w@example.com",
-      dept: "ECE",
-      status: "active",
-      problemStatementId: "PSWC06",
-      problemStatement: "Wireless Communication",
-      completed: 18,
-      pending: 6,
-      password: "password123", // Added
-    },
-    {
-      id: "EV1007",
-      name: "Michael Brown",
-      email: "michael.b@example.com",
-      dept: "MECH",
-      status: "active",
-      problemStatementId: "PSFD07",
-      problemStatement: "Fluid Dynamics Simulation",
-      completed: 45,
-      pending: 2,
-      password: "password123", // Added
-    },
+    }
   ]);
+
+  const GetAllEvaluators = () => {
+    axios.get(`${URL}/evaluators`)
+      .then((res) => {
+        setEvaluators(res.data)
+      
+    })
+  }
+
+
+
+  useEffect(() => {
+    GetAllEvaluators()
+  }, [])
+  
+  console.log(evaluators);
+  
 
   // State for popups
   const [showCreatePopup, setShowCreatePopup] = useState(false);
@@ -212,12 +160,12 @@ const EvaluatorList = () => {
             Manage evaluator profiles and track problem statements.
           </p>
         </div>
-        <button
+        {/* <button
           onClick={() => setShowCreatePopup(true)}
           className="flex items-center gap-2 bg-[#FF9900] hover:bg-[#E68500] text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all mt-4 sm:mt-0"
         >
           <FiPlus /> Create New Evaluator
-        </button>
+        </button> */}
       </div>
 
       {/* Stats Summary */}
@@ -257,30 +205,30 @@ const EvaluatorList = () => {
               <th className="text-left py-3 px-5 font-semibold">Evaluator ID</th>
               <th className="text-left py-3 px-5 font-semibold">Name</th>
               <th className="text-left py-3 px-5 font-semibold">Email</th>
-              <th className="text-left py-3 px-5 font-semibold">Department</th>
+              <th className="text-left py-3 px-5 font-semibold">College</th>
               <th className="text-center py-3 px-5 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {evaluators.map((ev) => (
               <tr
-                key={ev.id}
+                key={ev.ID}
                 className="hover:bg-gray-50 border-t border-[#E2E8F0] transition-all"
               >
                 <td
                   onClick={() => handleViewDetails(ev)}
                   className="py-4 px-5 font-medium text-[#1A202C] cursor-pointer hover:text-[#FF9900] transition-colors"
                 >
-                  {ev.id}
+                  {ev.ID}
                 </td>
                 <td
                   onClick={() => handleViewDetails(ev)}
                   className="py-4 px-5 cursor-pointer hover:text-[#FF9900] transition-colors"
                 >
-                  {ev.name}
+                  {ev.NAME}
                 </td>
-                <td className="py-4 px-5 text-[#718096]">{ev.email}</td>
-                <td className="py-4 px-5 text-[#718096]">{ev.dept}</td>
+                <td className="py-4 px-5 text-[#718096]">{ev.EMAIL}</td>
+                <td className="py-4 px-5 text-[#718096]">{ev.COLLEGE}</td>
                 <td className="py-4 px-5 text-center space-x-4">
                   <button
                     onClick={() => setShowEditPopup(ev)}
@@ -304,88 +252,7 @@ const EvaluatorList = () => {
       {/* --- POPUPS --- */}
 
       {/* Create Popup */}
-      <Popup visible={showCreatePopup} onClose={() => setShowCreatePopup(false)}>
-        <h2 className="text-xl font-semibold text-[#1A202C] mb-5">
-          Create New Evaluator
-        </h2>
-        <form onSubmit={handleCreate} className="space-y-4">
-          <div>
-            <label className="text-sm text-[#4A5568] font-medium mb-1 block">
-              Evaluator Name
-            </label>
-            <input
-              type="text"
-              value={newEvaluator.name}
-              onChange={(e) =>
-                setNewEvaluator({ ...newEvaluator, name: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
-              placeholder="Enter name"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-[#4A5568] font-medium mb-1 block">
-              Email
-            </label>
-            <input
-              type="email"
-              value={newEvaluator.email}
-              onChange={(e) =>
-                setNewEvaluator({ ...newEvaluator, email: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
-              placeholder="Enter email"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-[#4A5568] font-medium mb-1 block">
-              Department
-            </label>
-            <select
-              value={newEvaluator.dept}
-              onChange={(e) =>
-                setNewEvaluator({ ...newEvaluator, dept: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
-            >
-              <option value="">Select Department</option>
-              <option value="CSE">Computer Science</option>
-              <option value="ECE">Electronics</option>
-              <option value="EEE">Electrical</option>
-              <option value="MECH">Mechanical</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm text-[#4A5568] font-medium mb-1 block">
-              Password
-            </label>
-            <input
-              type="password" // Important for security
-              value={newEvaluator.password}
-              onChange={(e) =>
-                setNewEvaluator({ ...newEvaluator, password: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none"
-              placeholder="Enter password"
-            />
-          </div>
-          <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={() => setShowCreatePopup(false)}
-              className="px-5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-sm font-semibold"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-xl bg-[#FF9900] hover:bg-[#E68500] text-white text-sm font-semibold"
-            >
-              Create
-            </button>
-          </div>
-        </form>
-      </Popup>
+    
 
       {/* Details Popup */}
       {showDetailsPopup && (
@@ -396,23 +263,23 @@ const EvaluatorList = () => {
           <div className="space-y-3 text-sm">
             <div className="flex">
               <b className="font-semibold text-[#4A5568] w-36">ID:</b>
-              <span>{showDetailsPopup.id}</span>
+              <span>{showDetailsPopup.ID}</span>
             </div>
             <div className="flex">
               <b className="font-semibold text-[#4A5568] w-36">Name:</b>
-              <span>{showDetailsPopup.name}</span>
+              <span>{showDetailsPopup.NAME}</span>
             </div>
             <div className="flex">
               <b className="font-semibold text-[#4A5568] w-36">Email:</b>
-              <span>{showDetailsPopup.email}</span>
+              <span>{showDetailsPopup.EMAIL}</span>
             </div>
             <div className="flex">
-              <b className="font-semibold text-[#4A5568] w-36">Department:</b>
-              <span>{showDetailsPopup.dept}</span>
+              <b className="font-semibold text-[#4A5568] w-36">College:</b>
+              <span>{showDetailsPopup.COLLEGE}</span>
             </div>
             <div className="flex">
               <b className="font-semibold text-[#4A5568] w-36">Status:</b>
-              <span>{showDetailsPopup.status}</span>
+              <span>{showDetailsPopup.STATUS}</span>
             </div>
             <div className="flex items-center">
               <b className="font-semibold text-[#4A5568] w-36">Problem ID:</b>
@@ -472,7 +339,7 @@ const EvaluatorList = () => {
                 </label>
                 <input
                   type="text"
-                  value={showEditPopup.id}
+                  value={showEditPopup.ID}
                   disabled
                   className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm bg-gray-100 cursor-not-allowed"
                 />
@@ -483,7 +350,7 @@ const EvaluatorList = () => {
                 </label>
                 <input
                   type="text"
-                  value={showEditPopup.name}
+                  value={showEditPopup.NAME}
                   onChange={(e) =>
                     setShowEditPopup({ ...showEditPopup, name: e.target.value })
                   }
@@ -496,7 +363,7 @@ const EvaluatorList = () => {
                 </label>
                 <input
                   type="email"
-                  value={showEditPopup.email}
+                  value={showEditPopup.EMAIL}
                   onChange={(e) =>
                     setShowEditPopup({ ...showEditPopup, email: e.target.value })
                   }
