@@ -24,7 +24,7 @@ const signup = AsyncHandler(async (req, res) => {
     console.log(date);
     
     try {
-        if (role == "SPOC") {
+        if (role == "spoc") {
             let [result, cod] = await connection.query(`INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE,NAME,DATE)VALUES('${email}','${bcryptpass}','${role.toUpperCase()}','${college}', '${college_code}','${name}','${date}');`);
             res.status(200).send(result)
             
