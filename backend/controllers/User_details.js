@@ -72,7 +72,7 @@ const login = async (req, res) => {
         await res.cookie("login_creditionals", data, {
             maxAge: 60 * 1000 * 60,
             // secure: true,
-            httpOnly:true,
+            // httpOnly:true,
             sameSite: "none",
         })
         console.log("done");
