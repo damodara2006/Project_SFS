@@ -69,7 +69,7 @@ const login = async (req, res) => {
         const data = jwt.sign(result[0], process.env.JWT_SCERET)
         // console.log(await jwt.verify(data, process.env.JWT_SCERET))
         // console.log(data)
-        res.cookie("login_credentials", token, {
+        await res.cookie("login_credentials", token, {
             maxAge: 86400000,
             httpOnly: true,
             secure: true,
