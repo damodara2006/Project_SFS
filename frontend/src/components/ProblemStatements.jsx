@@ -579,7 +579,9 @@ const ProblemStatements = () => {
           )}
         </Modal>
       </div>
-        <Footer/>
+      {/* <footer>
+         <Footer />
+       </footer> */}
       
     </motion.div>
   );

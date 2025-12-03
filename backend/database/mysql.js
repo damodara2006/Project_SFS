@@ -8,7 +8,7 @@ import { createPool } from "mysql2/promise"
         password: "root@1234",
         waitForConnections: true,
         connectionLimit: 10,
-        queueLimit: 0,
+        queueLimit: 10,
         connectTimeout: 28800
     })
 
