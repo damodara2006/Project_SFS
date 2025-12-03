@@ -167,7 +167,7 @@ const ProblemStatementsList = () => {
                 <h2 className="text-[#4A5568] font-medium text-base">
                   Total Problem Statements
                 </h2>
-                <p className="text-2xl font-semibold text-[#1A202C]">{dataSource.length}</p>
+                <p className="text-2xl font-semibold text-[#1A202C]">{problems.length}</p>
               </div>
             </div>
           </div>

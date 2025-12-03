@@ -1,267 +1,199 @@
-/**
- * @file ProblemStatementForm.jsx
- * @description A reusable form component for creating or editing problem statements.
- */
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../../components/common/button";
-import { addProblemStatement, getEvaluatorUsers } from "../../mockData";
-import { FiSearch, FiSave, FiX } from "react-icons/fi";
+import React from "react";
+import axios from "axios";
+import { useState } from "react";
+import { URL } from "../../Utils";
+import { toast, Toaster } from "react-hot-toast";
 
-const ProblemStatementForm = ({ isCreate }) => {
-  const navigate = useNavigate();
-  const evaluators = getEvaluatorUsers();
+const ProblemStatementForm = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dept, setDept] = useState("");
+  const [subDate, setSubDate] = useState("");
+  const [reference, setReference] = useState("");
 
-  const [formData, setFormData] = useState({
-    id: "",
-    title: "",
-    description: "",
-    youtube: "",
-    dataset: "",
-  });
+  // New: modal state and created item state
+  const [showModal, setShowModal] = useState(false);
+  const [createdProblem, setCreatedProblem] = useState(null);
 
-  const [assignedEvaluators, setAssignedEvaluators] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-
-  // Example data for popup list
-  const problemStatements = [
-    { id: "IC10001", title: "AI-powered Traffic Control System" },
-    { id: "IC10002", title: "Blockchain Voting App" },
-    { id: "IC10003", title: "Smart Agriculture Drone" },
-    { id: "IC10004", title: "IoT-based Waste Management" },
-    { id: "IC10005", title: "Virtual Healthcare Assistant" },
-  ];
-
-  // Show popup automatically when user types
-  useEffect(() => {
-    if (searchTerm.trim() !== "") {
-      setShowPopup(true);
-    } else {
-      setShowPopup(false);
-    }
-  }, [searchTerm]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isCreate) addProblemStatement({ ...formData, assignedEvaluators });
-    alert(`${isCreate ? "Created" : "Updated"} problem statement successfully!`);
-    navigate("/admin/problems");
+    try {
+      const response = await axios.post(`${URL}/addproblems`, {
+        title: title,
+        description: description,
+        sub_date: subDate,
+        dept: dept,
+        reference: reference,
+      });
+
+      // Save created item (fallback to posted payload if response data missing)
+      const created = response?.data || {
+        title,
+        description,
+        sub_date: subDate,
+        dept,
+        reference,
+      };
+
+      setCreatedProblem(created);
+      setShowModal(true); // show modal on same page
+      toast.success("Problem Statement Added Successfully", {
+        position: "top-center",
+      });
+
+      // Optionally reset form fields (comment/uncomment as desired)
+      // setTitle(""); setDescription(""); setDept(""); setSubDate(""); setReference("");
+    } catch (error) {
+      console.error("Error adding problem statement:", error);
+      toast.error("Failed to Add Problem Statement", { position: "top-center" });
+    }
   };
-
-  const handleCancel = () => navigate("/admin/problems");
-
-  // Filtered list
-  const filteredProblems = problemStatements.filter(
-    (p) =>
-      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
-    <div className="min-h-screen bg-[#F7F8FC] p-6 relative">
-      {/* ---------- Top Search Bar ---------- */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-[#1A202C]">
-            {isCreate ? "Create Problem Statement" : "Edit Problem Statement"}
-          </h1>
-          <p className="text-sm text-[#718096]">
-            Search existing statements or create a new one.
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-grow flex flex-col items-center justify-center p-6">
+        <div className="bg-white shadow-md rounded-xl w-full max-w-3xl p-8">
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Title</label>
+              <input
+                type="text"
+                placeholder="Enter Problem Statement Title"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+                required
+              />
+            </div>
 
-        <div className="mt-4 md:mt-0 flex gap-3">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search Problem Statements"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 rounded-full py-2 px-4 text-sm w-64 focus:ring-2 focus:ring-[#FF9900]/30 focus:outline-none"
-            />
-            <FiSearch className="absolute right-3 top-2.5 text-gray-400" />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <textarea
+                placeholder="Describe the Problem Statement"
+                rows="4"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Department</label>
+              <input
+                type="text"
+                placeholder="Enter Department"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
+                onChange={(e) => setDept(e.target.value)}
+                value={dept}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Reference Link</label>
+              <input
+                type="text"
+                placeholder="https://youtube.com/watch?v=..."
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
+                onChange={(e) => setReference(e.target.value)}
+                value={reference}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Enter Submission DeadLine</label>
+              <input
+                type="date"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
+                onChange={(e) => setSubDate(e.target.value)}
+                value={subDate}
+              />
+            </div>
+
+            <div className="flex justify-end space-x-4 pt-4">
+              <button
+                type="button"
+                className="px-5 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
+                onClick={() => {
+                  // clear form or other cancel behavior (keeps on same page)
+                  setTitle("");
+                  setDescription("");
+                  setDept("");
+                  setSubDate("");
+                  setReference("");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Create
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
-      {/* ---------- Problem Statement Popup ---------- */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-3xl p-6 relative animate-fadeIn">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-[#1A202C]">
-                Problem Statement List
-              </h2>
+      {/* Modal: appears on same page with high z-index */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowModal(false)} />
+          <div
+            className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 z-60"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-lg font-semibold">Problem Statement Created</h3>
               <button
-                onClick={() => setShowPopup(false)}
+                onClick={() => setShowModal(false)}
                 className="text-gray-500 hover:text-gray-700"
+                aria-label="Close"
               >
-                <FiX className="w-6 h-6" />
+                ✕
               </button>
             </div>
+            <div className="space-y-2 text-sm text-gray-700">
+              <div>
+                <strong>Title:</strong> {createdProblem?.title || "—"}
+              </div>
+              <div>
+                <strong>Department:</strong> {createdProblem?.dept || createdProblem?.department || "—"}
+              </div>
+              <div>
+                <strong>Submission Deadline:</strong> {createdProblem?.sub_date || createdProblem?.submission_deadline || "—"}
+              </div>
+              <div>
+                <strong>Reference:</strong>{" "}
+                {createdProblem?.reference ? (
+                  <a href={createdProblem.reference} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                    {createdProblem.reference}
+                  </a>
+                ) : (
+                  "—"
+                )}
+              </div>
+              <div>
+                <strong>Description:</strong>
+                <p className="mt-2 bg-gray-50 p-3 rounded-md">{createdProblem?.description || "—"}</p>
+              </div>
+            </div>
 
-            <div className="overflow-x-auto border rounded-xl border-gray-200">
-              <table className="w-full text-left text-sm border-collapse">
-                <thead className="bg-[#FFFAF0] text-[#1A202C]">
-                  <tr>
-                    <th className="p-3 font-semibold border-b">ID</th>
-                    <th className="p-3 font-semibold border-b">Title</th>
-                    <th className="p-3 font-semibold border-b text-center">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProblems.length > 0 ? (
-                    filteredProblems.map((p) => (
-                      <tr
-                        key={p.id}
-                        className="hover:bg-[#FFF7E6] transition-all duration-150"
-                      >
-                        <td className="p-3 border-b">{p.id}</td>
-                        <td className="p-3 border-b">{p.title}</td>
-                        <td className="p-3 border-b text-center">
-                          <button
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                id: p.id,
-                                title: p.title,
-                              });
-                              setSearchTerm("");
-                              setShowPopup(false);
-                            }}
-                            className="text-[#FF9900] hover:underline font-medium"
-                          >
-                            Select
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="3"
-                        className="text-center p-4 text-gray-500 italic"
-                      >
-                        No matching problem statements found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ---------- Form Section ---------- */}
-      <div className="bg-white shadow-sm rounded-2xl border p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Problem ID */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Problem Statement ID
-            </label>
-            <input
-              type="text"
-              name="id"
-              value={formData.id}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="e.g., IC10001"
-            />
-          </div>
-
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="Enter problem statement title"
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              rows="4"
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="Describe the problem statement"
-            />
-          </div>
-
-          {/* YouTube */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              YouTube Link
-            </label>
-            <input
-              type="url"
-              name="youtube"
-              value={formData.youtube}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="https://youtube.com/watch?v=..."
-            />
-          </div>
-
-          {/* Dataset */}
-          <div>
-            <label className="block text-sm font-medium text-[#2D3748] mb-2">
-              Dataset Link
-            </label>
-            <input
-              type="url"
-              name="dataset"
-              value={formData.dataset}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
-              placeholder="https://example.com/dataset"
-            />
-          </div>
-
-          {/* Buttons */}
-          <div className="flex gap-4">
-            <Button
-              type="submit"
-              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all"
-            >
-              <FiSave className="w-4 h-4" />
-              <span>{isCreate ? "Create" : "Update"}</span>
-            </Button>
-            <Button
-              type="button"
-              onClick={handleCancel}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all"
-            >
-              <FiX className="w-4 h-4" />
-              <span>Cancel</span>
-            </Button>
-          </div>
-        </form>
-      </div>
+      <Toaster />
     </div>
   );
 };
