@@ -71,7 +71,7 @@ const login = async (req, res) => {
         // console.log(data)
         await res.cookie("login_credentials", token, {
             maxAge: 86400000,
-            httpOnly: true,
+            // httpOnly: true,
             secure: true,
             sameSite: "none"
         });
