@@ -2,11 +2,11 @@ import React from "react";
 
 const AssignedProblem = () => {
   const problemData = {
-    problemId: "PRB2025-07",
+    problemId: "SFS_15",
     title: "Eco-Friendly Product Recommendation System",
     domain: "Sustainability | Machine Learning | Web Development",
     assignedDate: "November 2, 2025",
-    deadline: "November 15, 2025",
+    deadline: "December 31, 2025",
     description: `
       The objective of this problem is to design and develop a web-based system 
       that evaluates the environmental friendliness of various consumer products. 
@@ -27,8 +27,7 @@ const AssignedProblem = () => {
     `,
     referralLinks: [
       "https://www.un.org/sustainabledevelopment/sustainable-consumption-production/",
-      "https://www.epa.gov/smm/sustainable-management-materials",
-      "https://sdgs.un.org/goals/goal12",
+      
     ],
     evaluationCriteria: [
       "Innovation and creativity in the proposed solution (20%)",
@@ -58,7 +57,7 @@ const AssignedProblem = () => {
             <p className="text-sm text-gray-600 mt-1">{problemData.domain}</p>
           </div>
           <div className="bg-[#fc8f00] text-white text-sm font-semibold px-4 py-2 rounded-lg mt-3 md:mt-0">
-            Problem ID: {problemData.problemId}
+            <b>Problem ID: {problemData.problemId}</b>
           </div>
         </div>
 

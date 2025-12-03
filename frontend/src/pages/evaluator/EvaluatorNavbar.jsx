@@ -16,7 +16,7 @@ const EvaluatorNavbar = () => {
               }
             >
               <FaClipboardList className="mr-3" />
-              Assigned Problem
+              Problem Details
             </NavLink>
           </li>
           <li className="mb-4">
