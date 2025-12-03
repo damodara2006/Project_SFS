@@ -17,46 +17,42 @@ const Login = () => {
      e.preventDefault()
      console.log("hey");
      axios.defaults.withCredentials = true;
-     await axios.post(`${URL}/login`, { email, password })
-       .then(res => {
-         console.log(res);
+      const res = await axios.post(`${URL}/login`, { email, password });
+      console.log(res);
 
-         if (res.data.data == "PENDING") {
-           toast.success("Please try again after some time",{duration:7000})
-           toast.success("Your request for login is sent",{duration:7000})
+      if (res.data.data == "PENDING") {
+        toast.success("Please try again after some time", { duration: 7000 });
+        toast.success("Your request for login is sent", { duration: 7000 });
+        return;
+      }
 
-          }
-          else if (res.data.data == "REJECTED") {
-            toast.error("You are not allowed to access as a spoc")
-          }
-         else if (res.data.data) {
-           toast.success("Login Successful", { style: { backgroundColor: "green" } })
-           setTimeout(() => {
-             if (res.data.user[0].ROLE == 'SPOC') {
-              //  console.log("heee");
-               
-               navigate("/spoc")
-             }
-             else if (res.data.user[0].ROLE == 'EVALUATOR') {
-               navigate("/evaluator")
-             }
-             else if (res.data.user[0].ROLE == 'ADMIN') {
-               navigate("/admin")
-             }
-             else if (res.data.user[0].ROLE == 'STUDENT') {
-               navigate("/student")
-             }
-             else {
-               navigate("/")
-             }
-           }, 2000)
-         }
-         else {
-           toast.error("Invalid Credentials")
-         }
-       })
+      if (res.data.data == "REJECTED") {
+        toast.error("You are not allowed to access as a spoc");
+        return;
+      }
+
+      if (res.data.data) {
+        toast.success("Login Successful", { style: { backgroundColor: "green" } });
+        setTimeout(() => {
+          const role = res.data.user?.[0]?.ROLE;
+          if (role == 'SPOC') navigate("/spoc");
+          else if (role == 'EVALUATOR') navigate("/evaluator");
+          else if (role == 'ADMIN') navigate("/admin");
+          else if (role == 'STUDENT') navigate("/student");
+          else navigate("/");
+        }, 2000);
+        return;
+      }
+
+      toast.error("Invalid Credentials");
    } catch (error) {
     console.log(error);
+    if (error.response && error.response.status === 401) {
+      // invalid credentials
+      toast.error(error.response.data?.message || 'Invalid credentials');
+    } else {
+      toast.error('Login failed. Please try again.');
+    }
    }
     }
 

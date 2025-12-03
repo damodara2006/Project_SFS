@@ -45,12 +45,24 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     console.log(password)
     const [result] = await connection.query("SELECT * FROM Users WHERE EMAIL = (?)", [email])
-    console.log(result[0])
+    if (!result || result.length === 0) {
+        // no user found
+        return res.status(401).json({ data: "REJECTED", message: "Invalid credentials" });
+    }
 
-    let response = await compare(password, result[0].PASSWORD)
+    const user = result[0];
+    console.log(user)
 
-    let rs = result[0].STATUS
-    if (rs=="ACTIVE" && response) {
+    let response;
+    try {
+        response = await compare(password, user.PASSWORD);
+    } catch (err) {
+        // bcrypt compare failed
+        return res.status(500).json({ data: "REJECTED", message: "Internal error" });
+    }
+
+    let rs = user.STATUS
+    if (rs === "ACTIVE" && response) {
         
         console.log(process.env.JWT_SCERET)
     
@@ -65,13 +77,13 @@ const login = async (req, res) => {
         console.log("done");
         
     
-        res.json({data:response, user:result})
+        res.json({ data: response, user: result })
     }
     else if (rs == 'PENDING') {
         res.json({ data: "PENDING", user: result })
     }
     else {
-        res.json({ data: "REJECTED", user: result })
+        res.status(401).json({ data: "REJECTED", user: result })
     }
 
 }
