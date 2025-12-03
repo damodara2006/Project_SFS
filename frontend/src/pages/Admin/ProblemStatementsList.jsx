@@ -258,7 +258,7 @@ const ProblemStatementsList = () => {
                     key={problem.id}
                     className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all"
                   >
-                    <td className="p-4 text-[#1A202C] font-medium">{problem.id}</td>
+                    <td className="p-4 text-[#1A202C] font-medium">SFS_{problem.id}</td>
                     <td className="p-4">
                       <span
                         className="text-[#2B6CB0] hover:underline cursor-pointer"

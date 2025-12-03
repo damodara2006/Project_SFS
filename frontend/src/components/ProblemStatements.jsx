@@ -506,7 +506,7 @@ const ProblemStatements = () => {
                     transition={{ delay: index * 0.05 }}
                     className="hover:bg-gray-50 transition"
                   >
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.ID}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE.split("T")[0]}</td>
