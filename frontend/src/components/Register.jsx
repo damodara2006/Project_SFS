@@ -124,8 +124,8 @@ const Register = () => {
       if (!data.collegeid)
         fieldErrors.collegeid = "College ID is required for SPOC";
     } else if (data.role === "evaluator") {
-      if (!data.dept) fieldErrors.dept = "Department is required for Evaluator";
-      if (!data.id) fieldErrors.id = "ID is required for Evaluator";
+      if (!data.college) fieldErrors.dept = "Department is required for Evaluator";
+      if (!data.collegeid) fieldErrors.id = "ID is required for Evaluator";
     }
 
     return fieldErrors;
@@ -133,14 +133,16 @@ const Register = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    // console.log(form);
     // console.log(form)
     const fieldErrors = validate(form);
+    console.log(fieldErrors);
+    
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;
     
     }
-    console.log(form);
     
 
    
@@ -257,7 +259,7 @@ const Register = () => {
               )}
             </div>
 
-            {form.role === "spoc" && (
+            {(form.role === "spoc") && (
               <>
                 <div className="mb-4">
                   <input
@@ -308,34 +310,43 @@ const Register = () => {
               <>
                 <div className="mb-4">
                   <input
-                    name="dept"
+                    name="name"
                     type="text"
-                    value={form.dept}
+                    value={form.name}
+                    onChange={onChange}
+                    placeholder="SPOC Name"
+                    className="w-full p-3 border border-gray-200 mb-3 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a] "
+                    aria-invalid={!!errors.name}
+                  />
+                  <input
+                    name="college"
+                    type="text"
+                    value={form.college}
                     onChange={onChange}
                     placeholder="Department"
                     className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
-                    aria-invalid={!!errors.dept}
+                    aria-invalid={!!errors.college}
                   />
-                  {errors.dept && (
+                  {errors.college && (
                     <div className="mt-2 text-sm text-[#fc8f00]" role="alert">
-                      {errors.dept}
+                      {errors.college}
                     </div>
                   )}
                 </div>
 
                 <div className="mb-6">
                   <input
-                    name="id"
+                    name="collegeid"
                     type="text"
-                    value={form.id}
+                    value={form.collegeid}
                     onChange={onChange}
                     placeholder="ID"
                     className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
-                    aria-invalid={!!errors.id}
+                    aria-invalid={!!errors.collegeid}
                   />
-                  {errors.id && (
+                  {errors.collegeid && (
                     <div className="mt-2 text-sm text-[#fc8f00]" role="alert">
-                      {errors.id}
+                      {errors.collegeid}
                     </div>
                   )}
                 </div>

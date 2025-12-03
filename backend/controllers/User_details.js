@@ -7,8 +7,11 @@ import jwt from "jsonwebtoken"
 
 const signup = AsyncHandler(async (req, res) => {
     const { email, password, role, college, college_code, name, date } = req.params;
+
+    console.log(req.params);
+    
     // console.log(req.params);
-    [email, password, role, college, college_code, name].some((data) => {
+    [email, password, role, college_code, name].some((data) => {
         console.log(data.trim())
         if (data.trim() == "") {
             return res.send("All fileds required")
@@ -21,9 +24,15 @@ const signup = AsyncHandler(async (req, res) => {
     console.log(date);
     
     try {
-        let [result, cod] = await connection.query(`INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE,NAME,DATE)VALUES('${email}','${bcryptpass}','${role.toUpperCase()}','${college}', '${college_code}','${name}','${date}');`);
-        res.status(200).send(result)
-
+        if (role == "SPOC") {
+            let [result, cod] = await connection.query(`INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE,NAME,DATE)VALUES('${email}','${bcryptpass}','${role.toUpperCase()}','${college}', '${college_code}','${name}','${date}');`);
+            res.status(200).send(result)
+            
+        }
+        else {
+            let [result, cod] = await connection.query(`INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE,NAME,DATE, STATUS)VALUES('${email}','${bcryptpass}','${role.toUpperCase()}','${college}', '${college_code}','${name}','${date}','ACTIVE');`);
+            res.status(200).send(result)
+        }
     } catch (error) {
         console.log(error)
         console.log("error")
