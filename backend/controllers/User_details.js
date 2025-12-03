@@ -2,7 +2,7 @@ import AsyncHandler from "../utils/AsyncHandler.js";
 import connection from "../database/mysql.js";
 import nodemailer from "nodemailer"
 import { compare, hashSync } from "bcrypt"
-import cookie from "cookie-parser"
+// cookie-parser is already applied globally in app, no need to import here
 import jwt from "jsonwebtoken"
 
 const signup = AsyncHandler(async (req, res) => {
@@ -69,12 +69,15 @@ const login = async (req, res) => {
         const data = jwt.sign(result[0], process.env.JWT_SCERET)
         // console.log(await jwt.verify(data, process.env.JWT_SCERET))
         // console.log(data)
-        await res.cookie("login_creditionals", data, {
+        // For cross-site cookies browsers now require SameSite=None and Secure=true.
+        // Set secure in production so local development over http still works.
+        const cookieOptions = {
             maxAge: 60 * 1000 * 60,
-            // secure: true,
-            httpOnly:true,
+            httpOnly: true,
             sameSite: "none",
-        })
+            secure: process.env.NODE_ENV === 'production'
+        }
+        res.cookie("login_creditionals", data, cookieOptions)
         console.log("done");
         
     
@@ -92,16 +95,18 @@ const login = async (req, res) => {
 const logout = async(req, res) => {
     console.log("hh")
     try {
-        await res.clearCookie("login_creditionals", {
-            maxAge: 864000,
-            secure: true
-        })
-        console.log("dele");
+        // When clearing, use the same attributes as when setting so the browser removes it
+        const clearOpts = {
+            httpOnly: true,
+            sameSite: "none",
+            secure: process.env.NODE_ENV === 'production'
+        }
+        res.clearCookie("login_creditionals", clearOpts)
         console.log("Cookie cleared");
         res.status(200).json({ message: "Logout successful" });
-        
     } catch (error) {
         console.log(error)
+        res.status(500).json({ message: 'Logout failed' })
     }
 }
 
