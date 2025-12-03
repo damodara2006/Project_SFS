@@ -39,7 +39,7 @@ function TeamList() {
 
     function allteams() {
         console.log(spoc_id);
-
+        axios.defaults.withCredentials = true;
         axios
             .post(`${URL}/fetch_teams/${spoc_id}`)
             .then((res) => {
@@ -75,6 +75,7 @@ function TeamList() {
     const handleEditMembers = (e) => {
         console.log(e);
         // console.log(FullTeam[e]);
+        axios.defaults.withCredentials = true;
         axios.post(`${URL}/fetch_team_members`, { id: e.ID }).then(res => {
             setteam_id(e.ID)
             setfetch_team_members(res.data)
@@ -101,6 +102,7 @@ function TeamList() {
         if (e.target[18].innerText == "Update team") {
             let load = toast.loading("Updating team...")
             console.log(teamFormData);
+            axios.defaults.withCredentials = true;
             axios.post(`${URL}/update_team`, { team: teamFormData, id: team_id })
                 .then(res => {
                     if (res.data == "Updated") {
@@ -121,6 +123,7 @@ function TeamList() {
                 mailToast = toast.loading('Sending mails...');
 
             }, 2000);
+            axios.defaults.withCredentials = true;
             axios
                 .post(`${URL}/add_members/${spoc_id}`, teamFormData)
                 .then((res) => {
@@ -175,7 +178,7 @@ function TeamList() {
         if (window.confirm("Confirm delete ?")) {
             // console.log("hee");
             const del = toast.loading("Deleting team")
-
+            axios.defaults.withCredentials = true;
             axios.post(`${URL}/delete_team`, { id: team.ID })
                 .then(res => {
                     console.log(res);

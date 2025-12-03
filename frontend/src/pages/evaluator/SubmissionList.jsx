@@ -87,6 +87,7 @@ const SubmissionList = () => {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
+    axios.defaults.withCredentials = true;
     axios
       .get(`${URL}/submissions`)
       .then((res) => {

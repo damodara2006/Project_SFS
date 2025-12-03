@@ -84,7 +84,8 @@ const Register = () => {
     const lodaing = toast.loading("Sending OTP")
 
     console.log(email)
-    if (email) { 
+      if (email) { 
+        axios.defaults.withCredentials = true;
       axios.post(`${URL}/verify_email/${email}`)
         .then(res => {
           if (res.status == 200) {
@@ -145,8 +146,9 @@ const Register = () => {
     }
     
 
-   
-       axios.post(
+    axios.defaults.withCredentials = true;
+    axios.post(
+         
         `${URL}/register/${email}/${form.password}/${form.role}/${form.college}/${form.collegeid}/${form.name}/${form.date}`
        ).then((res) => {
         console.log(res);

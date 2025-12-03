@@ -18,6 +18,7 @@ const ProblemStatementForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      axios.defaults.withCredentials = true;
       const response = await axios.post(`${URL}/addproblems`, {
         title: title,
         description: description,

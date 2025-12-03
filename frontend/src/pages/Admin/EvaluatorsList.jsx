@@ -34,6 +34,7 @@ const EvaluatorList = () => {
   ]);
 
   const GetAllEvaluators = () => {
+    axios.defaults.withCredentials = true;
     axios.get(`${URL}/evaluators`)
       .then((res) => {
         setEvaluators(res.data)
