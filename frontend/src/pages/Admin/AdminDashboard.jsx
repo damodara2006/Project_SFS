@@ -21,7 +21,8 @@ const AdminDashboard = () => {
   
   const fetchProblems = async()=>{
     try{
-      const response = await fetch('http://localhost:8000/get_problems');
+      const base = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${base}/get_problems`);
        const result = await response.json();
        setData(prevData => ({ ...prevData, problems: result.problems }));
     }
@@ -32,19 +33,21 @@ const AdminDashboard = () => {
 
   const fetchSubmissions = async()=>{
     try{
-      const response = await fetch('http://localhost:8000/submissions');
+      const base = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${base}/submissions`);
       const result = await response.json();
       setData(prevData => ({ ...prevData, submissions: result }));
       
     }
     catch(error){
-      console.log("Error fetching Submissions:", err);
+      console.log("Error fetching Submissions:", error);
     }
   }
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8000/get_all_users');
+      const base = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${base}/get_all_users`);
       const result = await response.json();
       setData(prevData => ({
         ...prevData,

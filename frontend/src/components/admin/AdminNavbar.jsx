@@ -1,14 +1,11 @@
 // src/components/admin/AdminNavbar.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiUser, FiLogOut } from 'react-icons/fi';
 import Button from '../common/button';
 
 const AdminNavbar = () => {
-  const handleLogout = () => {
-    // Implement actual logout logic (e.g., clear JWT, redirect to login)
-    console.log("Admin logged out.");
-    alert("Admin Logged Out (Mock)");
-  };
+
 
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
