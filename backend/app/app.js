@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser"
 // import app from ""
 const app = express()
 app.use(cors({
-    origin:["http://localhost:5173", "http://localhost:5174"],
+    origin: ["http://localhost:5173", "http://localhost:5174","https://project-sfs.onrender.com"],
     credentials:true
 }))
 app.use(cookieParser())
