@@ -8,7 +8,8 @@ const auth = async () => {
 
     if (!match) return null; 
     try {
-        const res = await axios.get(`${URL}/cookie`, { withCredentials: true });
+        axios.defaults.withCredentials = true
+        const res = await axios.get(`${URL}/cookie`);
         console.log(res.data.ROLE);
         return res.data.ROLE; 
     } catch (error) {
