@@ -22,7 +22,9 @@ const AdminDashboard = () => {
   const fetchProblems = async()=>{
     try{
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/get_problems`);
+      const response = await fetch(`${base}/get_problems`, {
+        credentials:"include"
+      });
        const result = await response.json();
        setData(prevData => ({ ...prevData, problems: result.problems }));
     }
@@ -34,7 +36,7 @@ const AdminDashboard = () => {
   const fetchSubmissions = async()=>{
     try{
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/submissions`);
+      const response = await fetch(`${base}/submissions`, {credentials:"include"});
       const result = await response.json();
       setData(prevData => ({ ...prevData, submissions: result }));
       
@@ -47,7 +49,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/get_all_users`);
+      const response = await fetch(`${base}/get_all_users`, {credentials:"include"});
       const result = await response.json();
       setData(prevData => ({
         ...prevData,

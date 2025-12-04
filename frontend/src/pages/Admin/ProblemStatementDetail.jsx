@@ -28,7 +28,7 @@ const ProblemStatementDetail = () => {
 
     const fetchProblem = async () => {
       try {
-        const res = await fetch(`${base}/problems/${id}`);
+        const res = await fetch(`${base}/problems/${id}`, {credentials:"include"});
         if (!res.ok) throw new Error('no problem');
         const json = await res.json();
         const p = (json.problems && json.problems[0]) || json.problem || null;
@@ -51,7 +51,7 @@ const ProblemStatementDetail = () => {
 
     const fetchSubmissions = async () => {
       try {
-        const res = await fetch(`${base}/submissions?problemId=${id}`);
+        const res = await fetch(`${base}/submissions?problemId=${id}`, {credentials:"include"});
         if (!res.ok) throw new Error('no submissions');
         const json = await res.json();
         if (Array.isArray(json) && mounted) {
