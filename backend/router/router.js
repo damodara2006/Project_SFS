@@ -5,7 +5,7 @@ import { Add_Team_Members, Update_team } from "../controllers/Team_members.js";
 import { Fetch_Teams, Fetch_Team_Members, Delete_team } from "../controllers/Spoc_Teams.js";
 import { login, logout, signup, GetAllUsers, GetAllEvaluators } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
-import Verify_OTP_Check from "../controllers/Verify_OTP_Check.js";
+// import Verify_OTP_Check from "../controllers/Verify_OTP_Check.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { Post_problem, Get_problems, Get_problem_by_id } from "../controllers/Problems.js";
 import { Get_cookies } from "../controllers/Cookie.js";
@@ -21,7 +21,7 @@ router.route("/register/:email/:password/:role/:college/:college_code/:name/:dat
 // router.route("/register/:email/:password/:role/:manufacture/:college_code/:name/:date").post(signup);
 
 router.route("/verify_email/:email").post(Verify_OTP);
-router.route("/verify_otp").post(Verify_OTP_Check);
+// router.route("/verify_otp").post(Verify_OTP_Check);
 router.route("/cookie").get(Get_cookies); // Checks user authentication status
 
 // --- Admin Routes ---
