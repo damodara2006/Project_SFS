@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const URL = "https://project-sfs-hid6.onrender.com"
+const URL = "https://project-sfs-backend.onrender.com"
 const auth = async () => {
     try {
         const res = await axios.get(`${URL}/cookie`, {
