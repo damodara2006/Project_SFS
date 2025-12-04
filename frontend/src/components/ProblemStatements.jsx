@@ -337,6 +337,7 @@ const sampleProblems = [
 ];
 
 const fetchProblems = async () => {
+  axios.defaults.withCredentials = true
   const response = await axios.get("http://localhost:8000/get_problems", { timeout: 8000 });
   return response.data.problems;
 };
