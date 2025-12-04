@@ -47,13 +47,18 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/get_all_users`);
+      const response = await fetch(`${base}/get_all_users`, { credentials: 'include' });
+      if (response.status === 401) {
+        // not authenticated or unauthorized: clear user lists and stop
+        setData(prevData => ({ ...prevData, spocs: [], evaluators: [] }));
+        return;
+      }
       const result = await response.json();
-      setData(prevData => ({
-        ...prevData,
-        spocs: result.filter(user => user.ROLE === 'SPOC'),
-        evaluators: result.filter(user => user.ROLE === 'EVALUATOR')
-      }));
+      // normalize backend response to an array
+      const usersArray = Array.isArray(result) ? result : (result.users || result.data || []);
+      const spocs = Array.isArray(usersArray) ? usersArray.filter(user => (user.ROLE || user.role || '').toString().toUpperCase() === 'SPOC') : [];
+      const evaluators = Array.isArray(usersArray) ? usersArray.filter(user => (user.ROLE || user.role || '').toString().toUpperCase() === 'EVALUATOR') : [];
+      setData(prevData => ({ ...prevData, spocs, evaluators }));
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -66,10 +71,10 @@ const AdminDashboard = () => {
   }, []);
 
 
-  const totalProblems = data.problems.length;
-  const totalSubmissions = data.submissions.length;
-  const pendingApprovals = data.spocs.filter(r => r.STATUS === 'PENDING').length;
-  const totalEvaluators = data.evaluators.length;
+  const totalProblems = Array.isArray(data.problems) ? data.problems.length : 0;
+  const totalSubmissions = Array.isArray(data.submissions) ? data.submissions.length : 0;
+  const pendingApprovals = Array.isArray(data.spocs) ? data.spocs.filter(r => (r.STATUS || r.status || '').toString().toUpperCase() === 'PENDING').length : 0;
+  const totalEvaluators = Array.isArray(data.evaluators) ? data.evaluators.length : 0;
   const evaluatedCount = 168;
 
   

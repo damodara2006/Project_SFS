@@ -4,9 +4,9 @@ import axios from "axios";
 
 const URL = "http://localhost:8000"
 const auth = async () => {
-    const match = document.cookie.match("login_creditionals");
+    
 
-    if (!match) return null; 
+   ; 
     try {
         const res = await axios.get(`${URL}/cookie`, { withCredentials: true });
         console.log(res.data.ROLE);

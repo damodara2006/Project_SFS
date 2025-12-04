@@ -62,7 +62,7 @@ const FAQ = () => {
                 onClick={() => toggleAccordion(index)}
                 className="w-full flex justify-between items-center p-6 text-left focus:outline-none  "
               >
-                <h3 className="text-lg md:text-xl font-semibold text-gray-800">
+                <h3 className="text-lg md:text-xl font-bold text-gray-800">
                   {item.question}
                 </h3>
                 <svg
@@ -88,7 +88,7 @@ const FAQ = () => {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="px-6 pb-6 text-gray-700 leading-relaxed text-base border-t border-gray-100 bg-orange-50">
+                <div className="px-6 pb-6 text-gray-700 leading-relaxed text-base border-t border-gray-100 bg-orange-25 font-medium">
                   {item.answer}
                 </div>
               </div>
@@ -103,7 +103,7 @@ const FAQ = () => {
           </p>
           <a
             href="mailto:support@solveforsakthi.com"
-            className="inline-block bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-orange-700 hover:shadow-lg transition-all duration-300"
+            className="inline-block bg-orange-500 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-orange-700 hover:shadow-lg transition-all duration-300"
           >
             Contact Support
           </a>

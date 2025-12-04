@@ -13,7 +13,13 @@ const Fetch_Teams = AsyncHandler(async (req, res) => {
 const Fetch_Team_Members = AsyncHandler(async (req, res) => {
     const { id } = req.body;
     // console.log(id)
-    const [result] = await connection.query(`select * from Team_Members_List where Team_ID = ${id}`)
+    const parsedId = parseInt(id, 10);
+    if (Number.isNaN(parsedId)) {
+        return res.status(400).json({ message: 'Invalid team id' });
+    }
+
+    // use parameterized query to avoid SQL injection
+    const [result] = await connection.query("select * from Team_Members_List where Team_ID = ?", [parsedId]);
     // console.log(result)
     res.send(result)
 })
