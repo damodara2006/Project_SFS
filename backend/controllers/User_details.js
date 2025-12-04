@@ -7,7 +7,8 @@ import jwt from "jsonwebtoken"
 
 const signup = AsyncHandler(async (req, res) => {
     const { email, password, role, college, college_code, name, date } = req.params;
-
+    console.log("Error Message");
+    
     // basic presence check
     if ([email, password, role, college_code, name].some((data) => !data || String(data).trim() === "")) {
         return res.status(400).send("All fields required");
