@@ -9,7 +9,7 @@ import { FiSearch, FiFilter, FiUsers, FiFileText, FiPlus, FiUpload } from 'react
 import { mockProblemStatements, getEvaluatorUsers, mockSubmissions } from '../../mockData';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import Button from '../../components/common/button';
-
+import { URL } from '../../Utils';
 const ProblemStatementsList = () => {
   const navigate = useNavigate();
   const evaluators = getEvaluatorUsers();
@@ -51,7 +51,7 @@ const ProblemStatementsList = () => {
       setError(null);
       try {
         const base = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${base}/get_problems`);
+        const res = await fetch(`${URL}/get_problems`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         console.log("Fetched Problems:", json);
@@ -83,7 +83,7 @@ const ProblemStatementsList = () => {
     const fetchSubmissions = async () => {
       try {
         const base = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${base}/submissions`);
+        const res = await fetch(`${URL}/submissions`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         // normalize submission fields to a consistent shape

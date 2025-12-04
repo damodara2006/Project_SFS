@@ -8,9 +8,9 @@ import { FiSearch } from "react-icons/fi";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { mockProblemStatements } from "../../mockData";
-
+import { URL } from "../../Utils";
 const fetchProblems = async () => {
-  const response = await axios.get("http://localhost:8000/get_problems", {
+  const response = await axios.get(`${URL}/get_problems`, {
     timeout: 8000,
   });
   return response.data.problems;

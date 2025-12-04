@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { FiUser, FiLogOut, FiMenu, FiCheckCircle } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
-
+import { URL } from '../../Utils';
 const AdminHeader = ({ setIsOpen }) => {
     const handleLogout = () => {
     performLogout();
@@ -14,7 +14,7 @@ const AdminHeader = ({ setIsOpen }) => {
       const fetchUser = async () => {
         try {
           const base = import.meta.env.VITE_API_URL || '';
-          const res = await fetch(`${base}/cookie`, { method: 'GET', credentials: 'include' });
+          const res = await fetch(`${URL}/cookie`, { method: 'GET', credentials: 'include' });
           if (!res.ok) return; // silently fail and keep fallback
           const json = await res.json();
           console.log(json);
@@ -37,7 +37,7 @@ const AdminHeader = ({ setIsOpen }) => {
   const performLogout = async () => {
     try {
       const base = import.meta.env.VITE_API_URL || '';
-      await fetch(`${base}/logout`, { method: 'GET', credentials: 'include' });
+      await fetch(`${URL}/logout`, { method: 'GET', credentials: 'include' });
     } catch (err) {
       console.error('Logout request failed', err);
     }

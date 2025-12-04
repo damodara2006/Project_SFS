@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiClipboard, FiUsers, FiCheckSquare, FiUpload, FiArrowRight, FiFilePlus } from 'react-icons/fi';
 
-
+import { URL } from '../../Utils';
 import StatCard from '../../components/admin/StatCard';
 import SubmissionsChart from '../../components/admin/SubmissionsChart';
 import EvaluationChart from '../../components/admin/EvaluationChart';
@@ -22,7 +22,7 @@ const AdminDashboard = () => {
   const fetchProblems = async()=>{
     try{
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/get_problems`);
+      const response = await fetch(`${URL}/get_problems`);
        const result = await response.json();
        setData(prevData => ({ ...prevData, problems: result.problems }));
     }
@@ -34,7 +34,7 @@ const AdminDashboard = () => {
   const fetchSubmissions = async()=>{
     try{
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/submissions`);
+      const response = await fetch(`${URL}/submissions`);
       const result = await response.json();
       setData(prevData => ({ ...prevData, submissions: result }));
       
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       const base = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${base}/get_all_users`, { credentials: 'include' });
+      const response = await fetch(`${URL}/get_all_users`, { credentials: 'include' });
       if (response.status === 401) {
         // not authenticated or unauthorized: clear user lists and stop
         setData(prevData => ({ ...prevData, spocs: [], evaluators: [] }));

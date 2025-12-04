@@ -8,7 +8,7 @@ import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { getProblemStatementById, getSubmissionsByProblemId } from '../../mockData';
 import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft } from 'react-icons/fi';
-
+import { URL } from '../../Utils';
 const ProblemStatementDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const ProblemStatementDetail = () => {
 
     const fetchProblem = async () => {
       try {
-        const res = await fetch(`${base}/problems/${id}`);
+        const res = await fetch(`${URL}/problems/${id}`);
         if (!res.ok) throw new Error('no problem');
         const json = await res.json();
         const p = (json.problems && json.problems[0]) || json.problem || null;
@@ -51,7 +51,7 @@ const ProblemStatementDetail = () => {
 
     const fetchSubmissions = async () => {
       try {
-        const res = await fetch(`${base}/submissions?problemId=${id}`);
+        const res = await fetch(`${URL}/submissions?problemId=${id}`);
         if (!res.ok) throw new Error('no submissions');
         const json = await res.json();
         if (Array.isArray(json) && mounted) {
