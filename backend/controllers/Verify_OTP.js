@@ -16,7 +16,7 @@ const Verify_OTP = (req, res) => {
     const otp = async (random) => {
         const info = await transporter.sendMail({
             from: '"Sakthi Auto register" <damodara2006@gmail.com>',
-            to: `${email}`,
+            to: `${email}`, 
             subject: "You have registered for Sakthi-auto contest",
             // text: "You have registered for Sakthi-auto contest",
             html: `Your OTP is ${random.toFixed()}`
