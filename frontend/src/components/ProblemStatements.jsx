@@ -302,6 +302,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { URL } from "../Utils";
 
 const sampleProblems = [
   {
@@ -338,7 +339,7 @@ const sampleProblems = [
 
 const fetchProblems = async () => {
   axios.defaults.withCredentials = true
-  const response = await axios.get("http://localhost:8000/get_problems", { timeout: 8000 });
+  const response = await axios.get(`${URL}/get_problems`, { timeout: 8000 });
   return response.data.problems;
 };
 
