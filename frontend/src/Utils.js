@@ -4,16 +4,15 @@ import axios from "axios";
 
 const URL = "https://project-sfs-hid6.onrender.com"
 const auth = async () => {
-    const match = document.cookie.match("login_creditionals");
-
-    if (!match) return null; 
     try {
-        axios.defaults.withCredentials = true
-        const res = await axios.get(`${URL}/cookie`);
-        console.log(res.data.ROLE);
-        return res.data.ROLE; 
-    } catch (error) {
-        console.error("Error during auth:", error);
+        const res = await axios.get(`${URL}/cookie`, {
+            withCredentials: true
+        });
+
+        return res.data.ROLE || null;
+
+    } catch (err) {
+        console.error(err);
         return null;
     }
 };
