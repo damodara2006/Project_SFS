@@ -32,7 +32,7 @@ const Login = () => {
       }
 
       if (res.data.data) {
-        toast.success("Login Successful", { style: { backgroundColor: "green" } });
+        toast.success("Login Successful");
         setTimeout(() => {
           const role = res.data.user?.[0]?.ROLE;
           if (role == 'SPOC') navigate("/spoc");
@@ -49,9 +49,9 @@ const Login = () => {
     console.log(error);
     if (error.response && error.response.status === 401) {
       // invalid credentials
-      toast.error(error.response.data?.message || 'Invalid credentials');
+      toast.error(error.response.data?.message || 'Invalid Credentials');
     } else {
-      toast.error('Login failed. Please try again.');
+      toast.error('Login Failed. Please try again.');
     }
    }
     }
