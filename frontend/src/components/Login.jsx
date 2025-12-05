@@ -91,6 +91,7 @@ const Login = () => {
             <input
               type="email"
               id="email"
+              placeholder='Enter Email'
               className="p-2 rounded-md bg-transparent border border-gray-300 text-gray-800 focus:outline-none focus:border-[#fc8f00]"
               onChange={(e)=>setEmail(e.target.value)}
             />
@@ -104,6 +105,7 @@ const Login = () => {
             <input
               type={Password ? "text" : "password"}
               id="password"
+              placeholder='Enter Password'
               className="p-2 rounded-md bg-transparent border border-gray-300 text-gray-800 focus:outline-none focus:border-[#fc8f00]"
               onChange={(e)=>setPassword(e.target.value)}
               />
