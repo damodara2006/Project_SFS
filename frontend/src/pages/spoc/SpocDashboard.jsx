@@ -74,7 +74,7 @@ const SpocDashboard = () => {
     })
   },[])
 
-  const formatted = data.COLLEGE.replace(/([A-Z])/g, " $1").trim();
+//   const formatted = data.COLLEGE.replace(/([A-Z])/g, " $1").trim();
 // console.log(formatted);
 
 
@@ -144,7 +144,7 @@ const SpocDashboard = () => {
                             {/* <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-gray-300'>LOGOUT</button></div> */}
                             <h1 className="text-3xl font-bold mb-8 text-gray-800">SPOC Dashboard</h1>
                             <p className='my-2  p-3 bg-white rounded-lg shadow-lg font-bold text-center'>
-                            College - {formatted}
+                            College - {data.COLLEGE ? data.COLLEGE.replace(/([A-Z])/g, " $1").trim() : ''}
                             </p>
                             {/* Stats Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
