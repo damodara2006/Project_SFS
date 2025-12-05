@@ -11,6 +11,7 @@ import { Post_problem, Get_problems, Get_problem_by_id } from "../controllers/Pr
 import { Get_cookies } from "../controllers/Cookie.js";
 import { Get_all_submissions, SubmitSolution } from "../controllers/Submission.js";
 import { handleSpocApprove, Spoc_approve } from "../controllers/Spoc.js";
+import { sendMailToSpoc } from "../controllers/SendMail.js";
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router.route("/cookie").get(Get_cookies); // Checks user authentication status
 
 // --- Admin Routes ---
 // Protected admin/SPOC routes
-router.route("/addproblems").post(requireAuth, requireRole(['ADMIN','SPOC']), Post_problem);
+router.route("/addproblems").post(requireAuth, requireRole(['ADMIN','EVALUATOR']), Post_problem);
 router.route("/spoc_users").get(requireAuth, requireRole(['ADMIN']), Spoc_approve); // Get pending SPOC approvals
 router.route("/handlespoc").post(requireAuth, requireRole(['ADMIN']), handleSpocApprove); // Approve or reject a SPOC
 router.route("/get_all_users").get(requireAuth, requireRole(['ADMIN','EVALUATOR']), GetAllUsers); // Get all users
@@ -40,9 +41,12 @@ router.route("/fetch_team_members").post(Fetch_Team_Members);
 router.route("/add_members/:id").post(Add_Team_Members);
 router.route("/update_team").post(Update_team);
 router.route("/delete_team").post(Delete_team);
+router.route("/send_mail_to_spoc").post(sendMailToSpoc);
+
 
 // --- Student Routes ---
 router.route("/submit_solution").post(SubmitSolution);
+
 
 // --- Common/Shared Routes ---
 router.route("/get_problems").get(Get_problems);

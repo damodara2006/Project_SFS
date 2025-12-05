@@ -18,7 +18,7 @@ function TeamList() {
     const [fetch_team_members, setfetch_team_members] = useState([])
     const [fetched_s, setfetched_s] = useState(true)
     const [team_id, setteam_id] = useState()
-
+    
     const navigate = useNavigate();
 
     const [teamFormData, setTeamFormData] = useState({
