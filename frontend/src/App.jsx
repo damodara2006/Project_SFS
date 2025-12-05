@@ -17,11 +17,12 @@ import FAQ from "./pages/FAQ";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProblemStatements from "./components/ProblemStatements.jsx";
+import ScrollToTop from "./components/common/ScrollToTop.jsx";
 
 // Student
 import SdDashboard from "./pages/student/SdDashboard";
 import Upload from "./pages/student/Upload";
-                                                    
+
 // SPOC Imports
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";
@@ -117,6 +118,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       {/* The Header and Footer are now REMOVED from here */}
       <Routes>
         {/* Public Routes */}
@@ -199,7 +201,7 @@ function App() {
           <Route index element={<AssignedProblem />} />
           <Route path="submissions" element={<SubmissionList />} />
           <Route path="submission/:teamId" element={<SubmissionDetail />} />
-                    <Route path="AddProblemStatement" element={<AddProblemStatement />}></Route>
+          <Route path="AddProblemStatement" element={<AddProblemStatement />}></Route>
 
         </Route>
 

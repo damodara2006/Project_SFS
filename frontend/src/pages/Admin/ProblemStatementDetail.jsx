@@ -9,11 +9,12 @@ import Breadcrumb from '../../components/common/Breadcrumb';
 import { getProblemStatementById, getSubmissionsByProblemId } from '../../mockData';
 import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft } from 'react-icons/fi';
 import { URL } from '../../Utils';
+
 const ProblemStatementDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [problem, setProblem] = useState(() => getProblemStatementById(id));
-  const [submissions, setSubmissions] = useState(() => getSubmissionsByProblemId(id));
+  const [problem, setProblem] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOptions, setFilterOptions] = useState({
     evaluated: false,
@@ -118,8 +119,8 @@ const ProblemStatementDetail = () => {
   const totalSubmissions = submissions.length;
 
   return (
-    <div className="min-h-screen bg-[#F7F8FC] py-10 px-8 transition-all duration-300">
-      <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-sm p-10 border border-[#E2E8F0]">
+    <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
+      <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <Breadcrumb />
           <Button
@@ -130,8 +131,9 @@ const ProblemStatementDetail = () => {
             <span>Back</span>
           </Button>
         </div>
+
         {/* Problem Statement Information Table */}
-        <div className="mb-8">
+        <div className="bg-white shadow-sm rounded-2xl p-6 border border-[#E2E8F0] mb-8">
           <h2 className="text-xl font-semibold mb-4 text-[#1A202C]">Problem Statement Information</h2>
           <table className="w-full text-left border-collapse border border-[#E2E8F0] rounded-xl overflow-hidden">
             <tbody>
@@ -160,7 +162,7 @@ const ProblemStatementDetail = () => {
         </div>
 
         {/* Statistics Section */}
-        <div className="flex items-center space-x-10 mb-6">
+        <div className="flex items-center space-x-10 mb-6 px-2">
           <div className="flex items-center space-x-2">
             <FiUsers className="w-6 h-6 text-[#FF9900]" />
             <span className="font-medium text-[#1A202C]">No. of Teams Enrolled :</span>
@@ -233,7 +235,7 @@ const ProblemStatementDetail = () => {
         </div>
 
         {/* Submission List Table */}
-        <div className="overflow-x-auto bg-white rounded-2xl border border-[#E2E8F0]">
+        <div className="overflow-x-auto bg-white rounded-2xl border border-[#E2E8F0] shadow-sm">
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#F7F8FC] text-[#4A5568]">
               <tr>
