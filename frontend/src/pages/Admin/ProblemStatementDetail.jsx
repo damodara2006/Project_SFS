@@ -2,7 +2,7 @@
  * @file ProblemStatementDetail.jsx
  * @description Displays the full details of a specific problem statement for administrative view.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
@@ -20,61 +20,86 @@ const ProblemStatementDetail = () => {
     submitted: false,
   });
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   // fetch problem details and submissions from backend; fallback to mockData
   useEffect(() => {
+    window.scrollTo(0, 0);
     let mounted = true;
     const base = import.meta.env.VITE_API_URL || '';
 
-    const fetchProblem = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`${URL}/problems/${id}`);
-        if (!res.ok) throw new Error('no problem');
-        const json = await res.json();
-        const p = (json.problems && json.problems[0]) || json.problem || null;
-        if (p && mounted) {
-          setProblem({
-            id: p.ID ? String(p.ID) : (p.id || ''),
-            title: p.TITLE || p.title || 'Untitled',
-            description: p.DESCRIPTION || p.description || '',
-            youtube: p.YOUTUBE || p.youtube || p.youtube_link || '',
-            dataset: p.DATASET || p.dataset || '',
-            created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
-            assignedEvaluators: p.assignedEvaluators || [],
-            submissionsCount: p.submissionsCount || 0,
-          });
+        setLoading(true);
+
+        // Fetch Problem
+        try {
+          const res = await fetch(`${URL}/problems/${id}`);
+          if (res.ok) {
+            const json = await res.json();
+            const p = (json.problems && json.problems[0]) || json.problem || null;
+            if (p && mounted) {
+              setProblem({
+                id: p.ID ? String(p.ID) : (p.id || ''),
+                title: p.TITLE || p.title || 'Untitled',
+                description: p.DESCRIPTION || p.description || '',
+                youtube: p.YOUTUBE || p.youtube || p.youtube_link || '',
+                dataset: p.DATASET || p.dataset || '',
+                created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
+                assignedEvaluators: p.assignedEvaluators || [],
+                submissionsCount: p.submissionsCount || 0,
+              });
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching problem:", err);
         }
-      } catch (err) {
-        // keep mock fallback
+
+        // Fetch Submissions
+        try {
+          const res = await fetch(`${URL}/submissions?problemId=${id}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (Array.isArray(json) && mounted) {
+              const mapped = json.map(s => ({
+                id: s.ID ? String(s.ID) : (s.id || ''),
+                problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
+                teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
+                status: String(s.STATUS ?? s.SUB_STATUS ?? s.status ?? '').trim(),
+                spocId: s.SPOC_ID ?? s.SPOCId ?? s.spocId ?? s.spoc_id ?? s.spocId ?? '',
+                title: s.SOL_TITLE ?? s.title ?? s.SOL_TITLE ?? '',
+              }));
+              setSubmissions(mapped);
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching submissions:", err);
+        }
+
+      } catch (error) {
+        console.error("Error in fetchData:", error);
+      } finally {
+        if (mounted) setLoading(false);
       }
     };
 
-    const fetchSubmissions = async () => {
-      try {
-        const res = await fetch(`${URL}/submissions?problemId=${id}`);
-        if (!res.ok) throw new Error('no submissions');
-        const json = await res.json();
-        if (Array.isArray(json) && mounted) {
-          const mapped = json.map(s => ({
-            id: s.ID ? String(s.ID) : (s.id || ''),
-            problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
-            teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
-            status: String(s.STATUS ?? s.SUB_STATUS ?? s.status ?? '').trim(),
-            spocId: s.SPOC_ID ?? s.SPOCId ?? s.spocId ?? s.spoc_id ?? s.spocId ?? '',
-            title: s.SOL_TITLE ?? s.title ?? s.SOL_TITLE ?? '',
-          }));
-          setSubmissions(mapped);
-        }
-      } catch (err) {
-        // keep mock fallback
-      }
-    };
-
-    fetchProblem();
-    fetchSubmissions();
+    fetchData();
 
     return () => { mounted = false };
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F7F8FC] flex flex-col items-center justify-center space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF9900]"></div>
+        <h2 className="text-xl font-semibold text-gray-700">Problem Statement Loading...</h2>
+      </div>
+    );
+  }
 
   if (!problem) {
     return <div className="min-h-screen bg-gray-50 py-10"><div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8"><h1>Problem Statement not found</h1></div></div>;
@@ -235,10 +260,10 @@ const ProblemStatementDetail = () => {
                   <td className="p-4">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${sub.status === 'Evaluated'
-                          ? 'bg-green-100 text-green-800'
-                          : sub.status === 'Submitted'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
+                        ? 'bg-green-100 text-green-800'
+                        : sub.status === 'Submitted'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
                         }`}
                     >
                       {sub.status}
