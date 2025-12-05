@@ -202,7 +202,7 @@ const Register = () => {
             type="email"
             value={email}
             onChange={handleemail}
-            placeholder="Email"
+            placeholder="Enter Email"
             disabled={emailVerified}
             required
             className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a]"
@@ -296,7 +296,7 @@ const Register = () => {
                     type="text"
                     value={form.college}
                     onChange={onChange}
-                    placeholder="College"
+                    placeholder="SPOC College"
                     className="w-full p-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a] mt-3"
                     aria-invalid={!!errors.college}
                   />
@@ -334,7 +334,7 @@ const Register = () => {
                     type="text"
                     value={form.name}
                     onChange={onChange}
-                    placeholder="SPOC Name"
+                    placeholder="Evaluator Name"
                     className="w-full p-3 border border-gray-200 mb-3 rounded focus:outline-none focus:ring-2 focus:ring-[#fc8f00] text-[#4a4a4a] "
                     aria-invalid={!!errors.name}
                   />
