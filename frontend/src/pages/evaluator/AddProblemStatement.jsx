@@ -84,14 +84,15 @@ const AddProblemStatement = () => {
             {/* Department */}
              <div>
               <label className="block text-sm font-medium text-gray-700">
-                Department
+                Hardware or Software
               </label>
-              <input
-                type="text"
-                placeholder="Enter Department"
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
-                onChange={(e)=>setDept(e.target.value)}
-              />
+
+              <select name="hw/sw" id="" onChange={(e) => setDept(e.target.value)} className="mt-1 w-full border border-gray-300  rounded-md p-2  outline-0">
+                <option value="">-- choose one --</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+              </select>
+             
             </div>
 
 
