@@ -18,7 +18,7 @@ function Team_Members() {
     console.log(ID);
     
     
-    axios.post(`${URL}/fetch_team_members`, { id: ID }).then(res => { setFullTeam(res.data); console.log(res);
+    axios.post(`${URL}/fetch_team_members`, { id: ID }).then(res => { setFullTeam(res.data.result); console.log(res);
     })
 
     // console.log(FullTeam)

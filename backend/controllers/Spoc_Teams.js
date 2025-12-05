@@ -19,9 +19,11 @@ const Fetch_Team_Members = AsyncHandler(async (req, res) => {
     }
 
     // use parameterized query to avoid SQL injection
-    const [result] = await connection.query("select * from Team_Members_List where Team_ID = ?", [parsedId]);
+    const [result, err1] = await connection.query("select * from Team_Members_List where Team_ID = ?", [parsedId]);
+    const [mentor, err2] = await connection.query("select MENTOR_NAME, MENTOR_EMAIL from Team_List where ID = ?", [parsedId]);
+
     // console.log(result)
-    res.send(result)
+    res.json({result : result, mentor:mentor})
 })
 
 const Delete_team = AsyncHandler(async (req, res) => {

@@ -5,15 +5,19 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const Add_Team_Members = AsyncHandler(async (req, res) => {
-  const Teamdata = req.body;
+  const { Teamdata, mentorEmail, mentorName } = req.body;
   const { id } = req.params;
   console.log(id);
+
+  console.log(Teamdata, mentorEmail, mentorName);
+  
+  
   
     // console.log(data.members)
     const TeamName = Teamdata.teamName;
     const TeamMemberData = Teamdata.members;
     let leademail;
-    const [result] = await connection.query(`insert into Team_List(NAME, SPOC_ID) VALUES (?,?)`,[TeamName, id])
+  const [result] = await connection.query(`insert into Team_List(NAME, SPOC_ID, MENTOR_NAME, MENTOR_EMAIL) VALUES (?,?,?,?)`,[TeamName, id,mentorName, mentorEmail])
     console.log(result.insertId)
     for (let i = 0; i < TeamMemberData.length; i++){
         let singledata = TeamMemberData[i];
@@ -91,10 +95,16 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
 })
 
 const Update_team = async(req,res) => {
-  const { team, id } = req.body;
+  const { team, id, mentorEmail, mentorName } = req.body;
   const { teamName, members } = team;
 
-  const [result] = await connection.query(`UPDATE Team_List SET NAME = ? WHERE ID = ?`,[teamName, id])
+  const [result] = await connection.query(
+    `UPDATE Team_List 
+   SET NAME = ?, MENTOR_NAME = ?, MENTOR_EMAIL = ? 
+   WHERE ID = ?`,
+    [teamName, mentorName, mentorEmail, id]
+  );
+
   for (const member of members) {
     const [result] = await connection.query("UPDATE Team_Members_List SET NAME = ?, EMAIL = ?, PHONE = ?, GENDER = ? WHERE TEAM_ID = ? AND ROLE = ?", [member.name, member.email, member.phone, member.gender, id, member.role])
     console.log(result);

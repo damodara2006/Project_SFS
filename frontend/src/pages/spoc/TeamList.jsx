@@ -46,24 +46,26 @@ function TeamList() {
         }
 
     }
-    console.log(mentorName,mentorEmail);
+    // console.log(mentorName,mentorEmail);
     
 
     // Fetch all teams
 
-    console.log(spoc_id);
+    // console.log(spoc_id);
 
     function allteams() {
-        console.log(spoc_id);
+        // console.log(spoc_id);
 
         axios
             .post(`${URL}/fetch_teams/${spoc_id}`)
             .then((res) => {
+                console.log(res);
+                
                 setFullTeam(res.data), console.log(res), setfetched(true);
             })
             .catch((err) => console.error("Error fetching teams:", err));
     }
-    console.log(FullTeam);
+    // console.log(FullTeam);
     // Navigate to selected team
     function SelectedTeam(team) {
         navigate(`/spoc/team_details`, { state: { id: team.ID } });
@@ -84,40 +86,47 @@ function TeamList() {
                 i === index ? { ...member, [field]: value } : member
             ),
         }));
-        console.log(teamFormData);
+        // console.log(teamFormData);
 
     };
 
     const handleEditMembers = (e) => {
-        console.log(e);
+        // console.log(e);
         // console.log(FullTeam[e]);
         axios.post(`${URL}/fetch_team_members`, { id: e.ID }).then(res => {
+            // console.log(res.data);/
             setteam_id(e.ID)
+            
             setfetch_team_members(res.data)
             setTeamFormData({
                 teamName: e.NAME,
                 members: [
-                    { role: "Team Lead", name: res.data[0].NAME, email: res.data[0].EMAIL, phone: res.data[0].PHONE, gender: res.data[0].GENDER },
-                    { role: "Member 1", name: res.data[1].NAME, email: res.data[1].EMAIL, phone: res.data[1].PHONE, gender: res.data[1].GENDER },
-                    { role: "Member 2", name: res.data[2].NAME, email: res.data[2].EMAIL, phone: res.data[2].PHONE, gender: res.data[2].GENDER },
-                    { role: "Member 3", name: res.data[3].NAME, email: res.data[3].EMAIL, phone: res.data[3].PHONE, gender: res.data[3].GENDER }
+                    { role: "Team Lead", name: res.data.result[0].NAME, email: res.data.result[0].EMAIL, phone: res.data.result[0].PHONE, gender: res.data.result[0].GENDER },
+                    { role: "Member 1", name: res.data.result[1].NAME, email: res.data.result[1].EMAIL, phone: res.data.result[1].PHONE, gender: res.data.result[1].GENDER },
+                    { role: "Member 2", name: res.data.result[2].NAME, email: res.data.result[2].EMAIL, phone: res.data.result[2].PHONE, gender: res.data.result[2].GENDER },
+                    { role: "Member 3", name: res.data.result[3].NAME, email: res.data.result[3].EMAIL, phone: res.data.result[3].PHONE, gender: res.data.result[3].GENDER }
+
                 ]
             })
+            setMentorEmail(res.data.mentor[0].MENTOR_EMAIL)
+            setMentorName(res.data.mentor[0].MENTOR_NAME)
+
         })
         setShowCreateTeamModal(true)
         setfetched_s(false)
     }
 
-    console.log(team_id);
+    // console.log(team_id);
 
 
     const handleCreateTeam = (e) => {
         e.preventDefault();
-
-        if (e.target[18].innerText == "Update team") {
+        // console.log(e.target[20]);
+        
+        if (e.target[20].innerText == "Update team") {
             let load = toast.loading("Updating team...")
-            console.log(teamFormData);
-            axios.post(`${URL}/update_team`, { team: teamFormData, id: team_id })
+            // console.log(teamFormData);
+            axios.post(`${URL}/update_team`, { team: teamFormData, id: team_id, mentorEmail:mentorEmail, mentorName:mentorName })
                 .then(res => {
                     if (res.data == "Updated") {
                         toast.dismiss(load);
@@ -138,7 +147,7 @@ function TeamList() {
 
             }, 2000);
             axios
-                .post(`${URL}/add_members/${spoc_id}`, teamFormData)
+                .post(`${URL}/add_members/${spoc_id}`, { Teamdata: teamFormData, mentorEmail: mentorEmail, mentorName:mentorName })
                 .then((res) => {
                     if (res.status === 200) {
                         // Dismiss loading toast and show success toast
@@ -194,7 +203,7 @@ function TeamList() {
 
             axios.post(`${URL}/delete_team`, { id: team.ID })
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     allteams();
                     toast.dismiss(del)
                     toast.success("Team deleted")
@@ -378,7 +387,7 @@ function TeamList() {
                                     </label>
                                     <input
                                     type="text"
-                                    value={teamFormData.mentorName}
+                                    value={mentorName}
                                       onChange={(e) => handleMentorChange('mentorName', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
                                     placeholder="Enter mentor name"
@@ -394,7 +403,7 @@ function TeamList() {
                                     </label>
                                     <input
                                     type="email"
-                                    value={teamFormData.mentorEmail}
+                                    value={mentorEmail}
                                     onChange={(e) => handleMentorChange('mentorEmail', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
                                     placeholder="Enter email"
