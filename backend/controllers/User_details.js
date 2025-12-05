@@ -6,7 +6,7 @@ import cookie from "cookie-parser"
 import jwt from "jsonwebtoken"
 
 const signup = AsyncHandler(async (req, res) => {
-    const { email, password, role, college, college_code, name, date } = req.params;
+    const { email, password, role, college, college_code, name, date } = req.body;
     console.log("Error Message");
     
     // basic presence check
@@ -42,7 +42,7 @@ const signup = AsyncHandler(async (req, res) => {
 })
 
 // Simple in-memory login attempt tracker to mitigate brute-force
-const loginAttempts = new Map(); // key -> { count, firstAttemptTs }
+const loginAttempts = new Map(); // key -> { count, firstAttemptTs } 
 const MAX_ATTEMPTS = 20;
 const BLOCK_TIME_MS = 15 * 60 * 1000; // 15 minutes
 

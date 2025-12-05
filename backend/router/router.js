@@ -18,7 +18,7 @@ const router = Router();
 // --- Public / Authentication Routes ---
 router.route("/login").post(login);
 router.route("/logout").get(logout);
-router.route("/register/:email/:password/:role/:college/:college_code/:name/:date").post(signup);
+router.route("/register").post(signup);
 // router.route("/register/:email/:password/:role/:manufacture/:college_code/:name/:date").post(signup);
 
 router.route("/verify_email/:email").post(Verify_OTP);
