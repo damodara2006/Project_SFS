@@ -74,6 +74,12 @@ const SpocDashboard = () => {
     })
   },[])
 
+  const formatted = data.COLLEGE.replace(/([A-Z])/g, " $1").trim();
+// console.log(formatted);
+
+
+  
+
     // Dummy data for teams
     const teams = Array.from({ length: 42 }, (_, i) => ({
         id: i + 1,
@@ -122,9 +128,12 @@ const SpocDashboard = () => {
                     </nav>
                     <p className='absolute bottom-16'>
                     {data.NAME }
+                                        
+
                     </p>
                       {data.NAME?          
-                <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-white text-black  absolute bottom-0 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white'>LOGOUT</button></div>:""}
+                <div> 
+                    <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 font-semibold bg-white text-black  absolute bottom-0 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white hover:font-semibold'>LOGOUT</button></div>:""}
 
                 </aside>    
 
@@ -134,6 +143,9 @@ const SpocDashboard = () => {
                         <>
                             {/* <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-gray-300'>LOGOUT</button></div> */}
                             <h1 className="text-3xl font-bold mb-8 text-gray-800">SPOC Dashboard</h1>
+                            <p className='my-2  p-3 bg-white rounded-lg shadow-lg font-bold text-center'>
+                            College - {formatted}
+                            </p>
                             {/* Stats Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                                 <motion.div
