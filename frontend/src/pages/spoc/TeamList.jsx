@@ -33,6 +33,22 @@ function TeamList() {
     axios.defaults.withCredentials = true
     axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
 
+    const[mentorName , setMentorName] = useState("");
+    const[mentorEmail , setMentorEmail] = useState("");
+
+    // Handle Mentor Details
+
+    const handleMentorChange = (field, value) => {
+        if (field === 'mentorName') {
+            setMentorName(value);   
+        } else if (field === 'mentorEmail') {
+            setMentorEmail(value);
+        }
+
+    }
+    console.log(mentorName,mentorEmail);
+    
+
     // Fetch all teams
 
     console.log(spoc_id);
@@ -350,6 +366,44 @@ function TeamList() {
                                     placeholder="Enter team name"
                                     required
                                 />
+                            </div>
+
+                            <div className="mb-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                <h4 className="text-lg font-semibold text-gray-800 mb-4">Mentor Details</h4>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Mentor Name
+                                    </label>
+                                    <input
+                                    type="text"
+                                    value={teamFormData.mentorName}
+                                      onChange={(e) => handleMentorChange('mentorName', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                    placeholder="Enter mentor name"
+                                    required
+                                    />
+                                </div>
+
+                                
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Email
+                                    </label>
+                                    <input
+                                    type="email"
+                                    value={teamFormData.mentorEmail}
+                                    onChange={(e) => handleMentorChange('mentorEmail', e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fc8f00]"
+                                    placeholder="Enter email"
+                                    required
+                                    />
+                                </div>
+
+                               
+                                </div>
                             </div>
 
                             <div className="mb-6">

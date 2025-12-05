@@ -74,39 +74,59 @@ const Register = () => {
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
+  const checkIfEmailAlreadyExist = async (email) => {
+    // console.log(email);
+    
+    const data = await axios.post(`${URL}/checkifemailexist`, { email })
+    .then(res=>(res.data)
+    )
+
+    return data
+    
+    
+    // return data.then(res=>console.log(res)   )
+   
+  }
+
   // ✅ Simulate sending OTP
-  const handleSendOtp = () => {
-    console.log(email.trim().includes("@"));
-
-    if (email.trim().includes("@")) {
-      // console.log(email);
+  const handleSendOtp = async() => {
+    // console.log(email.trim().includes("@"));
+    // console.log(await checkIfEmailAlreadyExist(email));
+    
+    if (await checkIfEmailAlreadyExist(email)) {
+    
+      if (email.trim().includes("@")) {
+        // console.log(email);
       
-    const lodaing = toast.loading("Sending OTP")
+        const lodaing = toast.loading("Sending OTP")
 
-    console.log(email)
-    if (email) { 
-      axios.post(`${URL}/verify_email/${email}`)
-        .then(res => {
-          if (res.status == 200) {
+        console.log(email)
+        if (email) {
+          axios.post(`${URL}/verify_email/${email}`)
+            .then(res => {
+              if (res.status == 200) {
             
-            toast.dismiss(lodaing)
-            toast.success("OTP Sent")
-            setGeneratedOtp(res.data), console.log(res), setopt(res.data)
-            setOtpSent(true);
+                toast.dismiss(lodaing)
+                toast.success("OTP Sent")
+                setGeneratedOtp(res.data), console.log(res), setopt(res.data)
+                setOtpSent(true);
 
-          }
-         });
+              }
+            });
 
-    }
+        }
     
 
-    setOtpSent(true);
-    // alert(`OTP sent to ${email}`); // For demo only
+        setOtpSent(true);
+        // alert(`OTP sent to ${email}`); // For demo only
+      }
+      else {
+        toast.error("Enter valid email")
+      }
     }
     else {
-  toast.error("Enter valid email")
-}
-
+      toast.error("Email already exist")
+    }
   // ✅ Verify OTP entered by user
   
    

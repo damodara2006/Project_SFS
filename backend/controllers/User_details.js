@@ -131,4 +131,10 @@ const GetAllEvaluators = AsyncHandler(async (req, res) => {
     res.send(users)
 })
 
-export { signup, login, logout, GetAllUsers, GetAllEvaluators }
+const verifyEmail = async(req, res) => {
+    const { email } = req.body;
+    const [data, err] = await connection.query(`SELECT * FROM Users WHERE EMAIL='${email}'`)
+    res.send(data.length == 0 ? true : false)
+}
+
+export { signup, login, logout, GetAllUsers, GetAllEvaluators, verifyEmail }
