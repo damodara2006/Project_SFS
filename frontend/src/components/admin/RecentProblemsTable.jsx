@@ -3,65 +3,26 @@
  * @description A table displaying recent problem statements with a live search filter.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { FiSearch } from "react-icons/fi";
 import { motion } from "framer-motion";
-import axios from "axios";
-import { mockProblemStatements } from "../../mockData";
-import { URL } from "../../Utils";
-const fetchProblems = async () => {
-  const response = await axios.get(`${URL}/get_problems`, {
-    timeout: 8000,
-  });
-  return response.data.problems;
-};
 
-const RecentProblemsTable = () => {
+const RecentProblemsTable = ({ problems = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [problems, setProblems] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      setError(false);
+  // Sort problems by ID (descending) whenever the problems prop changes
+  const sortedProblems = useMemo(() => {
+    if (!Array.isArray(problems)) return [];
 
-      try {
-        const data = await fetchProblems();
-        const list =
-          Array.isArray(data) && data.length > 0 ? data : mockProblemStatements;
+    return [...problems].sort((a, b) => {
+      const numA = parseInt((a.ID || a.id)?.toString().replace(/\D/g, ""), 10) || 0;
+      const numB = parseInt((b.ID || b.id)?.toString().replace(/\D/g, ""), 10) || 0;
+      return numB - numA;
+    });
+  }, [problems]);
 
-        // ✔ Sorting using numeric part of ID (descending)
-        const sorted = [...list].sort((a, b) => {
-          const numA = parseInt((a.ID || a.id)?.toString().replace(/\D/g, ""), 10);
-          const numB = parseInt((b.ID || b.id)?.toString().replace(/\D/g, ""), 10);
-          return numB - numA;
-        });
-
-        setProblems(sorted);
-      } catch (error) {
-        console.error("Error fetching problems:", error);
-        setError(true);
-
-        // Fallback with same sorting logic
-        const sortedMock = [...mockProblemStatements].sort((a, b) => {
-          const numA = parseInt((a.ID || a.id)?.toString().replace(/\D/g, ""), 10);
-          const numB = parseInt((b.ID || b.id)?.toString().replace(/\D/g, ""), 10);
-          return numB - numA;
-        });
-
-        setProblems(sortedMock);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, []);
-
-  // ✔ Filter + Limit Only 5
-  const filteredProblems = problems
+  // Filter by search term and limit to 5
+  const filteredProblems = sortedProblems
     .filter((p) =>
       (p.TITLE || p.title || "")
         .toLowerCase()
@@ -96,81 +57,73 @@ const RecentProblemsTable = () => {
         </div>
       </div>
 
-      {loading ? (
-        <div className="py-6 text-center text-sm text-gray-500">
-          Loading recent problems...
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead className="border-b-2 border-gray-200">
-              <tr>
-                <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                  ID
-                </th>
-                <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                  Title
-                </th>
-                <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                  Evaluator ID
-                </th>
-                <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                  Submissions
-                </th>
-              </tr>
-            </thead>
+      <div className="overflow-x-auto">
+        <table className="min-w-full">
+          <thead className="border-b-2 border-gray-200">
+            <tr>
+              <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                ID
+              </th>
+              <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                Title
+              </th>
+              <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                Evaluator ID
+              </th>
+              <th className="py-3 pr-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                Submissions
+              </th>
+            </tr>
+          </thead>
 
-            <tbody className="divide-y divide-gray-100">
-              {filteredProblems.map((p) => {
-                const id = p.ID || p.id;
-                const title = p.TITLE || p.title;
-                const evaluator =
-                  p.assignedEvaluators?.[0] || p.EVALUATOR_ID || "N/A";
-                const submissions = p.SUBMISSIONS ?? p.submissions ?? "-";
+          <tbody className="divide-y divide-gray-100">
+            {filteredProblems.map((p) => {
+              const id = p.ID || p.id;
+              const title = p.TITLE || p.title;
+              const evaluator =
+                p.assignedEvaluators?.[0] || p.EVALUATOR_ID || "N/A";
+              const submissions = p.SUBMISSIONS ?? p.submissions ?? "-";
 
-                return (
-                  <tr key={id} className="hover:bg-gray-50">
-                    <td className="py-3 pr-3 text-sm font-mono text-brand-orange font-semibold">
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleClick(id);
-                        }}
-                        className="hover:underline"
-                      >
-                        SFS_{id}
-                      </a>
-                    </td>
-                    <td className="py-3 pr-3 text-sm text-brand-dark">
-                      {title}
-                    </td>
-                    <td className="py-3 pr-3 text-sm text-gray-600">
-                      {evaluator}
-                    </td>
-                    <td className="py-3 pr-3 text-sm text-brand-orange font-semibold">
-                      {submissions}
-                    </td>
-                  </tr>
-                );
-              })}
-
-              {filteredProblems.length === 0 && !loading && (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="py-4 text-center text-sm text-gray-500"
-                  >
-                    {error
-                      ? "Unable to load data from server."
-                      : "No matching problems found."}
+              return (
+                <tr key={id} className="hover:bg-gray-50">
+                  <td className="py-3 pr-3 text-sm font-mono text-brand-orange font-semibold">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleClick(id);
+                      }}
+                      className="hover:underline"
+                    >
+                      SFS_{id}
+                    </a>
+                  </td>
+                  <td className="py-3 pr-3 text-sm text-brand-dark">
+                    {title}
+                  </td>
+                  <td className="py-3 pr-3 text-sm text-gray-600">
+                    {evaluator}
+                  </td>
+                  <td className="py-3 pr-3 text-sm text-brand-orange font-semibold">
+                    {submissions}
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              );
+            })}
+
+            {filteredProblems.length === 0 && (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="py-4 text-center text-sm text-gray-500"
+                >
+                  No matching problems found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </motion.div>
   );
 };
