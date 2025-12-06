@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FiSearch } from "react-icons/fi";
 import axios from "axios";
 import { URL } from "../../Utils";
 
@@ -29,10 +30,10 @@ const SpocApprovals = () => {
   const handleApprove = (id, approve) => {
     axios.post(`${URL}/handlespoc`, { id: id, approve: approve })
       .then(res => {
-     
+
         fetchspoc();
       }
-    )
+      )
   }
   const data = [
     {
@@ -89,9 +90,9 @@ const SpocApprovals = () => {
   const filteredData = SpocData.filter(
     (college) =>
       college.COLLEGE.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      college.EMAIL.toLowerCase().includes(searchQuery.toLowerCase()) 
+      college.EMAIL.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
 
   return (
     <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
@@ -114,11 +115,12 @@ const SpocApprovals = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="mb-5 flex justify-between items-center">
+      <div className="mb-6 relative w-full md:w-1/2">
+        <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
         <input
           type="text"
           placeholder="Search by college name or email..."
-          className="w-full md:w-1/2 px-4 py-2 text-sm border border-[#E2E8F0] rounded-xl focus:ring-2 focus:ring-[#FF9900] focus:outline-none transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-base shadow-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none transition-all placeholder-gray-400"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -233,11 +235,10 @@ const SpocApprovals = () => {
                     </button>
                     <button
                       onClick={confirmAction}
-                      className={`px-4 py-1.5 rounded-xl text-sm text-white transition-all ${
-                        selectedAction === "approve"
+                      className={`px-4 py-1.5 rounded-xl text-sm text-white transition-all ${selectedAction === "approve"
                           ? "bg-[#48BB78] hover:bg-green-600"
                           : "bg-red-500 hover:bg-red-600"
-                      }`}
+                        }`}
                     >
                       {selectedAction === "approve" ? "Approve" : "Reject"}
                     </button>
@@ -274,9 +275,8 @@ const SpocApprovals = () => {
       {/* Toast Notification */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all animate-slideUp ${
-            toast.type === "success" ? "bg-[#48BB78]" : "bg-red-500"
-          }`}
+          className={`fixed bottom-6 right-6 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all animate-slideUp ${toast.type === "success" ? "bg-[#48BB78]" : "bg-red-500"
+            }`}
         >
           {toast.message}
         </div>

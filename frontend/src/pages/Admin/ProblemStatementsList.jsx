@@ -18,7 +18,7 @@ const ProblemStatementsList = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [submissions, setSubmissions] = useState([]);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState('newest');
   const [statusFilter, setStatusFilter] = useState('all');
 
   const handleProblemClick = (problem) => {
@@ -128,9 +128,7 @@ const ProblemStatementsList = () => {
     .sort((a, b) => {
       if (sortOrder === 'newest') return new Date(b.created) - new Date(a.created);
       if (sortOrder === 'oldest') return new Date(a.created) - new Date(b.created);
-      const countA = a.submissionsCount || 1;
-      const countB = b.submissionsCount || 1;
-      return sortOrder === 'asc' ? countA - countB : countB - countA;
+      return 0;
     });
 
   return (
@@ -201,14 +199,14 @@ const ProblemStatementsList = () => {
       {/* Search and Filter */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-5 mb-6">
         <div className="relative w-full md:w-2/3">
+          <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
           <input
             type="text"
             placeholder="Search by ID or Title"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-5 py-2.5 text-base border border-[#E2E8F0] rounded-xl focus:ring-2 focus:ring-[#FF9900] focus:outline-none transition-all placeholder-[#A0AEC0]"
+            className="w-full pl-11 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-xl text-base shadow-sm focus:ring-2 focus:ring-[#FF9900] focus:outline-none transition-all placeholder-gray-400"
           />
-          <FiSearch className="absolute right-4 top-3 text-[#A0AEC0]" />
         </div>
 
         <div className="flex items-center gap-3">
@@ -229,8 +227,6 @@ const ProblemStatementsList = () => {
             onChange={(e) => setSortOrder(e.target.value)}
             className="px-4 py-2 border border-[#E2E8F0] rounded-xl text-base focus:ring-2 focus:ring-[#FF9900] focus:outline-none transition-all"
           >
-            <option value="asc">Low to High</option>
-            <option value="desc">High to Low</option>
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
           </select>
