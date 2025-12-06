@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRef } from 'react';
-import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { HiMenuAlt3, HiX, HiUser, HiLogout } from 'react-icons/hi';
+import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
+import { HiMenuAlt3, HiX, HiUser, HiLogout, HiHome } from 'react-icons/hi';
 import axios from 'axios';
 
 // Import your assets
@@ -16,6 +16,7 @@ const Header = () => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -130,16 +131,28 @@ const Header = () => {
 
                         <Link
                           to={
-                            userRole === 'STUDENT' ? '/student' :
-                              userRole === 'SPOC' ? '/spoc' :
-                                userRole === 'ADMIN' ? '/admin' :
-                                  userRole === 'EVALUATOR' ? '/evaluator' : '/profile'
+                            userRole === 'EVALUATOR' && location.pathname.startsWith('/evaluator')
+                              ? '/'
+                              : userRole === 'STUDENT' ? '/student'
+                                : userRole === 'SPOC' ? '/spoc'
+                                  : userRole === 'ADMIN' ? '/admin'
+                                    : userRole === 'EVALUATOR' ? '/evaluator'
+                                      : '/profile'
                           }
                           className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                           onClick={() => setIsProfileDropdownOpen(false)}
                         >
-                          <HiUser className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
-                          Go to Dashboard
+                          {userRole === 'EVALUATOR' && location.pathname.startsWith('/evaluator') ? (
+                            <>
+                              <HiHome className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
+                              Go to Home
+                            </>
+                          ) : (
+                            <>
+                              <HiUser className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
+                              Go to Dashboard
+                            </>
+                          )}
                         </Link>
 
                         <button
