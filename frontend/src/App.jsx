@@ -90,10 +90,10 @@ function App() {
       const fetchAuth = async () => {
         try {
           const res = await auth();
-          if (!res) {
+          if (!res || !res.role) {
             showToast("Please login to your account");
           } else {
-            setRole(res);
+            setRole(res.role);
           }
         } catch (err) {
           console.error(err);

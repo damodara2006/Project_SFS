@@ -1,20 +1,63 @@
-import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
-import { HiMenuAlt3, HiX } from 'react-icons/hi';
+import React, { useState, useEffect } from 'react';
+import { useRef } from 'react';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { HiMenuAlt3, HiX, HiUser, HiLogout } from 'react-icons/hi';
+import axios from 'axios';
 
 // Import your assets
 import sakthiLogo from '../assets/sakthi_auto.png';
 import profileIcon from '../assets/profile.png';
+import { auth, URL } from '../Utils';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authData = await auth();
+      if (authData) {
+        setUserRole(authData.role);
+        setUserName(authData.name);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.get(`${URL}/logout`, { withCredentials: true });
+      setUserRole(null);
+      setIsProfileDropdownOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'About us', path: '/about' },
 
     { name: "Problem Statement", path: "/problemstatements" },
-  
+
   ];
 
   // A reusable NavLink component for both mobile and desktop
@@ -24,10 +67,9 @@ const Header = () => {
         to={path}
         onClick={() => setIsMobileMenuOpen(false)}
         className={({ isActive }) =>
-          `block px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ease-in-out transform hover:scale-105 ${
-            isActive
-              ? 'bg-black/20 text-orange-400'
-              : 'text-slate-200 hover:text-orange-400'
+          `block px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ease-in-out transform hover:scale-105 ${isActive
+            ? 'bg-black/20 text-orange-400'
+            : 'text-slate-200 hover:text-orange-400'
           }`
         }
       >
@@ -60,13 +102,66 @@ const Header = () => {
 
           {/* Right Section: Profile and Mobile Toggle */}
           <div className="flex items-center space-x-3">
-            <Link
-              to="/profile"
-              className="hidden md:block rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#494949] focus:ring-orange-400"
-              aria-label="View Profile"
-            >
-              <img className="h-10 w-10 rounded-full ring-2 ring-white/20 hover:ring-orange-400/80 transition-shadow" src={profileIcon} alt="User Profile" />
-            </Link>
+            {userRole ? (
+              <div className="flex items-center">
+                {userName && (
+                  <span className="hidden lg:block text-sm font-medium text-gray-300 mr-4">
+                    {userName}
+                  </span>
+                )}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                    className="hidden md:block rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#494949] focus:ring-orange-400"
+                    aria-label="User Menu"
+                  >
+                    <img className="h-10 w-10 rounded-full ring-2 ring-white/20 hover:ring-orange-400/80 transition-shadow" src={profileIcon} alt="User Profile" />
+                  </button>
+
+
+                  {/* Dropdown Menu */}
+                  {isProfileDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black/5 z-50 transform opacity-100 scale-100 transition-all duration-200">
+                      <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm text-gray-500">Signed in as</p>
+                          <p className="text-sm font-semibold text-gray-900 truncate">{userRole}</p>
+                        </div>
+
+                        <Link
+                          to={
+                            userRole === 'STUDENT' ? '/student' :
+                              userRole === 'SPOC' ? '/spoc' :
+                                userRole === 'ADMIN' ? '/admin' :
+                                  userRole === 'EVALUATOR' ? '/evaluator' : '/profile'
+                          }
+                          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                        >
+                          <HiUser className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
+                          Go to Dashboard
+                        </Link>
+
+                        <button
+                          onClick={handleLogout}
+                          className="flex w-full items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <HiLogout className="mr-3 h-5 w-5 text-red-400 group-hover:text-red-500" />
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="hidden md:inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9900] hover:bg-[#e68900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-[#FF9900] transition-all"
+              >
+                Login / Register
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
@@ -95,14 +190,30 @@ const Header = () => {
             <NavItem key={`${item.name}-mobile`} {...item} />
           ))}
           <li>
-            <Link
-              to="/profile"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center mt-2 px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-black/20 hover:text-orange-400"
-            >
-              <img className="h-8 w-8 rounded-full object-cover mr-3" src={profileIcon} alt="User Profile" />
-              <span>Profile</span>
-            </Link>
+            {userRole ? (
+              <Link
+                to={
+                  userRole === 'STUDENT' ? '/student' :
+                    userRole === 'SPOC' ? '/spoc' :
+                      userRole === 'ADMIN' ? '/admin' :
+                        userRole === 'EVALUATOR' ? '/evaluator' : '/profile'
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center mt-2 px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-black/20 hover:text-orange-400"
+              >
+                <img className="h-8 w-8 rounded-full object-cover mr-3" src={profileIcon} alt="User Profile" />
+                <span>Profile</span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center mt-2 px-3 py-2 rounded-md text-base font-medium text-[#FF9900] hover:bg-black/20"
+              >
+                <span>Login / Register</span>
+              </Link>
+            )}
+
           </li>
         </ul>
       </div>
