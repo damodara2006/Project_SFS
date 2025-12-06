@@ -1,42 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom';
-import { FiUser, FiLogOut, FiMenu, FiCheckCircle } from 'react-icons/fi';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { FiUser, FiLogOut, FiMenu, FiCheckCircle, FiMoreVertical, FiHome } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 import { URL } from '../../Utils';
+
 const AdminHeader = ({ setIsOpen }) => {
-    const handleLogout = () => {
-    performLogout();
-  };
-
-    const [email, setEmail] = useState('');
-
-    useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          const base = import.meta.env.VITE_API_URL || '';
-          const res = await fetch(`${URL}/cookie`, { method: 'GET', credentials: 'include' });
-          if (!res.ok) return; // silently fail and keep fallback
-          const json = await res.json();
-          console.log(json);
-          
-          const userEmail = json?.EMAIL || json?.email || json?.Email || null;
-          if (userEmail) setEmail(userEmail);
-        } catch (err) {
-          // ignore and keep fallback
-          // eslint-disable-next-line no-console
-          console.debug('Could not fetch user cookie', err);
-        }
-      };
-
-      fetchUser();
-    }, []);
-
+  const [email, setEmail] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`${URL}/cookie`, { method: 'GET', credentials: 'include' });
+        if (!res.ok) return; // silently fail and keep fallback
+        const json = await res.json();
+        console.log(json);
+
+        const userEmail = json?.EMAIL || json?.email || json?.Email || null;
+        if (userEmail) setEmail(userEmail);
+      } catch (err) {
+        // ignore and keep fallback
+        // eslint-disable-next-line no-console
+        console.debug('Could not fetch user cookie', err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
 
   // Calls backend logout endpoint, clears storage and redirects to login
   const performLogout = async () => {
     try {
-      const base = import.meta.env.VITE_API_URL || '';
       await fetch(`${URL}/logout`, { method: 'GET', credentials: 'include' });
     } catch (err) {
       console.error('Logout request failed', err);
@@ -62,6 +73,12 @@ const AdminHeader = ({ setIsOpen }) => {
 
     setTimeout(() => navigate('/login'), 2000);
   };
+
+  const handleLogout = () => {
+    setIsDropdownOpen(false);
+    performLogout();
+  };
+
 
   return (
     <header className="sticky top-0 z-10 bg-[#4A4A4A] shadow-md border-b border-[#5A5A5A]">
@@ -90,14 +107,36 @@ const AdminHeader = ({ setIsOpen }) => {
             <span className="font-medium">{email}</span>
           </div>
 
-          {/* Logout Button */}
-          <button
-            onClick={handleLogout}
-            className="flex items-center justify-center rounded-md border border-[#5A5A5A] bg-[#3b3b3b] px-3 py-2 text-sm font-medium text-gray-200 hover:bg-primary-accent hover:text-white transition-colors duration-200"
-          >
-            <FiLogOut className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
+          {/* Three Dots Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center justify-center p-2 rounded-full text-gray-200 hover:bg-[#3b3b3b] hover:text-white transition-colors focus:outline-none"
+              aria-label="Options"
+            >
+              <FiMoreVertical size={20} />
+            </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
+                <Link
+                  to="/"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <FiHome className="mr-3 h-4 w-4 text-gray-500" />
+                  Go to Home
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <FiLogOut className="mr-3 h-4 w-4 text-red-500" />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

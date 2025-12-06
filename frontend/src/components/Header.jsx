@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { HiMenuAlt3, HiX, HiUser, HiLogout, HiHome } from 'react-icons/hi';
 import axios from 'axios';
-
-// Import your assets
 import sakthiLogo from '../assets/sakthi_auto.png';
 import profileIcon from '../assets/profile.png';
 import { auth, URL } from '../Utils';
@@ -56,9 +53,7 @@ const Header = () => {
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'About us', path: '/about' },
-
     { name: "Problem Statement", path: "/problemstatements" },
-
   ];
 
   // A reusable NavLink component for both mobile and desktop
@@ -87,7 +82,6 @@ const Header = () => {
           {/* Left Section: Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              {/* Using your original image size for consistency */}
               <img className="w-32 h-14 object-contain" src={sakthiLogo} alt="Sakthi Auto Logo" />
             </Link>
           </div>
@@ -119,7 +113,6 @@ const Header = () => {
                     <img className="h-10 w-10 rounded-full ring-2 ring-white/20 hover:ring-orange-400/80 transition-shadow" src={profileIcon} alt="User Profile" />
                   </button>
 
-
                   {/* Dropdown Menu */}
                   {isProfileDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white ring-1 ring-black/5 z-50 transform opacity-100 scale-100 transition-all duration-200">
@@ -129,31 +122,45 @@ const Header = () => {
                           <p className="text-sm font-semibold text-gray-900 truncate">{userRole}</p>
                         </div>
 
-                        <Link
-                          to={
-                            userRole === 'EVALUATOR' && location.pathname.startsWith('/evaluator')
-                              ? '/'
-                              : userRole === 'STUDENT' ? '/student'
-                                : userRole === 'SPOC' ? '/spoc'
-                                  : userRole === 'ADMIN' ? '/admin'
-                                    : userRole === 'EVALUATOR' ? '/evaluator'
-                                      : '/profile'
-                          }
-                          className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
-                          onClick={() => setIsProfileDropdownOpen(false)}
-                        >
-                          {userRole === 'EVALUATOR' && location.pathname.startsWith('/evaluator') ? (
-                            <>
-                              <HiHome className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
-                              Go to Home
-                            </>
-                          ) : (
-                            <>
-                              <HiUser className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
-                              Go to Dashboard
-                            </>
-                          )}
-                        </Link>
+                        {(() => {
+                          const dashboardPaths = {
+                            STUDENT: '/student',
+                            SPOC: '/spoc',
+                            ADMIN: '/admin',
+                            EVALUATOR: '/evaluator'
+                          };
+
+                          const dashboardLabels = {
+                            STUDENT: 'Student Dashboard',
+                            SPOC: 'SPOC Dashboard',
+                            ADMIN: 'Admin Panel',
+                            EVALUATOR: 'Evaluator Panel'
+                          };
+
+                          const dashboardPath = dashboardPaths[userRole] || '/profile';
+                          const label = dashboardLabels[userRole] || 'Dashboard';
+                          const isOnDashboard = location.pathname.startsWith(dashboardPath);
+
+                          return (
+                            <Link
+                              to={isOnDashboard ? '/' : dashboardPath}
+                              className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                              onClick={() => setIsProfileDropdownOpen(false)}
+                            >
+                              {isOnDashboard ? (
+                                <>
+                                  <HiHome className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
+                                  Go to Home
+                                </>
+                              ) : (
+                                <>
+                                  <HiUser className="mr-3 h-5 w-5 text-gray-400 group-hover:text-orange-500" />
+                                  Go to {label}
+                                </>
+                              )}
+                            </Link>
+                          );
+                        })()}
 
                         <button
                           onClick={handleLogout}
@@ -193,7 +200,6 @@ const Header = () => {
       </div>
 
       {/* --- Mobile Menu --- */}
-      {/* Uses a smooth transition for max-height */}
       <div
         className={`md:hidden bg-[#494949] overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-96' : 'max-h-0'}`}
         id="mobile-menu"
@@ -235,4 +241,3 @@ const Header = () => {
 };
 
 export default Header;
-//comment
