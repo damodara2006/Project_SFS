@@ -17,6 +17,26 @@ import {
 } from "react-icons/fi";
 import { URL } from "../../Utils";
 
+const Popup = ({ children, visible, onClose }) => (
+  <div
+    className={`fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
+  >
+    <div
+      className={`bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-lg transition-all duration-300 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"
+        }`}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
+      >
+        <FiX size={20} />
+      </button>
+      {children}
+    </div>
+  </div>
+);
+
 const EvaluatorList = () => {
   const [evaluators, setEvaluators] = useState([
     {
@@ -38,14 +58,40 @@ const EvaluatorList = () => {
     }
   ]);
 
-  // Mock Data for Available Problem Statements (In real app, fetch from API)
-  const MOCK_AVAILABLE_PROBLEMS = [
-    { id: "PSAI01", title: "AI-Powered Assistants", submissionCount: 12 },
-    { id: "PSML02", title: "Predictive Maintenance", submissionCount: 8 },
-    { id: "PSBC03", title: "Blockchain Voting", submissionCount: 5 },
-    { id: "PSIOT04", title: "Smart Home IoT", submissionCount: 15 },
-    { id: "PSVR05", title: "VR Education", submissionCount: 3 },
-  ];
+  /* useEffect(() => {
+    GetAllEvaluators()
+  }, []) */
+
+  const [availableProblemStatements, setAvailableProblemStatements] = useState([]);
+
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        const res = await fetch(`${URL}/get_problems`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        let problemsData = [];
+        if (Array.isArray(json)) {
+          problemsData = json;
+        } else if (json.problems && Array.isArray(json.problems)) {
+          problemsData = json.problems;
+        } else if (json.data && Array.isArray(json.data)) {
+          problemsData = json.data;
+        }
+
+        const mapped = problemsData.map(p => ({
+          id: p.ID ? String(p.ID) : (p.id ? String(p.id) : ''),
+          title: p.TITLE || p.title || 'Untitled',
+          submissionCount: p.submissionsCount || 0
+        }));
+        setAvailableProblemStatements(mapped);
+      } catch (err) {
+        console.error("Failed to fetch problems", err);
+      }
+    };
+    fetchProblems();
+  }, []);
 
   const GetAllEvaluators = () => {
     axios.get(`${URL}/evaluators`)
@@ -71,6 +117,7 @@ const EvaluatorList = () => {
   const [showProblemStatementPopup, setShowProblemStatementPopup] = useState(false);
   const [toast, setToast] = useState(null);
   const [selectedProblemToAdd, setSelectedProblemToAdd] = useState(""); // State for assignment dropdown
+  const [assignmentSearchTerm, setAssignmentSearchTerm] = useState(""); // State for assignment search
   const [newEvaluator, setNewEvaluator] = useState({
     name: "",
     email: "",
@@ -128,7 +175,7 @@ const EvaluatorList = () => {
   // Assignment Handlers
   const handleAddProblem = () => {
     if (!selectedProblemToAdd) return;
-    const problemToAdd = MOCK_AVAILABLE_PROBLEMS.find(p => p.id === selectedProblemToAdd);
+    const problemToAdd = availableProblemStatements.find(p => p.id === selectedProblemToAdd);
 
     // Check if already assigned
     if (showEditPopup.problemStatements.some(ps => ps.id === problemToAdd.id)) {
@@ -168,26 +215,7 @@ const EvaluatorList = () => {
   }, [evaluators]);
   const totalProblemStatements = uniqueProblemStatements.length;
 
-  // Reusable Popup Component
-  const Popup = ({ children, visible, onClose }) => (
-    <div
-      className={`fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-    >
-      <div
-        className={`bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-lg transition-all duration-300 ${visible ? "scale-100 opacity-100" : "scale-95 opacity-0"
-          }`}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
-        >
-          <FiX size={20} />
-        </button>
-        {children}
-      </div>
-    </div>
-  );
+
 
   return (
     <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
@@ -429,9 +457,9 @@ const EvaluatorList = () => {
                 <label className="text-sm text-[#4A5568] font-medium mb-1 block">
                   Assigned Problem Statements
                 </label>
-                <div className="flex flex-wrap gap-2 mb-2 p-2 border border-[#E2E8F0] rounded-xl min-h-[42px]">
+                <div className="flex overflow-x-auto overflow-y-hidden gap-2 mb-2 p-2 border border-[#E2E8F0] rounded-xl min-h-[42px] whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300">
                   {showEditPopup.problemStatements && showEditPopup.problemStatements.map((ps) => (
-                    <span key={ps.id} className="flex items-center px-2 py-1 bg-orange-100 text-orange-700 rounded-md text-xs font-semibold">
+                    <span key={ps.id} className="flex-shrink-0 flex items-center px-2 py-1 bg-orange-100 text-orange-700 rounded-md text-xs font-semibold">
                       {ps.id}
                       <button
                         type="button"
@@ -447,29 +475,74 @@ const EvaluatorList = () => {
                   )}
                 </div>
 
-                <div className="flex gap-2">
-                  <select
-                    value={selectedProblemToAdd}
-                    onChange={(e) => setSelectedProblemToAdd(e.target.value)}
-                    className="flex-1 px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm"
-                  >
-                    <option value="">Select Problem to Assign...</option>
-                    {MOCK_AVAILABLE_PROBLEMS
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="text"
+                    value={assignmentSearchTerm}
+                    onChange={(e) => {
+                      setAssignmentSearchTerm(e.target.value);
+                      setSelectedProblemToAdd(""); // Clear selection on search change to force re-selection
+                    }}
+                    placeholder="Search for a problem statement to assign..."
+                    className="w-full px-4 py-2 border border-[#E2E8F0] rounded-xl text-sm focus:ring-1 focus:ring-orange-300 outline-none"
+                  />
+                  <div className="text-xs text-gray-500 px-1">
+                    {availableProblemStatements
                       .filter(p => !showEditPopup.problemStatements?.some(existing => existing.id === p.id))
-                      .map(p => (
-                        <option key={p.id} value={p.id}>
-                          {p.id} - {p.title}
-                        </option>
-                      ))
-                    }
-                  </select>
+                      .filter(p =>
+                        String(p.title || "").toLowerCase().includes(assignmentSearchTerm.toLowerCase()) ||
+                        String(p.id || "").toLowerCase().includes(assignmentSearchTerm.toLowerCase())
+                      ).length
+                    } options found
+                  </div>
+                  <div className="border border-[#E2E8F0] rounded-xl overflow-hidden">
+                    <div className="max-h-48 overflow-y-auto bg-white">
+                      {availableProblemStatements.length === 0 ? (
+                        <div className="p-3 text-sm text-gray-400 text-center">Loading problems...</div>
+                      ) : (
+                        (() => {
+                          const filtered = availableProblemStatements
+                            .filter(p => !showEditPopup.problemStatements?.some(existing => existing.id === p.id))
+                            .filter(p =>
+                              String(p.title || "").toLowerCase().includes(assignmentSearchTerm.toLowerCase()) ||
+                              String(p.id || "").toLowerCase().includes(assignmentSearchTerm.toLowerCase())
+                            );
+
+                          if (filtered.length === 0) {
+                            return <div className="p-3 text-sm text-gray-400 text-center">No matching problems found</div>;
+                          }
+
+                          return filtered.map(p => (
+                            <div
+                              key={p.id}
+                              onClick={() => setSelectedProblemToAdd(p.id)}
+                              className={`px-4 py-3 text-sm border-b border-gray-100 last:border-0 cursor-pointer transition-colors flex justify-between items-center ${selectedProblemToAdd === p.id
+                                  ? 'bg-orange-50 text-orange-900 font-medium'
+                                  : 'hover:bg-gray-50 text-gray-700'
+                                }`}
+                            >
+                              <span>
+                                <span className="font-semibold text-xs text-gray-500 mr-2">{p.id}</span>
+                                {p.title}
+                              </span>
+                              {selectedProblemToAdd === p.id && <FiCheckCircle className="text-orange-500" />}
+                            </div>
+                          ));
+                        })()
+                      )}
+                    </div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={handleAddProblem}
                     disabled={!selectedProblemToAdd}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${selectedProblemToAdd ? 'bg-orange-100 text-orange-600 hover:bg-orange-200' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                    className={`w-full px-6 h-[42px] rounded-xl text-sm font-semibold transition-colors flex items-center justify-center whitespace-nowrap ${selectedProblemToAdd
+                      ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      }`}
                   >
-                    Assign
+                    Assign Selected Problem
                   </button>
                 </div>
               </div>

@@ -55,9 +55,18 @@ const ProblemStatementsList = () => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         console.log("Fetched Problems:", json);
-        // backend returns { problems: [...] } where fields are uppercase (ID, TITLE,...)
-        const mapped = (json.problems || []).map(p => ({
-          id: p.ID ? String(p.ID) : (p.id || ''),
+
+        let problemsData = [];
+        if (Array.isArray(json)) {
+          problemsData = json;
+        } else if (json.problems && Array.isArray(json.problems)) {
+          problemsData = json.problems;
+        } else if (json.data && Array.isArray(json.data)) {
+          problemsData = json.data;
+        }
+
+        const mapped = problemsData.map(p => ({
+          id: p.ID ? String(p.ID) : (p.id ? String(p.id) : ''),
           title: p.TITLE || p.title || 'Untitled',
           description: p.DESCRIPTION || p.description || '',
           // backend doesn't have created timestamp; use SUB_DATE if present, else now
