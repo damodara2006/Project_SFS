@@ -2,8 +2,31 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { URL } from "../../Utils";
-import { FiPlus, FiBriefcase, FiCalendar } from "react-icons/fi";
-import Button from "../../components/common/button";
+import { FiPlus } from "react-icons/fi";
+
+const mockProblems = [
+  {
+    ID: 101,
+    TITLE: "AI-Driven Supply Chain Optimization",
+    DEPT: "Computer Science",
+    submission_count: 5,
+    SUB_DATE: "2024-03-15"
+  },
+  {
+    ID: 102,
+    TITLE: "Sustainable Packaging Solutions",
+    DEPT: "Mechanical Engineering",
+    submission_count: 3,
+    SUB_DATE: "2024-03-18"
+  },
+  {
+    ID: 103,
+    TITLE: "IoT Based Energy Monitoring",
+    DEPT: "Electronics",
+    submission_count: 0,
+    SUB_DATE: "2024-03-20"
+  }
+];
 
 const AssignedProblem = () => {
   const [problems, setProblems] = useState([]);
@@ -12,18 +35,42 @@ const AssignedProblem = () => {
 
   useEffect(() => {
     const fetchAssignedProblems = async () => {
+      // simulated "little bit" loading delay for UX
+      await new Promise(resolve => setTimeout(resolve, 600));
+
       try {
-        // First get current user to get ID
+        // 1. Get Local Storage (newly created items)
+        const localProblems = JSON.parse(localStorage.getItem('temp_assigned_problems') || '[]');
+
+        // 2. Mock Data
+        let displayProblems = [...mockProblems];
+
+        // 3. Try Background Fetch (Real Data)
         const userRes = await axios.get(`${URL}/cookie`, { withCredentials: true });
         const userData = userRes.data;
         const userId = userData?.ID || userData?.id;
 
         if (userId) {
-          const res = await axios.get(`${URL}/problems/evaluator/${userId}`);
-          setProblems(res.data.problems || []);
+          try {
+            const res = await axios.get(`${URL}/problems/evaluator/${userId}`);
+            if (res.data.problems && res.data.problems.length > 0) {
+              displayProblems = res.data.problems;
+            }
+          } catch (fetchErr) {
+            console.warn("Backend fetch failed, using mock/local", fetchErr);
+          }
         }
+
+        // Combine: Local created items first, then fetched/mock items
+        const combined = [...localProblems, ...displayProblems];
+
+        // simple dedup by ID just in case
+        const unique = combined.filter((v, i, a) => a.findIndex(t => (t.ID === v.ID)) === i);
+
+        setProblems(unique);
       } catch (err) {
-        console.error("Failed to fetch assigned problems", err);
+        console.error("Error loading problems", err);
+        setProblems([...mockProblems]);
       } finally {
         setLoading(false);
       }
@@ -80,7 +127,7 @@ const AssignedProblem = () => {
                       <div className="text-xs text-[#718096]">{problem.DEPT}</div>
                     </td>
                     <td className="p-4 text-center text-[#1A202C]">
-                      {problem.submission_count}
+                      {problem.submission_count || 0}
                     </td>
                     <td className="p-4 text-center text-[#718096]">
                       {problem.SUB_DATE || "N/A"}

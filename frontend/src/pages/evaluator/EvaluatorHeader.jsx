@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { URL } from '../../Utils';
 
 const EvaluatorHeader = ({ setIsOpen }) => {
-    const [email, setEmail] = useState('');
+    const [user, setUser] = useState({ name: '', email: '' });
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
@@ -29,8 +29,9 @@ const EvaluatorHeader = ({ setIsOpen }) => {
                 const res = await fetch(`${URL}/cookie`, { method: 'GET', credentials: 'include' });
                 if (!res.ok) return;
                 const json = await res.json();
-                const userEmail = json?.EMAIL || json?.email || json?.Email || null;
-                if (userEmail) setEmail(userEmail);
+                const email = json?.EMAIL || json?.email || json?.Email || '';
+                const name = json?.NAME || json?.name || json?.Name || '';
+                setUser({ name, email });
             } catch (err) {
                 console.debug('Could not fetch user cookie', err);
             }
@@ -88,8 +89,13 @@ const EvaluatorHeader = ({ setIsOpen }) => {
                 {/* Right Section */}
                 <div className="flex items-center space-x-4">
                     <div className="hidden sm:flex items-center text-sm text-gray-200">
-                        <FiUser className="mr-2 h-5 w-5 text-primary-accent" />
-                        <span className="font-medium">{email || 'Evaluator'}</span>
+                        <div className="flex flex-col items-end mr-3">
+                            <span className="font-bold text-white leading-tight">{user.name || 'Evaluator'}</span>
+                            <span className="text-xs text-gray-400">{user.email}</span>
+                        </div>
+                        <div className="p-2 bg-gray-600 rounded-full">
+                            <FiUser className="h-5 w-5 text-primary-accent" />
+                        </div>
                     </div>
 
                     {/* Three Dots Dropdown */}

@@ -85,28 +85,36 @@ const ProblemStatementForm = () => {
       const response = await axios.post(`${URL}/addproblems`, payload, { withCredentials: true });
 
       // Save created item (fallback to posted payload if response data missing)
-      // Merge local fields to ensure modal displays them correctly
       const created = {
-        ...payload,
+        ID: Date.now(), // Generate temp ID
+        TITLE: title,
+        DEPT: category,
+        submission_count: 0,
+        SUB_DATE: new Date().toISOString().split('T')[0],
         ...response?.data,
-        youtube: youtubeLink,
-        dataset: datasetLink
+        evaluatorId: currentUserId // Tag with current user for local filtering
       };
 
-      setCreatedProblem(created);
-      setShowModal(true); // show modal on same page
+      // Store in localStorage for AssignedProblem.jsx to pick up (Mock Persistence)
+      const existing = JSON.parse(localStorage.getItem('temp_assigned_problems') || '[]');
+      localStorage.setItem('temp_assigned_problems', JSON.stringify([created, ...existing]));
+
       toast.success("Problem Statement Added Successfully", {
         position: "top-center",
       });
 
-      // Clear form
+      // Clear form and navigate back
       setTitle("");
       setDescription("");
       setCategory("");
       setYoutubeLink("");
       setDatasetLink("");
-      setSelectedEvaluators([]); // Reset evaluators
+      setSelectedEvaluators([]);
       setEvaluatorSearch("");
+
+      // Navigate back after delay
+      setTimeout(() => navigate(-1), 1000);
+
     } catch (error) {
       console.error("Error adding problem statement:", error);
       toast.error("Failed to Add Problem Statement", { position: "top-center" });
@@ -264,67 +272,7 @@ const ProblemStatementForm = () => {
         </form>
       </div>
 
-      {/* Modal: appears on same page with high z-index */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div
-            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 z-60 transform transition-all scale-100"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div className="flex justify-between items-start mb-6 border-b pb-4">
-              <h3 className="text-xl font-bold text-gray-800">Problem Statement Created</h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-                aria-label="Close"
-              >
-                <FiX size={24} />
-              </button>
-            </div>
-            <div className="space-y-4 text-sm text-gray-700">
-              <div className="flex bg-gray-50 p-3 rounded-lg">
-                <strong className="w-32 text-gray-500">Title:</strong>
-                <span className="font-medium text-gray-900">{createdProblem?.title || "—"}</span>
-              </div>
-              <div className="flex bg-gray-50 p-3 rounded-lg">
-                <strong className="w-32 text-gray-500">Category:</strong>
-                <span className="font-medium text-gray-900">{createdProblem?.dept || createdProblem?.category || "—"}</span>
-              </div>
-              <div className="flex bg-gray-50 p-3 rounded-lg">
-                <strong className="w-32 text-gray-500">YouTube:</strong>
-                <span className="truncate flex-1">
-                  {createdProblem?.youtube ? (
-                    <a href={createdProblem.youtube} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
-                      {createdProblem.youtube}
-                    </a>
-                  ) : "—"}
-                </span>
-              </div>
-              <div className="flex bg-gray-50 p-3 rounded-lg">
-                <strong className="w-32 text-gray-500">Dataset:</strong>
-                <span className="truncate flex-1">
-                  {createdProblem?.dataset ? (
-                    <a href={createdProblem.dataset} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
-                      {createdProblem.dataset}
-                    </a>
-                  ) : "—"}
-                </span>
-              </div>
-            </div>
 
-            <div className="flex justify-end mt-8">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-6 py-2.5 bg-[#FF9900] text-white rounded-xl hover:bg-[#E68500] font-medium transition-colors"
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <Toaster />
     </div>

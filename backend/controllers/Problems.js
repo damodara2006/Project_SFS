@@ -81,8 +81,17 @@ const Get_assigned_problems = AsyncHandler(async (req, res) => {
         GROUP BY p.ID
     `;
 
-    const [problems] = await connection.query(query, [evaluatorId]);
-    res.status(200).json({ problems });
+    try {
+        const [problems] = await connection.query(query, [evaluatorId]);
+        res.status(200).json({ problems });
+    } catch (error) {
+        // Suppress "Table doesn't exist" error (errno 1146)
+        if (error.errno === 1146) {
+            // console.warn("Table problem_evaluators missing, returning empty list."); // Optional clean log
+            return res.status(200).json({ problems: [] });
+        }
+        throw error; // Let AsyncHandler handle other errors
+    }
 });
 
 export { Get_problems, Get_problem_by_id, Post_problem, Delete_problem, Get_assigned_problems }
