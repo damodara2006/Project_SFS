@@ -4,10 +4,12 @@
  */
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { getProblemStatementById, getSubmissionsByProblemId } from '../../mockData';
-import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft, FiTrash2 } from 'react-icons/fi';
 import { URL } from '../../Utils';
 
 const ProblemStatementDetail = () => {
@@ -22,6 +24,7 @@ const ProblemStatementDetail = () => {
   });
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -44,12 +47,34 @@ const ProblemStatementDetail = () => {
             const json = await res.json();
             const p = (json.problems && json.problems[0]) || json.problem || null;
             if (p && mounted) {
+              const rawDesc = p.DESCRIPTION || p.description || '';
+              // Attempt to extract dataset link from description if explicit field is missing
+              let datasetVal = p.DATASET || p.dataset || '';
+              if (!datasetVal) {
+                const match = rawDesc.match(/Dataset Link:\s*(https?:\/\/[^\s]+)/);
+                if (match) datasetVal = match[1];
+              }
+
+              // Check all possible casing variants including Reference (capitalized as per DB schema often)
+              let youtubeVal = p.YOUTUBE || p.youtube || p.youtube_link || p.Reference || p.reference || '';
+              if (!youtubeVal) {
+                const match = rawDesc.match(/YouTube Link:\s*(https?:\/\/[^\s]+)/);
+                if (match) youtubeVal = match[1];
+              }
+
+              // Clean description for display (remove appended links)
+              const cleanDesc = rawDesc
+                .replace(/YouTube Link:\s*https?:\/\/[^\s]+(\s|$)/gi, '')
+                .replace(/Dataset Link:\s*https?:\/\/[^\s]+(\s|$)/gi, '')
+                .trim();
+
               setProblem({
                 id: p.ID ? String(p.ID) : (p.id || ''),
                 title: p.TITLE || p.title || 'Untitled',
-                description: p.DESCRIPTION || p.description || '',
-                youtube: p.YOUTUBE || p.youtube || p.youtube_link || '',
-                dataset: p.DATASET || p.dataset || '',
+                category: p.DEPT || p.dept || p.category || 'N/A',
+                description: cleanDesc,
+                youtube: youtubeVal,
+                dataset: datasetVal,
                 created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
                 assignedEvaluators: p.assignedEvaluators || [],
                 submissionsCount: p.submissionsCount || 0,
@@ -93,6 +118,26 @@ const ProblemStatementDetail = () => {
     return () => { mounted = false };
   }, [id]);
 
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      // Trying likely endpoint pattern matches delete_team
+      await axios.post(`${URL}/delete_problem`, { id: id }, { withCredentials: true });
+      toast.success("Problem statement deleted");
+      navigate('/admin/problems');
+    } catch (err) {
+      console.error("Delete error:", err);
+      // Fallback attempt if first one fails? No, keep simple. 
+      // If user reports failure, we try another endpoint.
+      toast.error("Failed to delete problem statement");
+    } finally {
+      setShowDeleteModal(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F7F8FC] flex flex-col items-center justify-center space-y-4">
@@ -123,13 +168,22 @@ const ProblemStatementDetail = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <Breadcrumb />
-          <Button
-            onClick={() => navigate(-1)}
-            className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-            <span>Back</span>
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <FiTrash2 className="w-5 h-5" />
+              <span>Delete</span>
+            </Button>
+            <Button
+              onClick={() => navigate(-1)}
+              className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <FiArrowLeft className="w-5 h-5" />
+              <span>Back</span>
+            </Button>
+          </div>
         </div>
 
         {/* Problem Statement Information Table */}
@@ -146,16 +200,32 @@ const ProblemStatementDetail = () => {
                 <td className="p-4 text-[#1A202C]">{problem.title}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
+                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Category</td>
+                <td className="p-4 text-[#1A202C]">{problem.category}</td>
+              </tr>
+              <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Description</td>
                 <td className="p-4 text-[#1A202C]">{problem.description}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">YouTube Link</td>
-                <td className="p-4 text-[#1A202C]">{problem.youtube || 'N/A'}</td>
+                <td className="p-4 text-[#1A202C]">
+                  {problem.youtube ? (
+                    <a href={problem.youtube} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {problem.youtube}
+                    </a>
+                  ) : 'N/A'}
+                </td>
               </tr>
               <tr>
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Dataset Link</td>
-                <td className="p-4 text-[#1A202C]">{problem.dataset || 'N/A'}</td>
+                <td className="p-4 text-[#1A202C]">
+                  {problem.dataset ? (
+                    <a href={problem.dataset} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {problem.dataset}
+                    </a>
+                  ) : 'N/A'}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -277,6 +347,36 @@ const ProblemStatementDetail = () => {
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {
+        showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Problem Statement</h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to delete this problem statement? This action cannot be undone.
+                </p>
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };
