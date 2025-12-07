@@ -1,4 +1,4 @@
-import  AsyncHandler  from "../utils/AsyncHandler.js";
+import AsyncHandler from "../utils/AsyncHandler.js";
 import connection from "../database/mysql.js";
 
 const SubmitSolution = AsyncHandler(async (req, res) => {
@@ -13,7 +13,7 @@ const SubmitSolution = AsyncHandler(async (req, res) => {
     }
 
     const SUB_DATE = new Date().toISOString().slice(0, 10);
-    const status = "PENDING"; 
+    const status = "PENDING";
     const query = `INSERT INTO submissions (PROBLEM_ID, TEAM_ID, SOL_TITLE, SOL_DESCRIPTION, SUB_DATE, STATUS, SOL_LINK) VALUES (?,?,?,?,?,?,?)`;
     const values = [problemId, teamId, SOL_TITLE, SOL_DESCRIPTION, SUB_DATE, status, SOL_LINK];
 
@@ -31,15 +31,38 @@ const Get_solution = AsyncHandler(async (req, res) => {
 
 const Get_all_submissions = AsyncHandler(async (req, res) => {
     const { problemId } = req.query;
-    let query = `SELECT * FROM submissions`;
+    let query = `
+        SELECT s.*, t.SPOC_ID, u.COLLEGE as collegeName 
+        FROM submissions s
+        LEFT JOIN Team_List t ON s.TEAM_ID = t.ID
+        LEFT JOIN Users u ON t.SPOC_ID = u.ID
+    `;
     const params = [];
     if (problemId) {
-        query += ` WHERE PROBLEM_ID = ?`;
+        query += ` WHERE s.PROBLEM_ID = ?`;
         params.push(problemId);
     }
-    query += ` ORDER BY SUB_DATE DESC`;
+    query += ` ORDER BY s.SUB_DATE DESC`;
     const [result] = await connection.query(query, params);
     res.status(200).json(result);
 });
 
-export { SubmitSolution, Get_solution, Get_all_submissions };
+const Get_submission_by_id = AsyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const query = `
+        SELECT s.*, t.NAME as teamName, t.SPOC_ID as spocId, p.TITLE as problemTitle
+        FROM submissions s
+        LEFT JOIN Team_List t ON s.TEAM_ID = t.ID
+        LEFT JOIN problems p ON s.PROBLEM_ID = p.ID
+        WHERE s.ID = ?
+    `;
+    const [result] = await connection.query(query, [id]);
+
+    if (result.length === 0) {
+        return res.status(404).json({ message: "Submission not found" });
+    }
+
+    res.status(200).json(result[0]);
+});
+
+export { SubmitSolution, Get_solution, Get_all_submissions, Get_submission_by_id };

@@ -7,6 +7,8 @@ import { FiArrowLeft, FiEye, FiFilter, FiChevronDown } from "react-icons/fi";
 const mockSubmissions = [
   {
     TEAM_ID: 201,
+    SPOC_ID: "SPOC_001",
+    collegeName: "Tech Institute",
     SOL_TITLE: "Smart Grid AI Solution",
     SUB_DATE: "2024-03-22T10:30:00Z",
     STATUS: "Pending",
@@ -14,6 +16,8 @@ const mockSubmissions = [
   },
   {
     TEAM_ID: 202,
+    SPOC_ID: "SPOC_002",
+    collegeName: "Green Valley College",
     SOL_TITLE: "Green Energy Optimizer",
     SUB_DATE: "2024-03-23T14:15:00Z",
     STATUS: "Evaluated",
@@ -21,6 +25,8 @@ const mockSubmissions = [
   },
   {
     TEAM_ID: 205,
+    SPOC_ID: "SPOC_003",
+    collegeName: "Urban Univ",
     SOL_TITLE: "Urban Waste Management Bot",
     SUB_DATE: "2024-03-24T09:00:00Z",
     STATUS: "In Review",
@@ -109,15 +115,17 @@ const SubmissionList = () => {
       await new Promise(resolve => setTimeout(resolve, 500));
 
       try {
-        if (problemId) {
-          const res = await axios.get(`${URL}/submissions?problemId=${problemId}`, { withCredentials: true });
-          if (res.data && Array.isArray(res.data)) {
-            setSubmissions(res.data);
-          } else {
-            setSubmissions(mockSubmissions);
-          }
+        const url = problemId
+          ? `${URL}/submissions?problemId=${problemId}`
+          : `${URL}/submissions`;
+
+        const res = await axios.get(url, { withCredentials: true });
+
+        if (res.data && Array.isArray(res.data)) {
+          console.log("Fetched submissions:", res.data); // Debug log
+          setSubmissions(res.data);
         } else {
-          setSubmissions([]);
+          setSubmissions(mockSubmissions);
         }
       } catch (err) {
         console.warn("Failed to fetch submissions, using mock data", err);
@@ -174,7 +182,7 @@ const SubmissionList = () => {
                     <span className="font-semibold text-gray-800">{selectedProblem.TITLE}</span>
                   </div>
                 ) : (
-                  <span className="text-gray-400 italic">Select a Problem Statement...</span>
+                  <span className="font-semibold text-gray-800">All Problems</span>
                 )}
               </div>
               <FiChevronDown className={`ml-4 text-gray-400 transition-transform duration-300 ${isProblemDropdownOpen ? 'rotate-180' : ''}`} />
@@ -182,6 +190,20 @@ const SubmissionList = () => {
 
             {isProblemDropdownOpen && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 max-h-[400px] overflow-y-auto w-full">
+                <button
+                  onClick={() => {
+                    navigate(`?problemId=`);
+                    setIsProblemDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-5 py-3 hover:bg-orange-50 transition-colors border-b border-gray-50 flex items-center group ${!problemId ? 'bg-orange-50/50' : ''}`}
+                >
+                  <span className={`font-bold mr-3 ${!problemId ? 'text-[#FF9900]' : 'text-gray-400 group-hover:text-[#FF9900]'}`}>
+                    ALL
+                  </span>
+                  <span className={`font-medium ${!problemId ? 'text-gray-900' : 'text-gray-600'}`}>
+                    All Problems
+                  </span>
+                </button>
                 {assignedProblems.length > 0 ? (
                   assignedProblems.map(p => (
                     <button
@@ -233,17 +255,25 @@ const SubmissionList = () => {
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#F7F8FC] text-[#4A5568]">
               <tr>
+                <th className="p-4 font-semibold">Spoc ID</th>
+                <th className="p-4 font-semibold">Clg name</th>
                 <th className="p-4 font-semibold">Team ID</th>
                 <th className="p-4 font-semibold">Solution Title</th>
                 <th className="p-4 text-center font-semibold">Submitted At</th>
                 <th className="p-4 text-center font-semibold">Status</th>
-                <th className="p-4 text-center font-semibold">Actions</th>
+                <th className="p-4 text-center font-semibold">Action</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-[#E2E8F0]">
               {filteredSubmissions.length > 0 ? (
                 filteredSubmissions.map((sub, index) => (
                   <tr key={index} className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all">
+                    <td className="p-4 text-[#1A202C] font-medium">
+                      {sub.SPOC_ID || sub.spocId || "N/A"}
+                    </td>
+                    <td className="p-4 text-[#1A202C] font-medium">
+                      {sub.collegeName || sub.COLLEGE || "N/A"}
+                    </td>
                     <td className="p-4 text-[#1A202C] font-medium">
                       TID_{sub.TEAM_ID || sub.teamId || "N/A"}
                     </td>
@@ -260,17 +290,17 @@ const SubmissionList = () => {
                     </td>
                     <td className="p-4 text-center font-medium">
                       <button
-                        onClick={() => navigate(`/evaluator/submission/${sub.TEAM_ID || sub.teamId}`)}
+                        onClick={() => navigate(`/evaluator/submission/${sub.ID || sub.id}`)}
                         className="flex items-center justify-center gap-2 mx-auto bg-white border border-[#E2E8F0] hover:bg-gray-50 text-[#2D3748] px-3 py-1.5 rounded-lg text-sm transition-all shadow-sm"
                       >
-                        <FiEye className="text-[#FF9900]" /> View Code
+                        <FiEye className="text-[#FF9900]" /> View
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-gray-500">
+                  <td colSpan="7" className="p-8 text-center text-gray-500">
                     {problemId ? "No submissions found." : "Select a problem statement above to view submissions."}
                   </td>
                 </tr>

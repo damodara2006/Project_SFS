@@ -1,24 +1,9 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
+import axios from 'axios';
+import { URL } from "../../Utils";
 import samplePdf from "../../assets/sample.pdf";
-
-
-const submissionDetailData = {
-  TEAM001: {
-    title: 'Eco-Friendly Product Recommendation System',
-    abstract:
-      'Our project is a web-based platform that helps consumers make environmentally conscious decisions by providing a comprehensive eco-rating for products. It analyzes various factors like material composition, recyclability, and manufacturing processes to generate a score, and suggests greener alternatives.',
-    detailedDescription:
-      'The system architecture is based on a microservices approach, with a React frontend, a Node.js backend, and a PostgreSQL database. We have developed a proprietary algorithm that calculates the eco-rating based on a weighted scoring model. The data is sourced from various public datasets and APIs. The UI is designed to be intuitive and user-friendly, with a focus on data visualization to make complex information easily understandable.',
-    feasibilityStudy:
-      'The project is highly feasible, as the required technologies are open-source and readily available. The main challenge lies in data aggregation and cleaning, which we have addressed by developing a robust data pipeline. The system is scalable and can be expanded to include more product categories and sustainability metrics in the future.',
-    budget:
-      'The project was developed with a minimal budget, primarily covering hosting and domain registration costs. The team consisted of four members who contributed their time and expertise voluntarily. The total estimated cost for the first year of operation is $500.',
-    pdfLink: samplePdf,
-  },
-};
 
 const PDFViewer = ({ url }) => {
   const file = url || samplePdf;
@@ -44,23 +29,48 @@ const PDFViewer = ({ url }) => {
 };
 
 const SubmissionDetail = () => {
-  const { teamId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const submission = submissionDetailData[teamId] || submissionDetailData.TEAM001;
+  const [submission, setSubmission] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [marks, setMarks] = useState('');
   const [feedback, setFeedback] = useState('');
   const [saved, setSaved] = useState(false);
 
+  useEffect(() => {
+    const fetchSubmission = async () => {
+      try {
+        const res = await axios.get(`${URL}/submissions/${id}`);
+        setSubmission(res.data);
+      } catch (err) {
+        console.error("Failed to fetch submission details", err);
+        setError("Failed to load submission details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSubmission();
+  }, [id]);
+
   const handleSave = () => {
+    // Determine the ID to send: "submission.ID" from DB or fallback "id" from params
+    const submissionId = submission?.ID || id;
+
     console.log({
-      teamId,
+      submissionId,
       marks,
       feedback,
     });
+    // TODO: Implement actual save API call here
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
+
+  if (loading) return <div className="p-10 text-center text-gray-500">Loading submission details...</div>;
+  if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
+  if (!submission) return <div className="p-10 text-center text-gray-500">Submission not found.</div>;
 
   return (
     <div className="min-h-screen bg-[#ffffff] py-10 px-6">
@@ -76,8 +86,11 @@ const SubmissionDetail = () => {
         >
           &larr; Back
         </button>
-        <h1 className="text-4xl font-bold text-[#4a4a4a]">{submission.title}</h1>
-        <p className="text-lg text-gray-600 mt-2">Team ID: {teamId}</p>
+        <h1 className="text-4xl font-bold text-[#4a4a4a]">{submission.SOL_TITLE || "Untitled Solution"}</h1>
+        <p className="text-lg text-gray-600 mt-2">
+          Team ID: {submission.TEAM_ID}
+          {submission.teamName && ` (${submission.teamName})`}
+        </p>
       </motion.div>
 
       <div className="max-w-6xl mx-auto space-y-8">
@@ -88,21 +101,17 @@ const SubmissionDetail = () => {
           className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-8 space-y-6"
         >
           <div>
-            <h2 className="text-2xl font-semibold text-[#4a4a4a] mb-3">Solution Abstract</h2>
-            <p className="text-gray-700 leading-relaxed text-justify">{submission.abstract}</p>
+            <h2 className="text-2xl font-semibold text-[#4a4a4a] mb-3">Solution Description</h2>
+            <p className="text-gray-700 leading-relaxed text-justify whitespace-pre-wrap">
+              {submission.SOL_DESCRIPTION || "No description provided."}
+            </p>
           </div>
-          <div>
-            <h2 className="text-2xl font-semibold text-[#4a4a4a] mb-3">Detailed Description</h2>
-            <p className="text-gray-700 leading-relaxed text-justify">{submission.detailedDescription}</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold text-[#4a4a4a] mb-3">Feasibility Study</h2>
-            <p className="text-gray-700 leading-relaxed text-justify">{submission.feasibilityStudy}</p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold text-[#4a4a4a] mb-3">Budget</h2>
-            <p className="text-gray-700 leading-relaxed text-justify">{submission.budget}</p>
-          </div>
+
+          {/* 
+             If you have separate columns for Abstract, Feasibility, Budget in DB,
+             render them here. Currently using SOL_DESCRIPTION as a catch-all based on schema.
+          */}
+
         </motion.div>
 
         <motion.div
@@ -112,7 +121,7 @@ const SubmissionDetail = () => {
           className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-6"
         >
           <h2 className="text-xl font-semibold text-[#4a4a4a] mb-4 text-center">Submitted Report</h2>
-          <PDFViewer url={submission.pdfLink} />
+          <PDFViewer url={submission.SOL_LINK} />
         </motion.div>
 
         <motion.div

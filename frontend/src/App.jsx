@@ -202,7 +202,7 @@ function App() {
         >
           <Route index element={<AssignedProblem />} />
           <Route path="submissions" element={<SubmissionList />} />
-          <Route path="submission/:teamId" element={<SubmissionDetail />} />
+          <Route path="submission/:id" element={<SubmissionDetail />} />
           <Route path="AddProblemStatement" element={<ProblemStatementCreate />} />
           <Route path="problem/:id" element={<EvaluatorProblemDetail />} />
           <Route path="profile" element={<EvaluatorProfile />} />
