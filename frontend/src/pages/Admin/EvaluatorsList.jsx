@@ -38,25 +38,7 @@ const Popup = ({ children, visible, onClose }) => (
 );
 
 const EvaluatorList = () => {
-  const [evaluators, setEvaluators] = useState([
-    {
-      id: "EV1001",
-      name: "John Doe",
-      email: "john@example.com",
-      dept: "CSE",
-      college: "Sakthi Engineering College",
-      collegeId: "SEC-001",
-      dateJoined: "2023-08-15",
-      status: "active",
-      problemStatements: [
-        { id: "PSAI01", title: "AI-Powered Assistants", submissionCount: 12 },
-        { id: "PSML02", title: "Predictive Maintenance", submissionCount: 8 }
-      ],
-      completed: 25,
-      pending: 5,
-      password: "password123", // Added for existing evaluators
-    }
-  ]);
+  const [evaluators, setEvaluators] = useState([]);
 
   /* useEffect(() => {
     GetAllEvaluators()
@@ -65,6 +47,7 @@ const EvaluatorList = () => {
   const [availableProblemStatements, setAvailableProblemStatements] = useState([]);
 
   useEffect(() => {
+    // Fetch Problems
     const fetchProblems = async () => {
       try {
         const res = await fetch(`${URL}/get_problems`);
@@ -90,15 +73,35 @@ const EvaluatorList = () => {
         console.error("Failed to fetch problems", err);
       }
     };
+
+    // Fetch Evaluators
+    const fetchEvaluators = async () => {
+      try {
+        const res = await axios.get(`${URL}/evaluators`);
+        const mappedEvaluators = (res.data || []).map(ev => ({
+          id: ev.ID ? String(ev.ID) : (ev.id || ''),
+          name: ev.NAME || ev.name || 'Unknown',
+          email: ev.EMAIL || ev.email || '',
+          dept: ev.COLLEGE || ev.dept || 'N/A', // Using College as Dept if Dept is missing/undefined in Users table
+          college: ev.COLLEGE || ev.college || 'N/A',
+          collegeId: ev.COLLEGE_CODE || ev.collegeId || 'N/A',
+          dateJoined: ev.DATE || ev.dateJoined || new Date().toLocaleDateString(),
+          status: ev.STATUS || ev.status || 'Active',
+          problemStatements: [], // Relationships not fetched by default yet
+          password: ev.PASSWORD || "", // needed for edit mode
+        }));
+        setEvaluators(mappedEvaluators);
+      } catch (err) {
+        console.error("Failed to fetch evaluators", err);
+      }
+    };
+
     fetchProblems();
+    fetchEvaluators();
   }, []);
 
   const GetAllEvaluators = () => {
-    axios.get(`${URL}/evaluators`)
-      .then((res) => {
-        setEvaluators(res.data)
-
-      })
+    // Legacy function kept if needed, but logic moved to useEffect
   }
 
 
@@ -517,8 +520,8 @@ const EvaluatorList = () => {
                               key={p.id}
                               onClick={() => setSelectedProblemToAdd(p.id)}
                               className={`px-4 py-3 text-sm border-b border-gray-100 last:border-0 cursor-pointer transition-colors flex justify-between items-center ${selectedProblemToAdd === p.id
-                                  ? 'bg-orange-50 text-orange-900 font-medium'
-                                  : 'hover:bg-gray-50 text-gray-700'
+                                ? 'bg-orange-50 text-orange-900 font-medium'
+                                : 'hover:bg-gray-50 text-gray-700'
                                 }`}
                             >
                               <span>

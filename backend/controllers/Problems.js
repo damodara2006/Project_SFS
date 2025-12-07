@@ -23,22 +23,28 @@ const Get_problem_by_id = AsyncHandler(async (req, res) => {
 
 const Post_problem = AsyncHandler(async (req, res) => {
     console.log(req.body);
-    const { title, description, dept, reference } = req.body;
+    const { title, description, dept, reference, evaluators } = req.body;
 
     const query = `INSERT INTO problems (TITLE, DESCRIPTION, DEPT,  Reference)
                    VALUES (?, ?, ?, ?)`;
 
     const params = [title, description, dept, reference];
 
-    console.log(title, description, dept, reference);
-
-    // execute with your DB client, e.g.:
+    // execute with your DB client
     const [result] = await connection.execute(query, params);
+    const problemId = result.insertId;
+
+    // Handle Evaluators assignment
+    if (evaluators && Array.isArray(evaluators) && evaluators.length > 0) {
+        const evalValues = evaluators.map(evaluatorId => [problemId, evaluatorId]);
+        const evalQuery = `INSERT INTO problem_evaluators (PROBLEM_ID, EVALUATOR_ID) VALUES ?`;
+        await connection.query(evalQuery, [evalValues]);
+    }
 
     // return the inserted id:
     console.log(result);
 
-    res.status(201).json({ result });
+    res.status(201).json({ result, ...req.body });
 })
 
 

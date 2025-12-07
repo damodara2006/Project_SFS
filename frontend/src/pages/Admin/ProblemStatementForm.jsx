@@ -19,6 +19,34 @@ const ProblemStatementForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [createdProblem, setCreatedProblem] = useState(null);
 
+  // Evaluator Logic
+  const [evaluators, setEvaluators] = useState([]);
+  const [selectedEvaluators, setSelectedEvaluators] = useState([]);
+  const [evaluatorSearch, setEvaluatorSearch] = useState("");
+
+  React.useEffect(() => {
+    const fetchEvaluators = async () => {
+      try {
+        const res = await axios.get(`${URL}/evaluators`);
+        setEvaluators(res.data || []);
+      } catch (err) {
+        console.error("Failed to fetch evaluators", err);
+      }
+    };
+    fetchEvaluators();
+  }, []);
+
+  const filteredEvaluators = evaluators.filter(ev =>
+    (ev.NAME && ev.NAME.toLowerCase().includes(evaluatorSearch.toLowerCase())) ||
+    (ev.ID && String(ev.ID).toLowerCase().includes(evaluatorSearch.toLowerCase()))
+  );
+
+  const toggleEvaluator = (id) => {
+    setSelectedEvaluators(prev =>
+      prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id]
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -32,6 +60,7 @@ const ProblemStatementForm = () => {
         description: finalDescription,
         dept: category,
         reference: youtubeLink,
+        evaluators: selectedEvaluators // Add evaluators
       };
 
       const response = await axios.post(`${URL}/addproblems`, payload, { withCredentials: true });
@@ -57,6 +86,8 @@ const ProblemStatementForm = () => {
       setCategory("");
       setYoutubeLink("");
       setDatasetLink("");
+      setSelectedEvaluators([]); // Reset evaluators
+      setEvaluatorSearch("");
     } catch (error) {
       console.error("Error adding problem statement:", error);
       toast.error("Failed to Add Problem Statement", { position: "top-center" });
@@ -151,6 +182,43 @@ const ProblemStatementForm = () => {
                 onChange={(e) => setDatasetLink(e.target.value)}
                 value={datasetLink}
               />
+            </div>
+
+            {/* Evaluator Assignment (Full Width) */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-[#4A5568] mb-2">Assign Evaluators</label>
+              <div className="border border-[#E2E8F0] rounded-xl p-4 bg-gray-50">
+                <input
+                  type="text"
+                  placeholder="Search evaluators by name or ID..."
+                  className="w-full border border-[#E2E8F0] rounded-lg px-3 py-2 mb-3 text-sm focus:ring-2 focus:ring-[#FF9900]/20 outline-none"
+                  value={evaluatorSearch}
+                  onChange={(e) => setEvaluatorSearch(e.target.value)}
+                />
+                <div className="max-h-40 overflow-y-auto space-y-2">
+                  {filteredEvaluators.length > 0 ? (
+                    filteredEvaluators.map((evaluator) => (
+                      <div key={evaluator.ID} className="flex items-center space-x-3 bg-white p-2 rounded-lg border border-gray-100">
+                        <input
+                          type="checkbox"
+                          id={`eval-${evaluator.ID}`}
+                          checked={selectedEvaluators.includes(evaluator.ID)}
+                          onChange={() => toggleEvaluator(evaluator.ID)}
+                          className="w-4 h-4 text-[#FF9900] border-gray-300 rounded focus:ring-[#FF9900]"
+                        />
+                        <label htmlFor={`eval-${evaluator.ID}`} className="text-sm text-gray-700 cursor-pointer flex-1">
+                          <span className="font-semibold">{evaluator.NAME}</span> <span className="text-gray-400 text-xs">({evaluator.ID})</span>
+                        </label>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center py-2">No evaluators found</p>
+                  )}
+                </div>
+                <div className="mt-2 text-xs text-gray-500">
+                  {selectedEvaluators.length} evaluator(s) selected
+                </div>
+              </div>
             </div>
 
           </div>
