@@ -12,7 +12,6 @@ const ProblemStatementForm = () => {
   const [description, setDescription] = useState("");
   const [department, setDepartment] = useState(""); // User asked for Category, mapping Dept to it or separate? specific request: "category". Detail view usually shows Dept as category. I'll stick to 'Department' as the field name but label it Category/Department to be safe, or just add Category.
   const [category, setCategory] = useState("");
-  const [subDate, setSubDate] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
   const [datasetLink, setDatasetLink] = useState("");
 
@@ -31,7 +30,6 @@ const ProblemStatementForm = () => {
       const payload = {
         title,
         description: finalDescription,
-        sub_date: subDate,
         dept: category,
         reference: youtubeLink,
       };
@@ -57,7 +55,6 @@ const ProblemStatementForm = () => {
       setTitle("");
       setDescription("");
       setCategory("");
-      setSubDate("");
       setYoutubeLink("");
       setDatasetLink("");
     } catch (error) {
@@ -117,18 +114,6 @@ const ProblemStatementForm = () => {
                 <option value="AI_DS">AI & DS</option>
 
               </select>
-            </div>
-
-            {/* Submission Deadline */}
-            <div>
-              <label className="block text-sm font-semibold text-[#4A5568] mb-2">Submission Deadline</label>
-              <input
-                type="date"
-                className="w-full border border-[#E2E8F0] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#FF9900]/20 focus:border-[#FF9900] transition-colors outline-none text-[#2D3748]"
-                onChange={(e) => setSubDate(e.target.value)}
-                value={subDate}
-                required
-              />
             </div>
 
             {/* Description (Full Width) */}
@@ -216,10 +201,6 @@ const ProblemStatementForm = () => {
               <div className="flex bg-gray-50 p-3 rounded-lg">
                 <strong className="w-32 text-gray-500">Category:</strong>
                 <span className="font-medium text-gray-900">{createdProblem?.dept || createdProblem?.category || "—"}</span>
-              </div>
-              <div className="flex bg-gray-50 p-3 rounded-lg">
-                <strong className="w-32 text-gray-500">Deadline:</strong>
-                <span className="font-medium text-gray-900">{createdProblem?.sub_date || "—"}</span>
               </div>
               <div className="flex bg-gray-50 p-3 rounded-lg">
                 <strong className="w-32 text-gray-500">YouTube:</strong>
