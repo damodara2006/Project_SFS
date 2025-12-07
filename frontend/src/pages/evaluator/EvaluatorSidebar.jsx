@@ -47,13 +47,10 @@ const EvaluatorSidebar = ({ isMobileOpen, setMobileOpen, isExpanded, setIsExpand
 
                 <nav className="flex-grow mt-6">
                     <NavItem to="/evaluator" icon={<FaClipboardList size={20} />} isExpanded={true} end>
-                        Problem Details
+                        Problem Statements
                     </NavItem>
                     <NavItem to="/evaluator/submissions" icon={<FaTasks size={20} />} isExpanded={true}>
                         Submissions
-                    </NavItem>
-                    <NavItem to="/evaluator/AddProblemStatement" icon={<FaQuestion size={20} />} isExpanded={true}>
-                        Add Problem
                     </NavItem>
                 </nav>
             </aside>

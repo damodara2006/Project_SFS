@@ -111,6 +111,14 @@ const EvaluatorHeader = ({ setIsOpen }) => {
                                     <FiHome className="mr-3 h-4 w-4 text-gray-500" />
                                     Go to Home
                                 </Link>
+                                <Link
+                                    to="/evaluator/profile"
+                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => setIsDropdownOpen(false)}
+                                >
+                                    <FiUser className="mr-3 h-4 w-4 text-gray-500" />
+                                    Edit Profile
+                                </Link>
                                 <button
                                     onClick={handleLogout}
                                     className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"

@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken"
 const signup = AsyncHandler(async (req, res) => {
     const { email, password, role, college, college_code, name, date } = req.body;
     console.log("Error Message");
-    
+
     // basic presence check
     if ([email, password, role, college_code, name].some((data) => !data || String(data).trim() === "")) {
         return res.status(400).send("All fields required");
@@ -18,14 +18,14 @@ const signup = AsyncHandler(async (req, res) => {
     // console.log(bcryptpass)
 
     // avoid logging potentially sensitive values like dates or params
-    
+
     try {
         if (role == "spoc") {
             const query = `INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE, NAME, DATE) VALUES (?, ?, ?, ?, ?, ?, ?)`;
             const params = [email, bcryptpass, role.toUpperCase(), college, college_code, name, date];
             const [result] = await connection.query(query, params);
             res.status(200).json(result);
-            
+
         }
         else {
             const query = `INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE, NAME, DATE, STATUS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -82,11 +82,11 @@ const login = async (req, res) => {
             secure: true,
             // httpOnly:
             sameSite: "none",
-            path:"/"
+            path: "/"
         })
         console.log("done");
-        
-    
+
+
         res.json({ data: response, user: result })
     }
     else if (rs == 'PENDING') {
@@ -105,7 +105,7 @@ const login = async (req, res) => {
 
 }
 
-const logout = async(req, res) => {
+const logout = async (req, res) => {
     try {
         const isProd = process.env.NODE_ENV === 'production';
         res.clearCookie("login_creditionals", {
@@ -131,10 +131,50 @@ const GetAllEvaluators = AsyncHandler(async (req, res) => {
     res.send(users)
 })
 
-const verifyEmail = async(req, res) => {
+const verifyEmail = async (req, res) => {
     const { email } = req.body;
     const [data, err] = await connection.query(`SELECT * FROM Users WHERE EMAIL='${email}'`)
     res.send(data.length == 0 ? true : false)
 }
 
-export { signup, login, logout, GetAllUsers, GetAllEvaluators, verifyEmail }
+const UpdateUser = AsyncHandler(async (req, res) => {
+    const { id, name, phone } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Dynamic query construction to update only provided fields
+    let fields = [];
+    let params = [];
+
+    if (name) {
+        fields.push("NAME = ?");
+        params.push(name);
+    }
+    if (phone) {
+        fields.push("PHONE = ?");
+        params.push(phone);
+    }
+
+    if (fields.length === 0) {
+        return res.status(400).json({ message: "No fields to update" });
+    }
+
+    params.push(id);
+
+    const query = `UPDATE Users SET ${fields.join(", ")} WHERE ID = ?`;
+
+    try {
+        const [result] = await connection.query(query, params);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "User not found or no changes made" });
+        }
+        res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).json({ message: "Failed to update profile" });
+    }
+});
+
+export { signup, login, logout, GetAllUsers, GetAllEvaluators, verifyEmail, UpdateUser }

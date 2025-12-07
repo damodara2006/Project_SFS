@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { URL } from "../../Utils";
 
@@ -70,8 +70,11 @@ const StatusPill = ({ status, onClick }) => {
 const SubmissionList = () => {
   const [submissions, setSubmissions] = useState([]);
   const [filterStatus, setFilterStatus] = useState("All");
-  const [previewPdf, setPreviewPdf] = useState(null); // <-- preview state
+  const [previewPdf, setPreviewPdf] = useState(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const problemId = searchParams.get("problemId");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -87,8 +90,12 @@ const SubmissionList = () => {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
+    const fetchUrl = problemId
+      ? `${URL}/submissions?problemId=${problemId}`
+      : `${URL}/submissions`;
+
     axios
-      .get(`${URL}/submissions`)
+      .get(fetchUrl)
       .then((res) => {
         if (!mounted) return;
         const rows = res.data || [];

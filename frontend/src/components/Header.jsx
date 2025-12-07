@@ -97,8 +97,11 @@ const Header = () => {
 
           {/* Right Section: Profile and Mobile Toggle */}
           <div className="flex items-center space-x-3">
+            {/* Desktop: Separate Login and Register Buttons */}
             {userRole ? (
+              // ... (Profile dropdown logic remains same)
               <div className="flex items-center">
+                {/* ... existing profile content ... */}
                 {userName && (
                   <span className="hidden lg:block text-sm font-medium text-gray-300 mr-4">
                     {userName}
@@ -175,12 +178,20 @@ const Header = () => {
                 </div>
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="hidden md:inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9900] hover:bg-[#e68900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-[#FF9900] transition-all"
-              >
-                Login / Register
-              </Link>
+              <div className="hidden md:flex items-center space-x-3">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-sm font-medium text-white hover:text-orange-400 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF9900] hover:bg-[#e68900] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-[#FF9900] transition-all"
+                >
+                  Sign Up
+                </Link>
+              </div>
             )}
 
             {/* Mobile Menu Button */}
@@ -224,13 +235,22 @@ const Header = () => {
                 <span>Profile</span>
               </Link>
             ) : (
-              <Link
-                to="/login"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center mt-2 px-3 py-2 rounded-md text-base font-medium text-[#FF9900] hover:bg-black/20"
-              >
-                <span>Login / Register</span>
-              </Link>
+              <div className="space-y-1 mt-2">
+                <Link
+                  to="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-slate-200 hover:bg-black/20 hover:text-orange-400"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-[#FF9900] hover:bg-black/20"
+                >
+                  Sign Up
+                </Link>
+              </div>
             )}
 
           </li>

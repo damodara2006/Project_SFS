@@ -3,11 +3,11 @@ import { Router } from "express";
 // Controller Imports
 import { Add_Team_Members, Update_team } from "../controllers/Team_members.js";
 import { Fetch_Teams, Fetch_Team_Members, Delete_team } from "../controllers/Spoc_Teams.js";
-import { login, logout, signup, GetAllUsers, GetAllEvaluators, verifyEmail } from "../controllers/User_details.js";
+import { login, logout, signup, GetAllUsers, GetAllEvaluators, verifyEmail, UpdateUser } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
 // import Verify_OTP_Check from "../controllers/Verify_OTP_Check.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
-import { Post_problem, Get_problems, Get_problem_by_id, Delete_problem } from "../controllers/Problems.js";
+import { Post_problem, Get_problems, Get_problem_by_id, Delete_problem, Get_assigned_problems } from "../controllers/Problems.js";
 import { Get_cookies } from "../controllers/Cookie.js";
 import { Get_all_submissions, SubmitSolution } from "../controllers/Submission.js";
 import { handleSpocApprove, Spoc_approve } from "../controllers/Spoc.js";
@@ -55,6 +55,11 @@ router.route("/problems/:id").get(Get_problem_by_id);
 router.route("/evaluators").get(GetAllEvaluators);
 
 // Delete Problem Statement
-router.route("/delete_problem").post(requireAuth, requireRole(['ADMIN']), Delete_problem);
+router.get("/problems/evaluator/:evaluatorId", Get_assigned_problems); // Assigned problems for an evaluator
+
+// Update User Profile
+router.put("/update-user", requireAuth, UpdateUser);
+
+router.post("/delete_problem", requireAuth, requireRole(['ADMIN']), Delete_problem);
 
 export default router;

@@ -22,7 +22,6 @@ const Get_problem_by_id = AsyncHandler(async (req, res) => {
 })
 
 const Post_problem = AsyncHandler(async (req, res) => {
-    console.log(req.body);
     const { title, description, dept, reference, evaluators } = req.body;
 
     const query = `INSERT INTO problems (TITLE, DESCRIPTION, DEPT,  Reference)
@@ -30,7 +29,6 @@ const Post_problem = AsyncHandler(async (req, res) => {
 
     const params = [title, description, dept, reference];
 
-    // execute with your DB client
     const [result] = await connection.execute(query, params);
     const problemId = result.insertId;
 
@@ -38,11 +36,12 @@ const Post_problem = AsyncHandler(async (req, res) => {
     if (evaluators && Array.isArray(evaluators) && evaluators.length > 0) {
         const evalValues = evaluators.map(evaluatorId => [problemId, evaluatorId]);
         const evalQuery = `INSERT INTO problem_evaluators (PROBLEM_ID, EVALUATOR_ID) VALUES ?`;
-        await connection.query(evalQuery, [evalValues]);
+        try {
+            await connection.query(evalQuery, [evalValues]);
+        } catch (err) {
+            console.error("Error inserting evaluators:", err);
+        }
     }
-
-    // return the inserted id:
-    console.log(result);
 
     res.status(201).json({ result, ...req.body });
 })
@@ -65,4 +64,25 @@ const Delete_problem = AsyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Problem deleted successfully' });
 })
 
-export { Get_problems, Get_problem_by_id, Post_problem, Delete_problem }
+
+const Get_assigned_problems = AsyncHandler(async (req, res) => {
+    const { evaluatorId } = req.params;
+
+    if (!evaluatorId) {
+        return res.status(400).json({ message: 'Evaluator ID is required' });
+    }
+
+    const query = `
+        SELECT p.*, COUNT(s.ID) as submission_count
+        FROM problems p
+        JOIN problem_evaluators pe ON p.ID = pe.PROBLEM_ID
+        LEFT JOIN submissions s ON p.ID = s.PROBLEM_ID
+        WHERE pe.EVALUATOR_ID = ?
+        GROUP BY p.ID
+    `;
+
+    const [problems] = await connection.query(query, [evaluatorId]);
+    res.status(200).json({ problems });
+});
+
+export { Get_problems, Get_problem_by_id, Post_problem, Delete_problem, Get_assigned_problems }
