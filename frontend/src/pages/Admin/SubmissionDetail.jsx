@@ -53,7 +53,7 @@ const SubmissionDetail = () => {
           <Breadcrumb />
           <Button
             onClick={() => navigate(-1)}
-            className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+            className="!bg-[#FF9900] !hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
           >
             <FiArrowLeft className="w-5 h-5" />
             <span>Back</span>
@@ -194,8 +194,8 @@ const SubmissionDetail = () => {
                   onClick={goToPrevPage}
                   disabled={pageNumber <= 1}
                   className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${pageNumber <= 1
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
                     }`}
                 >
                   <FiChevronLeft className="w-5 h-5" />
@@ -210,8 +210,8 @@ const SubmissionDetail = () => {
                   onClick={goToNextPage}
                   disabled={pageNumber >= numPages}
                   className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${pageNumber >= numPages
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
                     }`}
                 >
                   <span>Next</span>

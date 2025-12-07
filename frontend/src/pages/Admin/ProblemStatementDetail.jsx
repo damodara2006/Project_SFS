@@ -178,7 +178,7 @@ const ProblemStatementDetail = () => {
             </Button>
             <Button
               onClick={() => navigate(-1)}
-              className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+              className="!bg-[#FF9900] !hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
             >
               <FiArrowLeft className="w-5 h-5" />
               <span>Back</span>
