@@ -1,13 +1,13 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaClipboardList, FaUser } from 'react-icons/fa';
 import ProblemStatements from "../../components/ProblemStatements"
 import SPOCProfile from './SPOCProfile';
 import TeamList from './TeamList';
 import axios from 'axios';
-import {URL} from '../../Utils';
+import { URL } from '../../Utils';
 import { useNavigate } from 'react-router-dom';
-import toast,{Toaster} from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -26,9 +26,8 @@ const NavItem = ({ item, activeView, onClick }) => {
         <li className="mb-2">
             <button
                 onClick={() => onClick(item.id)}
-                className={`w-full flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-400 transition ${
-                    isActive ? 'bg-gray-700' : ''
-                }`}
+                className={`w-full flex items-center p-2 text-base font-normal text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-400 transition ${isActive ? 'bg-gray-700' : ''
+                    }`}
                 aria-current={isActive ? 'page' : undefined}
                 aria-pressed={isActive}
             >
@@ -46,7 +45,7 @@ const SpocDashboard = () => {
     const navigate = useNavigate()
     const [data, setdata] = useState([])
 
-    
+
     const handlelogout = async () => {
 
         try {
@@ -63,22 +62,22 @@ const SpocDashboard = () => {
     }
 
     useEffect(() => {
-    axios.defaults.withCredentials = true;
-    axios.get(`${URL}/cookie`).then(res => {
-      console.log(res);
-      
-      if (res.data.message == 'jwt must be provided') {
-        toast.error("Please login")
-      }
-      setdata(res.data)
-    })
-  },[])
+        axios.defaults.withCredentials = true;
+        axios.get(`${URL}/cookie`).then(res => {
+            console.log(res);
 
-//   const formatted = data.COLLEGE.replace(/([A-Z])/g, " $1").trim();
-// console.log(formatted);
+            if (res.data.message == 'jwt must be provided') {
+                toast.error("Please login")
+            }
+            setdata(res.data)
+        })
+    }, [])
+
+    //   const formatted = data.COLLEGE.replace(/([A-Z])/g, " $1").trim();
+    // console.log(formatted);
 
 
-  
+
 
     // Dummy data for teams
     const teams = Array.from({ length: 42 }, (_, i) => ({
@@ -136,7 +135,7 @@ const SpocDashboard = () => {
                     <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 font-semibold bg-white text-black  absolute bottom-0 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white hover:font-semibold'>LOGOUT</button>
                     </div>:""} */}
 
-                </aside>    
+                </aside>
 
                 {/* Main Content */}
                 <main className="flex-1 p-10">
@@ -145,7 +144,7 @@ const SpocDashboard = () => {
                             {/* <div> <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 bg-gray-300'>LOGOUT</button></div> */}
                             <h1 className="text-3xl font-bold mb-8 text-gray-800">SPOC Dashboard</h1>
                             <p className='my-2  p-3 bg-white rounded-lg shadow-lg font-bold text-center'>
-                            College - {data.COLLEGE ? data.COLLEGE.replace(/([A-Z])/g, " $1").trim() : ''}
+                                College - {data.COLLEGE ? data.COLLEGE.replace(/([A-Z])/g, " $1").trim() : ''}
                             </p>
                             {/* Stats Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -168,7 +167,7 @@ const SpocDashboard = () => {
                                     <p className="text-4xl font-bold text-[#fc8f00]">{totalTeamsSubmitted}</p>
                                 </motion.div>
                             </div>
-                            
+
                             {/* Teams Table */}
                             <motion.div
                                 className="bg-white p-6 rounded-lg shadow-lg"
@@ -220,14 +219,14 @@ const SpocDashboard = () => {
                                     </nav>
                                 </div>
 
-                                
+
                             </motion.div>
                         </>
                     )}
 
-                   
 
-                    {activeView === 'problems' && <ProblemStatements />}
+
+                    {activeView === 'problems' && <ProblemStatements showHeader={false} />}
                     {activeView === 'profile' && <SPOCProfile />}
                     {activeView === 'teamdetails' && <TeamList />}
                 </main>
