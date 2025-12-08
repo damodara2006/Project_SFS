@@ -16,12 +16,21 @@ const SpocApprovals = () => {
   // console.log(SpocData)
 
   let fetchspoc = () => {
-    axios.get(`${URL}/spoc_users`)
-      .then(res => {
-        setSpocData(res.data)
-      }
-      )
-  }
+    axios
+      .get(`${URL}/spoc_users`, { withCredentials: true })
+      .then((res) => {
+        setSpocData(Array.isArray(res.data) ? res.data : (res.data.users || res.data.data || []));
+      })
+      .catch((err) => {
+        // if unauthorized, clear data and optionally redirect to login
+        if (err.response && err.response.status === 401) {
+          setSpocData([]);
+          // optional: navigate to login or show message
+        } else {
+          console.error('Error fetching spoc users', err);
+        }
+      });
+  };
   useEffect(() => {
     fetchspoc()
   }, [])
