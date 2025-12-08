@@ -251,62 +251,76 @@ const SubmissionList = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#FF9900]"></div>
         </div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-2xl border border-[#E2E8F0] shadow-sm">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-[#F7F8FC] text-[#4A5568]">
-              <tr>
-                <th className="p-4 font-semibold">Spoc ID</th>
-                <th className="p-4 font-semibold">Clg name</th>
-                <th className="p-4 font-semibold">Team ID</th>
-                <th className="p-4 font-semibold">Solution Title</th>
-                <th className="p-4 text-center font-semibold">Submitted At</th>
-                <th className="p-4 text-center font-semibold">Status</th>
-                <th className="p-4 text-center font-semibold">Action</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-[#E2E8F0]">
-              {filteredSubmissions.length > 0 ? (
-                filteredSubmissions.map((sub, index) => (
-                  <tr key={index} className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all">
-                    <td className="p-4 text-[#1A202C] font-medium">
-                      {sub.SPOC_ID || sub.spocId || "N/A"}
-                    </td>
-                    <td className="p-4 text-[#1A202C] font-medium">
-                      {sub.collegeName || sub.COLLEGE || "N/A"}
-                    </td>
-                    <td className="p-4 text-[#1A202C] font-medium">
-                      TID_{sub.TEAM_ID || sub.teamId || "N/A"}
-                    </td>
-                    <td className="p-4 text-[#1A202C] font-medium">
-                      {sub.SOL_TITLE || sub.title || "Untitled Solution"}
-                    </td>
-                    <td className="p-4 text-center text-[#718096] text-sm">
-                      {sub.SUB_DATE || sub.submittedAt ? new Date(sub.SUB_DATE || sub.submittedAt).toLocaleDateString() : "N/A"}
-                    </td>
-                    <td className="p-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(sub.STATUS || sub.status)}`}>
-                        {sub.STATUS || sub.status || "Pending"}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center font-medium">
-                      <button
-                        onClick={() => navigate(`/evaluator/submission/${sub.ID || sub.id}`)}
-                        className="flex items-center justify-center gap-2 mx-auto bg-white border border-[#E2E8F0] hover:bg-gray-50 text-[#2D3748] px-3 py-1.5 rounded-lg text-sm transition-all shadow-sm"
-                      >
-                        <FiEye className="text-[#FF9900]" /> View
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+        <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm">
+          {/* Desktop / tablet table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-[#F7F8FC] text-[#4A5568]">
                 <tr>
-                  <td colSpan="7" className="p-8 text-center text-gray-500">
-                    {problemId ? "No submissions found." : "Select a problem statement above to view submissions."}
-                  </td>
+                  <th className="p-4 font-semibold">Spoc ID</th>
+                  <th className="p-4 font-semibold">Clg name</th>
+                  <th className="p-4 font-semibold">Team ID</th>
+                  <th className="p-4 font-semibold">Solution Title</th>
+                  <th className="p-4 text-center font-semibold">Submitted At</th>
+                  <th className="p-4 text-center font-semibold">Status</th>
+                  <th className="p-4 text-center font-semibold">Action</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-[#E2E8F0]">
+                {filteredSubmissions.length > 0 ? (
+                  filteredSubmissions.map((sub, index) => (
+                    <tr key={index} className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all">
+                      <td className="p-4 text-[#1A202C] font-medium">{sub.SPOC_ID || sub.spocId || "N/A"}</td>
+                      <td className="p-4 text-[#1A202C] font-medium">{sub.collegeName || sub.COLLEGE || "N/A"}</td>
+                      <td className="p-4 text-[#1A202C] font-medium">TID_{sub.TEAM_ID || sub.teamId || "N/A"}</td>
+                      <td className="p-4 text-[#1A202C] font-medium">{sub.SOL_TITLE || sub.title || "Untitled Solution"}</td>
+                      <td className="p-4 text-center text-[#718096] text-sm">{sub.SUB_DATE || sub.submittedAt ? new Date(sub.SUB_DATE || sub.submittedAt).toLocaleDateString() : "N/A"}</td>
+                      <td className="p-4 text-center"><span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(sub.STATUS || sub.status)}`}>{sub.STATUS || sub.status || "Pending"}</span></td>
+                      <td className="p-4 text-center font-medium">
+                        <button onClick={() => navigate(`/evaluator/submission/${sub.ID || sub.id}`)} className="flex items-center justify-center gap-2 mx-auto bg-white border border-[#E2E8F0] hover:bg-gray-50 text-[#2D3748] px-3 py-1.5 rounded-lg text-sm transition-all shadow-sm">
+                          <FiEye className="text-[#FF9900]" /> View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="p-8 text-center text-gray-500">{problemId ? "No submissions found." : "Select a problem statement above to view submissions."}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile card list */}
+          <div className="sm:hidden p-4 space-y-4">
+            {filteredSubmissions.length > 0 ? (
+              filteredSubmissions.map((sub, i) => (
+                <div key={i} className="bg-white border border-[#E2E8F0] rounded-lg p-4 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-[#1A202C]">{sub.SOL_TITLE || sub.title || 'Untitled'}</div>
+                      <div className="text-xs text-gray-500">{sub.collegeName || sub.COLLEGE || 'N/A'}</div>
+                      <div className="text-xs text-gray-400 mt-1">Team: TID_{sub.TEAM_ID || sub.teamId || 'N/A'}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-gray-500">{sub.SUB_DATE || sub.submittedAt ? new Date(sub.SUB_DATE || sub.submittedAt).toLocaleDateString() : 'N/A'}</div>
+                      <div className="mt-2">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(sub.STATUS || sub.status)}`}>{sub.STATUS || sub.status || 'Pending'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <button onClick={() => navigate(`/evaluator/submission/${sub.ID || sub.id}`)} className="flex-1 bg-white border border-[#E2E8F0] hover:bg-gray-50 text-[#2D3748] px-3 py-2 rounded-lg text-sm transition-all">
+                      View
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-6 text-center text-gray-500">{problemId ? "No submissions found." : "Select a problem statement above to view submissions."}</div>
+            )}
+          </div>
         </div>
       )}
     </div>
