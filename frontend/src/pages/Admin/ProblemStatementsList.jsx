@@ -250,7 +250,6 @@ const ProblemStatementsList = () => {
               <th className="p-4 font-semibold">PS ID</th>
               <th className="p-4 font-semibold">Problem Statement</th>
               <th className="p-4 text-center font-semibold">Evaluator ID</th>
-              <th className="p-4 text-center font-semibold">Evaluator Phone</th>
               <th className="p-4 text-center font-semibold">Submissions</th>
               <th className="p-4 text-center font-semibold">Created</th>
               <th className="p-4 text-center font-semibold">Evaluated</th>
@@ -284,9 +283,6 @@ const ProblemStatementsList = () => {
                     </td>
                     <td className="p-4 text-center text-[#1A202C]">
                       {evaluator ? evaluator.id : 'N/A'}
-                    </td>
-                    <td className="p-4 text-center text-[#1A202C]">
-                      {evaluator ? evaluator.phone : 'N/A'}
                     </td>
                     <td className="p-4 text-center text-[#1A202C]">
                       {problem.submissionsCount || 0}
