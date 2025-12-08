@@ -4,6 +4,7 @@ import {URL} from "../Utils";
 import toast, {Toaster} from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import PasswordStrength from "./PasswordStrength";
+import Header from "./Header";
 
 const RoleSelect = ({ value, onChange, error }) => (
   <div className="mb-4">
@@ -198,7 +199,8 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center mt-10 p-4">
+    <div className="min-h-screen flex items-center justify-center mt-10 p-4 fixed-bg">
+      <Header />
       <Toaster position="top-right"/> 
       <form
         onSubmit={onSubmit}
