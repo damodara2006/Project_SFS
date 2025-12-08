@@ -302,7 +302,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import {URL} from "../Utils"
+import { URL } from "../Utils"
 
 const sampleProblems = [
   {
@@ -368,7 +368,7 @@ const Modal = ({ open, onClose, title, children }) => {
   );
 };
 
-const ProblemStatements = () => {
+const ProblemStatements = ({ showHeader = true }) => {
   const [problems, setProblems] = useState([]);
   const [selected, setSelected] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -409,7 +409,7 @@ const ProblemStatements = () => {
     load();
   }, []);
 
-  
+
 
   return (
     <motion.div
@@ -418,10 +418,10 @@ const ProblemStatements = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <Header/>
+      {showHeader && <Header />}
       <div className="max-w-7xl mx-auto">
         <header className="mb-10">
-          <h1 className="text-center text-3xl font-extrabold text-gray-900 mt-20">
+          <h1 className={`text-center text-3xl font-extrabold text-gray-900 ${showHeader ? 'mt-20' : 'mt-0'}`}>
             Problem Statements
           </h1>
         </header>
@@ -494,8 +494,8 @@ const ProblemStatements = () => {
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Actions
-                    </th>
-                    
+                  </th>
+
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -510,7 +510,7 @@ const ProblemStatements = () => {
                     <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE.split("T")[0]}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE ? p.SUB_DEADLINE.split("T")[0] : 'N/A'}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openModal(p)}
@@ -538,7 +538,7 @@ const ProblemStatements = () => {
                 <strong>ID:</strong> {selected.ID}
               </div>
               <div>
-                <strong>Date:</strong> {selected.SUB_DEADLINE.split("T")[0]}
+                <strong>Date:</strong> {selected.SUB_DEADLINE ? selected.SUB_DEADLINE.split("T")[0] : 'N/A'}
               </div>
               <div>
                 <strong>Category:</strong> {selected.CATEGORY}
@@ -583,7 +583,7 @@ const ProblemStatements = () => {
       {/* <footer>
          <Footer />
        </footer> */}
-      
+
     </motion.div>
   );
 };
