@@ -7,6 +7,7 @@ import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import toast, { Toaster } from 'react-hot-toast';
 import { IoTrashBinOutline } from "react-icons/io5";
 import { FaRegEdit } from "react-icons/fa";
+
 function TeamList() {
     const [FullTeam, setFullTeam] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
