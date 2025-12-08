@@ -51,10 +51,16 @@ const AssignedProblem = () => {
         const userId = userData?.ID || userData?.id;
 
         if (userId) {
+          console.log(userId);
+          
           try {
             const res = await axios.get(`${URL}/problems/evaluator/${userId}`);
+            // console.log(res.data);
+            
             if (res.data.problems && res.data.problems.length > 0) {
               displayProblems = res.data.problems;
+              // console.log(res.data.problems);
+              
             }
           } catch (fetchErr) {
             console.warn("Backend fetch failed, using mock/local", fetchErr);
@@ -62,8 +68,10 @@ const AssignedProblem = () => {
         }
 
         // Combine: Local created items first, then fetched/mock items
-        const combined = [...localProblems, ...displayProblems];
+        const combined = [ ...displayProblems];
 
+        console.log(combined);
+        
         // simple dedup by ID just in case
         const unique = combined.filter((v, i, a) => a.findIndex(t => (t.ID === v.ID)) === i);
 
@@ -111,11 +119,12 @@ const AssignedProblem = () => {
                 <th className="p-4 font-semibold">PS ID</th>
                 <th className="p-4 font-semibold">PS Title</th>
                 <th className="p-4 text-center font-semibold">No. of Submissions</th>
-                <th className="p-4 text-center font-semibold">Created At</th>
+                <th className="p-4 text-center font-semibold">DeadLine</th>
                 <th className="p-4 text-center font-semibold">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-[#E2E8F0]">
+              <tbody className="bg-white divide-y divide-[#E2E8F0]">
+                
               {problems.length > 0 ? (
                 problems.map((problem) => (
                   <tr key={problem.ID} className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all">
@@ -130,7 +139,7 @@ const AssignedProblem = () => {
                       {problem.submission_count || 0}
                     </td>
                     <td className="p-4 text-center text-[#718096]">
-                      {problem.SUB_DATE || "N/A"}
+                      {problem.SUB_DEADLINE || "N/A"}
                     </td>
                     <td className="p-4 text-center font-medium">
                       <button
