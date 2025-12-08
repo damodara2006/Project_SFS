@@ -173,8 +173,8 @@ const SPOCProfile = () => {
                   type="text"
                   name="name"
                   value={ data.NAME ? data.NAME : ""}
-                  onChange={handleChange}
-                  placeholder="Enter your name"
+                  // onChange={handleChange}
+                  placeholder="Enter Your Name"
                   className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
                 />
               </div>
