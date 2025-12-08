@@ -56,6 +56,9 @@ const EvaluatorSidebar = ({ isMobileOpen, setMobileOpen, isExpanded, setIsExpand
                     <NavItem to="/evaluator/submissions" icon={<FaTasks size={20} />} isExpanded={isExpanded}>
                         Submissions
                     </NavItem>
+                    <NavItem to="/evaluator/AddProblemStatement" icon={<FaQuestion size={20} />} isExpanded={isExpanded}>
+                        Add Problem
+                    </NavItem>
                 </nav>
             </aside>
 
