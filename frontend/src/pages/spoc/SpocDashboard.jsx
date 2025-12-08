@@ -202,6 +202,7 @@ const SpocDashboard = () => {
                                         <tr>
                                             <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Team Name</th>
                                             <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Leader Email</th>
+                                            <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Leader Phone</th>
                                             <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                                         </tr>
                                     </thead>
@@ -215,9 +216,10 @@ const SpocDashboard = () => {
                                                 <tr key={key}>
                                                     <td className="py-2 px-4 border-b border-gray-200">{name}</td>
                                                     <td className="py-2 px-4 border-b border-gray-200">{leader}</td>
+                                                    <td className="py-2 px-4 border-b border-gray-200">{team?.LEAD_PHONE || team?.phone || team?.PHONE || '—'}</td>
                                                     <td className="py-2 px-4 border-b border-gray-200">
                                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${submitted ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                            {submitted ? 'Submitted' : 'Not submitted'}
+                                                            {submitted ? 'Submitted' : 'Not Submitted'}
                                                         </span>
                                                     </td>
                                                 </tr>
