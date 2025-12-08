@@ -29,10 +29,8 @@ const AdminHeader = ({ setIsOpen }) => {
       try {
         const res = await fetch(`${URL}/cookie`, { method: 'GET', credentials: 'include' });
         if (!res.ok) return; // silently fail and keep fallback
-        const json = await res.json();
-        console.log(json);
-
-        const userEmail = json?.EMAIL || json?.email || json?.Email || null;
+          const json = await res.json();
+          const userEmail = json?.EMAIL || json?.email || json?.Email || null;
         if (userEmail) setEmail(userEmail);
       } catch (err) {
         // ignore and keep fallback
