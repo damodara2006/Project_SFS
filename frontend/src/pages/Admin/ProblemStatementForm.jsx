@@ -73,6 +73,7 @@ const ProblemStatementForm = () => {
   };
   console.log(deadline.split('T')[0]);
 
+  console.log("2025-12-30T18:30:00.000Z".split('T')[0]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -89,9 +90,12 @@ const ProblemStatementForm = () => {
         reference: youtubeLink,
         evaluators: currentUserId // Auto-assign if Evaluator
       };
-      console.log(payload);
+      // console.log(payload);
       
       const response = await axios.post(`${URL}/addproblems`, payload, { withCredentials: true });
+
+      await axios.post(`${URL}/send_mail_to_spoc`, { Problem: payload.title })
+      navigate(-1)
 
       // Save created item (fallback to posted payload if response data missing)
       const created = {

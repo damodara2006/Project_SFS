@@ -5,27 +5,7 @@ import { URL } from "../../Utils";
 import { FiPlus } from "react-icons/fi";
 
 const mockProblems = [
-  {
-    ID: 101,
-    TITLE: "AI-Driven Supply Chain Optimization",
-    DEPT: "Computer Science",
-    submission_count: 5,
-    SUB_DATE: "2024-03-15"
-  },
-  {
-    ID: 102,
-    TITLE: "Sustainable Packaging Solutions",
-    DEPT: "Mechanical Engineering",
-    submission_count: 3,
-    SUB_DATE: "2024-03-18"
-  },
-  {
-    ID: 103,
-    TITLE: "IoT Based Energy Monitoring",
-    DEPT: "Electronics",
-    submission_count: 0,
-    SUB_DATE: "2024-03-20"
-  }
+  
 ];
 
 const AssignedProblem = () => {
@@ -139,7 +119,7 @@ const AssignedProblem = () => {
                       {problem.submission_count || 0}
                     </td>
                     <td className="p-4 text-center text-[#718096]">
-                      {problem.SUB_DEADLINE || "N/A"}
+                      {problem?.SUB_DEADLINE?.split('T')[0] || "N/A"}
                     </td>
                     <td className="p-4 text-center font-medium">
                       <button
