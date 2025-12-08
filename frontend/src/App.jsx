@@ -30,13 +30,13 @@ import SPOCProfile from "./pages/spoc/SPOCProfile";
 import TeamList from "./pages/spoc/TeamList.jsx";
 
 // Evaluator
-import EvaluatorLayout from "./pages/Evaluator/EvaluatorLayout.jsx";
-import AssignedProblem from "./pages/Evaluator/AssignedProblem.jsx";
-import SubmissionList from "./pages/Evaluator/SubmissionList.jsx";
-import SubmissionDetail from "./pages/Evaluator/SubmissionDetail.jsx";
-import AddProblemStatement from "./pages/Evaluator/AddProblemStatement.jsx";
-import EvaluatorProblemDetail from "./pages/Evaluator/EvaluatorProblemDetail.jsx";
-import EvaluatorProfile from "./pages/Evaluator/EvaluatorProfile.jsx";
+import EvaluatorLayout from "./pages/evaluator/EvaluatorLayout.jsx";
+import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
+import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
+import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
+import AddProblemStatement from "./pages/evaluator/AddProblemStatement.jsx";
+import EvaluatorProblemDetail from "./pages/evaluator/EvaluatorProblemDetail.jsx";
+import EvaluatorProfile from "./pages/evaluator/EvaluatorProfile.jsx";
 
 // Admin
 import AdminLayout from "./components/admin/AdminLayout.jsx";
@@ -136,9 +136,7 @@ function App() {
           path="/student"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <MainLayout>
-                <SdDashboard />
-              </MainLayout>
+              <SdDashboard />
             </ProtectedRoute>
           }
         />
@@ -146,9 +144,7 @@ function App() {
           path="/student/submit-solution"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <MainLayout>
-                <Upload />
-              </MainLayout>
+              <Upload />
             </ProtectedRoute>
           }
         />
@@ -156,9 +152,7 @@ function App() {
           path="/student/team-details"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <MainLayout>
-                <TeamDetails />
-              </MainLayout>
+              <TeamDetails />
             </ProtectedRoute>
           }
         />
