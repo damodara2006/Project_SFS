@@ -507,10 +507,10 @@ const ProblemStatements = () => {
                     transition={{ delay: index * 0.05 }}
                     className="hover:bg-gray-50 transition"
                   >
-                    <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE.split("T")[0]}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID || p.id || 'N/A'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE || p.TITLE || p.title || 'Untitled'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY || p.CATEGORY || p.category || '-'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE ? String(p.SUB_DEADLINE).split("T")[0] : (p.date || 'N/A')}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openModal(p)}
@@ -535,10 +535,10 @@ const ProblemStatements = () => {
           {selected ? (
             <div className="space-y-3 text-sm text-gray-700">
               <div>
-                <strong>ID:</strong> {selected.ID}
+                <strong>ID:</strong> {selected.ID || selected.id || 'N/A'}
               </div>
               <div>
-                <strong>Date:</strong> {selected.SUB_DEADLINE.split("T")[0]}
+                <strong>Date:</strong> {selected.SUB_DEADLINE ? String(selected.SUB_DEADLINE).split("T")[0] : (selected.date || 'N/A')}
               </div>
               <div>
                 <strong>Category:</strong> {selected.CATEGORY}

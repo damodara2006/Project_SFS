@@ -136,7 +136,9 @@ function App() {
           path="/student"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <SdDashboard />
+              <MainLayout>
+                <SdDashboard />
+              </MainLayout>
             </ProtectedRoute>
           }
         />
@@ -144,7 +146,9 @@ function App() {
           path="/student/submit-solution"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <Upload />
+              <MainLayout>
+                <Upload />
+              </MainLayout>
             </ProtectedRoute>
           }
         />
@@ -152,7 +156,9 @@ function App() {
           path="/student/team-details"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <TeamDetails />
+              <MainLayout>
+                <TeamDetails />
+              </MainLayout>
             </ProtectedRoute>
           }
         />
