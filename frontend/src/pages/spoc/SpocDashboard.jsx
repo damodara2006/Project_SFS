@@ -90,7 +90,7 @@ const SpocDashboard = () => {
     }, [navigate]);
 
     const totalTeams = data.length;
-
+   
     const indexOfLastTeam = currentPage * teamsPerPage;
     const indexOfFirstTeam = indexOfLastTeam - teamsPerPage;
     const currentTeams = data.slice(indexOfFirstTeam, indexOfLastTeam);
@@ -115,14 +115,14 @@ const SpocDashboard = () => {
     const getCollegeName = () => {
         // try to infer college from first team if present
         const first = data[0];
-        return first?.COLLEGE || first?.college || '';
+        return first?.COLLEGE || first?.college || 'KIOT';
     };
 
     const getTeamName = (team, fallbackIndex) =>
         team?.NAME || team?.name || `Team ${fallbackIndex}`;
 
     const getTeamLeader = (team) =>
-        team?.EMAIL || team?.email || team?.LEADER || team?.leader || '—';
+        team?.LEAD_EMAIL || team?.email || team?.LEADER || team?.leader || '—';
 
     const isSubmitted = (team) => {
         const s = team?.submitted ?? team?.SUBMITTED ?? team?.isSubmitted ?? team?.IS_SUBMITTED;
@@ -201,7 +201,7 @@ const SpocDashboard = () => {
                                     <thead>
                                         <tr>
                                             <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Team Name</th>
-                                            <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Leader</th>
+                                            <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Leader Email</th>
                                             <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                                         </tr>
                                     </thead>
@@ -256,7 +256,7 @@ const SpocDashboard = () => {
                                                         </motion.div>
                                                     </>
                                                 )}
-                {activeView === 'problems' && <ProblemStatements />}
+                    {activeView === 'problems' && <ProblemStatements />}
                     {activeView === 'teamdetails' && <TeamList data={data} />}
                     {activeView === 'profile' && <SPOCProfile />}
                 </main>
