@@ -321,28 +321,24 @@ const Homepage = () => {
           <div className="grid md:grid-cols-4 gap-8 ">
             {[
               {
-                step: "01",
                 title: "Register & Join",
                 description:
                   "Create your account and join as a student, SPOC, or evaluator.",
                 icon: <FaUsers className="w-8 h-8 text-primary-accent" />,
               },
               {
-                step: "02",
                 title: "Explore Problems",
                 description:
                   "Browse real-world challenges from industry partners.",
                 icon: <FaLightbulb className="w-8 h-8 text-primary-accent" />,
               },
               {
-                step: "03",
                 title: "Form Teams & Innovate",
                 description:
                   "Collaborate with peers to develop creative solutions.",
                 icon: <FaPlay className="w-8 h-8 text-primary-accent" />,
               },
               {
-                step: "04",
                 title: "Submit & Get Evaluated",
                 description:
                   "Present your solution and receive expert feedback.",

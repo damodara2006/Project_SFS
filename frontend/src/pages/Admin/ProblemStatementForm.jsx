@@ -12,6 +12,7 @@ const ProblemStatementForm = () => {
   const [description, setDescription] = useState("");
   const [department, setDepartment] = useState(""); // User asked for Category, mapping Dept to it or separate? specific request: "category". Detail view usually shows Dept as category. I'll stick to 'Department' as the field name but label it Category/Department to be safe, or just add Category.
   const [category, setCategory] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
   const [datasetLink, setDatasetLink] = useState("");
 
@@ -23,7 +24,7 @@ const ProblemStatementForm = () => {
   const [evaluators, setEvaluators] = useState([]);
   const [selectedEvaluators, setSelectedEvaluators] = useState([]);
   const [evaluatorSearch, setEvaluatorSearch] = useState("");
-      const[subDate,setSubDate]=useState("");
+      // const[subDate,setSubDate]=useState("");
   
 
   // Role Logic
@@ -70,6 +71,7 @@ const ProblemStatementForm = () => {
       prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id]
     );
   };
+  console.log(deadline.split('T')[0]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,15 +80,17 @@ const ProblemStatementForm = () => {
       let finalDescription = description;
       if (youtubeLink) finalDescription += `\n\nYouTube Link: ${youtubeLink}`;
       if (datasetLink) finalDescription += `\n\nDataset Link: ${datasetLink}`;
-
+      
       const payload = {
         title,
         description: finalDescription,
         dept: category,
+        sub_date: deadline.split('T')[0], // Format date to YYYY-MM-DD
         reference: youtubeLink,
         evaluators: currentUserId // Auto-assign if Evaluator
       };
-
+      console.log(payload);
+      
       const response = await axios.post(`${URL}/addproblems`, payload, { withCredentials: true });
 
       // Save created item (fallback to posted payload if response data missing)
@@ -124,6 +128,8 @@ const ProblemStatementForm = () => {
       console.error("Error adding problem statement:", error);
       toast.error("Failed to Add Problem Statement", { position: "top-center" });
     }
+
+    console.log(deadline)
   };
 
   return (
@@ -200,7 +206,7 @@ const ProblemStatementForm = () => {
                 type="date"
                 placeholder="Submission Deadline"
                 className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
-                onChange={(e) => setSubDate(e.target.value)}
+                onChange={(e) => setDeadline(e.target.value)}
               />
             </div>
 
