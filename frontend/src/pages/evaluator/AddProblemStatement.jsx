@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState,useEffect } from "react";
-import { URL } from "../../Utils";
+import { auth, URL } from "../../Utils";
 import {toast,Toaster} from 'react-hot-toast';
 const AddProblemStatement = () => {
 
@@ -11,10 +11,12 @@ const AddProblemStatement = () => {
     const[subDate,setSubDate]=useState("");
 
     const[reference,setReference]=useState("");
+    console.log( auth());
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
-        console.log(title,description,dept,reference,subDate);
+      console.log(title, description, dept, reference, subDate);
+      
         try{
            const response = await axios.post(`${URL}/addproblems`,{
             title:title,

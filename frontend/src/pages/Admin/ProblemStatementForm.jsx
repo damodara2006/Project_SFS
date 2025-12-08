@@ -23,6 +23,8 @@ const ProblemStatementForm = () => {
   const [evaluators, setEvaluators] = useState([]);
   const [selectedEvaluators, setSelectedEvaluators] = useState([]);
   const [evaluatorSearch, setEvaluatorSearch] = useState("");
+      const[subDate,setSubDate]=useState("");
+  
 
   // Role Logic
   const [isEvaluator, setIsEvaluator] = useState(false);
@@ -60,6 +62,9 @@ const ProblemStatementForm = () => {
     (ev.ID && String(ev.ID).toLowerCase().includes(evaluatorSearch.toLowerCase()))
   );
 
+  console.log(currentUserId);
+  
+
   const toggleEvaluator = (id) => {
     setSelectedEvaluators(prev =>
       prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id]
@@ -79,7 +84,7 @@ const ProblemStatementForm = () => {
         description: finalDescription,
         dept: category,
         reference: youtubeLink,
-        evaluators: isEvaluator && currentUserId ? [currentUserId] : selectedEvaluators // Auto-assign if Evaluator
+        evaluators: currentUserId // Auto-assign if Evaluator
       };
 
       const response = await axios.post(`${URL}/addproblems`, payload, { withCredentials: true });
@@ -184,6 +189,18 @@ const ProblemStatementForm = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Enter Submission DeadLine
+              </label>
+              <input
+                type="date"
+                placeholder="Submission Deadline"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
+                onChange={(e) => setSubDate(e.target.value)}
               />
             </div>
 

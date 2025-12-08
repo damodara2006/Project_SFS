@@ -161,7 +161,7 @@ const ProblemStatementsList = () => {
           className="flex items-center gap-2 bg-[#FF9900] hover:bg-[#e68900] text-white px-5 py-2.5 rounded-xl shadow-md transition-all"
         >
           <FiPlus className="text-lg" />
-          Create Problem Statement
+          Create Problem Statem
         </button>
       </div>
 
