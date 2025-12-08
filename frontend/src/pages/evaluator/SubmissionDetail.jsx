@@ -45,15 +45,17 @@ const PDFViewer = ({ url }) => {
       </div>
 
       {/* PDF Object */}
-      <div className="h-[80vh] w-full bg-gray-100">
-        <object data={file} type="application/pdf" width="100%" height="100%">
+      <div className="w-full bg-gray-100">
+        <div className="h-72 md:h-[60vh] lg:h-[80vh] w-full">
+          <object data={file} type="application/pdf" width="100%" height="100%">
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
             <p className="mb-2">This browser does not support embedded PDFs.</p>
             <a href={file} className="text-[#fc8f00] underline font-medium">
               Click here to download
             </a>
           </div>
-        </object>
+          </object>
+        </div>
       </div>
     </div>
   );
@@ -148,7 +150,9 @@ const SubmissionDetail = () => {
           transition={{ delay: 0.2, duration: 0.5 }}
         >
           <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4">Solution Document</h2>
-          <PDFViewer url={submission.SOL_LINK} />
+            <div className="w-full">
+              <PDFViewer url={submission.SOL_LINK} />
+            </div>
         </motion.div>
 
         {/* SECTION 3: Evaluation (Unchanged) */}

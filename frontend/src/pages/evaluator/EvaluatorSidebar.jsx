@@ -34,7 +34,11 @@ const EvaluatorSidebar = ({ isMobileOpen, setMobileOpen, isExpanded, setIsExpand
         <>
             {/* --- DESKTOP SIDEBAR --- */}
             <aside
-                className="hidden bg-[#4A4A4A] lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:flex-col lg:w-64 transition-all duration-300 ease-in-out"
+                className={`hidden bg-[#4A4A4A] lg:fixed lg:inset-y-0 lg:z-20 lg:flex lg:flex-col transition-all duration-300 ease-in-out ${
+                    isExpanded ? 'w-64' : 'w-20'
+                }`}
+                onMouseEnter={() => setIsExpanded && setIsExpanded(true)}
+                onMouseLeave={() => setIsExpanded && setIsExpanded(false)}
             >
                 {/* --- LOGO SECTION --- */}
                 <div className="flex h-20 items-center justify-center flex-shrink-0 overflow-hidden border-b border-[#5A5A5A] px-4">
@@ -46,10 +50,10 @@ const EvaluatorSidebar = ({ isMobileOpen, setMobileOpen, isExpanded, setIsExpand
                 </div>
 
                 <nav className="flex-grow mt-6">
-                    <NavItem to="/evaluator" icon={<FaClipboardList size={20} />} isExpanded={true} end>
+                    <NavItem to="/evaluator" icon={<FaClipboardList size={20} />} isExpanded={isExpanded} end>
                         Problem Statements
                     </NavItem>
-                    <NavItem to="/evaluator/submissions" icon={<FaTasks size={20} />} isExpanded={true}>
+                    <NavItem to="/evaluator/submissions" icon={<FaTasks size={20} />} isExpanded={isExpanded}>
                         Submissions
                     </NavItem>
                 </nav>
