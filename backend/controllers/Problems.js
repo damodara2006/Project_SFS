@@ -22,12 +22,13 @@ const Get_problem_by_id = AsyncHandler(async (req, res) => {
 })
 
 const Post_problem = AsyncHandler(async (req, res) => {
-    const { title, description, dept, reference, evaluators } = req.body;
+    const { title, description, dept, sub_date,reference, evaluators } = req.body;
+    console.log(sub_date);
+    
+    const query = `INSERT INTO problems (TITLE, DESCRIPTION, DEPT, SUB_DEADLINE, Reference, Evaluator_ID)
+                   VALUES (?, ?, ?, ? ,?, ?)`;
 
-    const query = `INSERT INTO problems (TITLE, DESCRIPTION, DEPT,  Reference, Evaluator_ID)
-                   VALUES (?, ?, ?, ?, ?)`;
-
-    const params = [title, description, dept, reference, evaluators];
+    const params = [title, description, dept, sub_date,reference, evaluators];
 
     const [result] = await connection.execute(query, params);
     const problemId = result.insertId;
