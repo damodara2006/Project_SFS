@@ -24,9 +24,9 @@ const SearchBar = () => {
             </svg>
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search for Problems"
               aria-label="Search"
-              className="w-full bg-transparent placeholder-gray-300 text-gray-900 focus:outline-none text-sm"
+              className="w-full bg-transparent placeholder-gray-500 placeholder-font-semibold text-gray-900 focus:outline-none text-sm"
               onChange={onChange()}
             />
           </div>
