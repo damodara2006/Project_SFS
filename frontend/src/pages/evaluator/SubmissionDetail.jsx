@@ -5,25 +5,56 @@ import axios from 'axios';
 import { URL } from "../../Utils";
 import samplePdf from "../../assets/sample.pdf";
 
+// --- Helper Component for the Table Rows ---
+const InfoRow = ({ label, value, isEven }) => (
+  <div className={`flex flex-col sm:flex-row border-b border-gray-100 ${isEven ? 'bg-orange-50/30' : 'bg-white'}`}>
+    <div className="sm:w-1/3 p-4 font-semibold text-gray-700 sm:border-r border-gray-100">
+      {label}
+    </div>
+    <div className="sm:w-2/3 p-4 text-gray-600 break-words">
+      {value || "N/A"}
+    </div>
+  </div>
+);
+
 const PDFViewer = ({ url }) => {
   const file = url || samplePdf;
 
   return (
-    <div className="w-full h-[70vh] overflow-auto bg-gray-100 rounded-lg">
-      <object data={file} type="application/pdf" width="100%" height="100%">
-        <div className="p-6 text-center text-gray-500">
-          This browser does not support embedded PDFs.{' '}
+    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      {/* PDF Controls */}
+      <div className="flex justify-between items-center bg-gray-50 px-4 py-3 border-b border-gray-200">
+        <span className="text-gray-600 font-medium">Document Preview</span>
+        <div className="space-x-3">
           <a
             href={file}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#fc8f00] underline"
+            className="px-4 py-2 text-sm font-medium text-[#fc8f00] border border-[#fc8f00] rounded hover:bg-[#fc8f00] hover:text-white transition-colors"
           >
-            Open or download the PDF
+            View Fullscreen
           </a>
-          .
+          <a
+            href={file}
+            download
+            className="px-4 py-2 text-sm font-medium text-white bg-[#fc8f00] rounded hover:bg-[#e68100] transition-colors"
+          >
+            Download
+          </a>
         </div>
-      </object>
+      </div>
+
+      {/* PDF Object */}
+      <div className="h-[80vh] w-full bg-gray-100">
+        <object data={file} type="application/pdf" width="100%" height="100%">
+          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+            <p className="mb-2">This browser does not support embedded PDFs.</p>
+            <a href={file} className="text-[#fc8f00] underline font-medium">
+              Click here to download
+            </a>
+          </div>
+        </object>
+      </div>
     </div>
   );
 };
@@ -35,6 +66,7 @@ const SubmissionDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Evaluation State
   const [marks, setMarks] = useState('');
   const [feedback, setFeedback] = useState('');
   const [saved, setSaved] = useState(false);
@@ -55,80 +87,76 @@ const SubmissionDetail = () => {
   }, [id]);
 
   const handleSave = () => {
-    // Determine the ID to send: "submission.ID" from DB or fallback "id" from params
     const submissionId = submission?.ID || id;
-
-    console.log({
-      submissionId,
-      marks,
-      feedback,
-    });
-    // TODO: Implement actual save API call here
+    console.log({ submissionId, marks, feedback });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  if (loading) return <div className="p-10 text-center text-gray-500">Loading submission details...</div>;
+  // Helper to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  if (loading) return <div className="p-10 text-center text-gray-500">Loading...</div>;
   if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
   if (!submission) return <div className="p-10 text-center text-gray-500">Submission not found.</div>;
 
   return (
-    <div className="min-h-screen bg-[#ffffff] py-10 px-6">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-10 relative"
-      >
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-8">
+      
+      {/* Top Header with Back Button */}
+      <div className="max-w-6xl mx-auto mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-0 left-0 text-[#fc8f00] hover:text-[#e68100] transition-colors duration-300"
+          className="bg-[#fc8f00] text-white px-6 py-2 rounded shadow hover:bg-[#e68100] transition-colors duration-300 flex items-center gap-2"
         >
           &larr; Back
         </button>
-        <h1 className="text-4xl font-bold text-[#4a4a4a]">{submission.SOL_TITLE || "Untitled Solution"}</h1>
-        <p className="text-lg text-gray-600 mt-2">
-          Team ID: {submission.TEAM_ID}
-          {submission.teamName && ` (${submission.teamName})`}
-        </p>
-      </motion.div>
+      </div>
 
       <div className="max-w-6xl mx-auto space-y-8">
+        
+        {/* SECTION 1: Submission Information Table */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-8 space-y-6"
         >
-          <div>
-            <h2 className="text-2xl font-semibold text-[#4a4a4a] mb-3">Solution Description</h2>
-            <p className="text-gray-700 leading-relaxed text-justify whitespace-pre-wrap">
-              {submission.SOL_DESCRIPTION || "No description provided."}
-            </p>
+          <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4">Submission Information</h2>
+          <div className="bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden">
+            {/* Note: Adjusting field keys below (e.g., PS_TITLE) based on your API response structure */}
+            <InfoRow label="Submission ID" value={submission.ID} isEven={true} />
+            <InfoRow label="Problem Title" value={submission.PS_TITLE || "Image based breed recognition for cattle and buffaloes of India"} isEven={false} />
+            <InfoRow label="Submission Title" value={submission.SOL_TITLE} isEven={true} />
+            <InfoRow label="Description" value={submission.SOL_DESCRIPTION} isEven={false} />
+            <InfoRow label="Team Name" value={submission.teamName || submission.TEAM_ID} isEven={true} />
+            <InfoRow label="SPOC ID" value={submission.SPOC_ID || "N/A"} isEven={false} />
+            <InfoRow label="Submitted Date" value={formatDate(submission.CREATED_AT || "2025-12-07")} isEven={true} />
           </div>
-
-          {/* 
-             If you have separate columns for Abstract, Feasibility, Budget in DB,
-             render them here. Currently using SOL_DESCRIPTION as a catch-all based on schema.
-          */}
-
         </motion.div>
 
+        {/* SECTION 2: PDF Preview with Options */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-6"
         >
-          <h2 className="text-xl font-semibold text-[#4a4a4a] mb-4 text-center">Submitted Report</h2>
+          <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4">Solution Document</h2>
           <PDFViewer url={submission.SOL_LINK} />
         </motion.div>
 
+        {/* SECTION 3: Evaluation (Unchanged) */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-8 mt-10"
+          className="bg-white shadow-2xl border border-gray-200 rounded-2xl p-8"
         >
           <h2 className="text-2xl font-semibold text-[#fc8f00] mb-6 text-center">Evaluator’s Section</h2>
 
@@ -173,6 +201,7 @@ const SubmissionDetail = () => {
             </motion.p>
           )}
         </motion.div>
+
       </div>
     </div>
   );
