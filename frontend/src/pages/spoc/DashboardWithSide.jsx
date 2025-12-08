@@ -158,7 +158,8 @@ const DashboardWithSide = () => {
       <motion.aside
         onMouseEnter={() => setIsSidebarExpanded(true)}
         onMouseLeave={() => setIsSidebarExpanded(false)}
-        animate={{ width: isSidebarExpanded ? 200 : 70 }}
+        // Match admin widths: w-64 (256px) when expanded, w-20 (80px) when collapsed
+        animate={{ width: isSidebarExpanded ? 256 : 80 }}
         transition={{ duration: 0.3 }}
         className="fixed left-5 top-1/2 -translate-y-1/2 bg-[#494949] text-white rounded-2xl shadow-xl flex flex-col items-center py-6 z-20"
       >
@@ -209,7 +210,7 @@ const DashboardWithSide = () => {
       </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-10 ml-[90px] transition-all duration-300 mt-16">
+      <main className={`flex-1 p-10 transition-all duration-300 mt-16 ${isSidebarExpanded ? 'ml-64' : 'ml-20'}`}>
         {activeView === "dashboard" && (
           <>
             <h1 className="text-3xl font-bold mb-8 text-gray-800">

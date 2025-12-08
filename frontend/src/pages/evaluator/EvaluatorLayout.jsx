@@ -5,17 +5,22 @@ import EvaluatorHeader from './EvaluatorHeader';
 
 const EvaluatorLayout = () => {
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  // Match admin behaviour: hover-expand desktop sidebar
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       <EvaluatorSidebar
         isMobileOpen={isMobileSidebarOpen}
         setMobileOpen={setMobileSidebarOpen}
+        isExpanded={isSidebarExpanded}
+        setIsExpanded={setIsSidebarExpanded}
       />
 
-      <div className="flex-1 flex flex-col lg:ml-64 transition-all duration-300 ease-in-out">
+      <div
+        className={`transition-all duration-300 ease-in-out ${isSidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         <EvaluatorHeader setIsOpen={setMobileSidebarOpen} />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
