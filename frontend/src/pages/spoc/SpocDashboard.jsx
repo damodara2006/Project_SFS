@@ -127,13 +127,14 @@ const SpocDashboard = () => {
                         </ul>
                     </nav>
                     <p className='absolute bottom-16'>
-                    {data.NAME }
+                    {/* {data.NAME } */}
                                         
 
                     </p>
-                      {data.NAME?          
+                      {/* {data.NAME?          
                 <div> 
-                    <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 font-semibold bg-white text-black  absolute bottom-0 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white hover:font-semibold'>LOGOUT</button></div>:""}
+                    <button onClick={handlelogout} className=' cursor-pointer py-2 px-2 rounded-sm mb-2 font-semibold bg-white text-black  absolute bottom-0 transition duration-300 ease-in-out hover:bg-red-500 hover:text-white hover:font-semibold'>LOGOUT</button>
+                    </div>:""} */}
 
                 </aside>    
 
