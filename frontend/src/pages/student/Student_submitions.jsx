@@ -190,7 +190,7 @@ export default function Student_submitions({ submission: propSubmission }) {
                     </div>
                 </div>
 
-                <div className="mt-3">
+                <div className="mt-3 flex">
                   <h2 className="text-xl md:text-2xl font-semibold text-text-primary">{s.title}</h2>
                   <div className="text-sm text-text-secondary leading-relaxed mt-2">
                     {expanded ? s.description : (s.description?.slice(0, 420) + (s.description?.length > 420 ? '...' : ''))}
@@ -285,13 +285,9 @@ export default function Student_submitions({ submission: propSubmission }) {
                       <HiOutlineDownload className="w-5 h-5" /> Download
                     </a>
 
-                    <button onClick={() => { navigator.clipboard?.writeText(pdfSrc); setCopied(true); setTimeout(()=>setCopied(false),2000); }} className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-gray-100 text-text-primary">
-                      <HiLink className="w-5 h-5" /> {copied ? 'Link copied' : 'Copy link'}
-                    </button>
+                    
 
-                    <button onClick={() => { if(navigator.share) navigator.share({ title: s.title, text: s.title, url: pdfSrc }); }} className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-white border border-border-color text-text-primary">
-                      <HiShare className="w-5 h-5" /> Share
-                    </button>
+                    
                   </div>
                 </div>
               </aside>
