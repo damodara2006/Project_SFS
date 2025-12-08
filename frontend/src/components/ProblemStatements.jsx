@@ -398,6 +398,8 @@ const ProblemStatements = () => {
       setError(false);
       try {
         const data = await fetchProblems();
+        console.log(data);
+        
         setProblems(Array.isArray(data) && data.length > 0 ? data : sampleProblems);
       } catch {
         setError(true);
@@ -510,7 +512,7 @@ const ProblemStatements = () => {
                     <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE.split("T")[0]}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.SU B_DEADLINE.split("T")[0]}</td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => openModal(p)}
