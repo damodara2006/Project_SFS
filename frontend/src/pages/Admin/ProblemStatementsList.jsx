@@ -10,6 +10,7 @@ import { mockProblemStatements, getEvaluatorUsers, mockSubmissions } from '../..
 import Breadcrumb from '../../components/common/Breadcrumb';
 import Button from '../../components/common/button';
 import { URL } from '../../Utils';
+
 const ProblemStatementsList = () => {
   const navigate = useNavigate();
   const evaluators = getEvaluatorUsers();
@@ -22,6 +23,7 @@ const ProblemStatementsList = () => {
   const [statusFilter, setStatusFilter] = useState('all');
 
   const handleProblemClick = (problem) => {
+    // Navigates to the details page using the ID (e.g., /admin/problems/7/details)
     navigate(`/admin/problems/${problem.id}/details`);
   };
 
@@ -69,13 +71,12 @@ const ProblemStatementsList = () => {
           id: p.ID ? String(p.ID) : (p.id ? String(p.id) : ''),
           title: p.TITLE || p.title || 'Untitled',
           description: p.DESCRIPTION || p.description || '',
-          // backend doesn't have created timestamp; use SUB_DATE if present, else now
           created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
-          // keep fields expected by the UI
           deadline: p.SUB_DATE || p.deadline,
           assignedEvaluators: p.assignedEvaluators || [],
           submissionsCount: p.submissionsCount || 0,
-        }));
+        })).filter(p => p.id && p.id !== ''); 
+        
         setProblems(mapped);
       } catch (err) {
         setError(err.message || 'Failed to fetch');
@@ -95,7 +96,6 @@ const ProblemStatementsList = () => {
         const res = await fetch(`${URL}/submissions`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
-        // normalize submission fields to a consistent shape
         const mapped = (json || []).map(s => ({
           id: s.ID ? String(s.ID) : (s.id || ''),
           problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
@@ -105,7 +105,6 @@ const ProblemStatementsList = () => {
         }));
         setSubmissions(mapped);
       } catch (err) {
-        // keep fallback mock submissions if fetch fails
         setSubmissions([]);
       }
     };
@@ -250,15 +249,15 @@ const ProblemStatementsList = () => {
               <th className="p-4 font-semibold">PS ID</th>
               <th className="p-4 font-semibold">Problem Statement</th>
               <th className="p-4 text-center font-semibold">Evaluator ID</th>
+              <th className="p-4 text-center font-semibold">Evaluator Phone</th>
               <th className="p-4 text-center font-semibold">Submissions</th>
               <th className="p-4 text-center font-semibold">Created</th>
-              <th className="p-4 text-center font-semibold">Evaluated</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="7" className="p-8 text-center">
+                <td colSpan="6" className="p-8 text-center">
                   <div className="flex justify-center items-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#FF9900]"></div>
                   </div>
@@ -272,7 +271,13 @@ const ProblemStatementsList = () => {
                     key={problem.id}
                     className="hover:bg-[#F9FAFB] border-t border-[#E2E8F0] transition-all"
                   >
-                    <td className="p-4 text-[#1A202C] font-medium">SFS_{problem.id}</td>
+                    {/* UPDATED: Added onClick to the ID cell */}
+                    <td 
+                      className="p-4 text-[#1A202C] font-medium cursor-pointer hover:text-[#2B6CB0] transition-colors"
+                      onClick={() => handleProblemClick(problem)}
+                    >
+                      SFS_{problem.id}
+                    </td>
                     <td className="p-4">
                       <span
                         className="text-[#2B6CB0] hover:underline cursor-pointer"
@@ -285,20 +290,20 @@ const ProblemStatementsList = () => {
                       {evaluator ? evaluator.id : 'N/A'}
                     </td>
                     <td className="p-4 text-center text-[#1A202C]">
+                      {evaluator ? evaluator.phone : 'N/A'}
+                    </td>
+                    <td className="p-4 text-center text-[#1A202C]">
                       {problem.submissionsCount || 0}
                     </td>
                     <td className="p-4 text-center text-[#718096]">
                       {formatDateTime(problem.created)}
-                    </td>
-                    <td className="p-4 text-center text-[#1A202C]">
-                      {getEvaluatedCount(problem.id) > 0 ? '✅' : '⏳'}
                     </td>
                   </tr>
                 );
               })
             ) : (
               <tr>
-                <td colSpan="7" className="p-8 text-center text-gray-500">
+                <td colSpan="6" className="p-8 text-center text-gray-500">
                   No problem statements found.
                 </td>
               </tr>

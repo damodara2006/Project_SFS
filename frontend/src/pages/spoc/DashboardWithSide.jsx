@@ -4,7 +4,7 @@ import { FaUsers, FaClipboardList, FaUser } from "react-icons/fa";
 import ProblemStatements from "../../components/ProblemStatements";
 import SPOCProfile from "./SPOCProfile";
 import axios from "axios"
-import {URL} from "../../Utils";
+import { URL } from "../../Utils";
 import { useNavigate } from "react-router-dom";
 const DashboardWithSide = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,8 +25,8 @@ const DashboardWithSide = () => {
   });
   function allteams() {
     // console.log("he")
-    axios.get(`${URL}/fetch_teams`).then(res =>{ setFullTeam(res.data), console.log(res.data)})
- 
+    axios.get(`${URL}/fetch_teams`).then(res => { setFullTeam(res.data), console.log(res.data) })
+
   }
 
   function SelectedTeam(team) {
@@ -36,17 +36,17 @@ const DashboardWithSide = () => {
   }
 
   console.log(selectedTeam);
-  
+
 
   useEffect(() => {
     allteams()
-  },[])
+  }, [])
 
   console.log(FullTeam)
 
   const teamsPerPage = 10;
 
-  
+
 
   // Sample team list with members
   const teams1 = [
@@ -313,7 +313,7 @@ const DashboardWithSide = () => {
           </>
         )}
 
-        {activeView === "problems" && <ProblemStatements />}
+        {activeView === "problems" && <ProblemStatements showHeader={false} />}
         {activeView === "profile" && <SPOCProfile />}
 
         {/* Team List View */}
@@ -484,7 +484,7 @@ const DashboardWithSide = () => {
                   placeholder="Enter team name"
                   required
                 />
-                
+
               </div>
 
               {/* Team Members */}

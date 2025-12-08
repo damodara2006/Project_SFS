@@ -72,10 +72,9 @@ const SubmissionsChart = () => {
           <TimeRangeButton range="Monthly" activeRange={timeRange} setRange={setTimeRange} />
         </div>
       </div>
-      <div className="h-72" style={{ minHeight: 250 }}>
-        {chartData && chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+      <div className="h-72">
+        <ResponsiveContainer width="100%" height="100%" minHeight={250}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorSubmissions" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ff9100" stopOpacity={0.8} />
@@ -87,10 +86,7 @@ const SubmissionsChart = () => {
             <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.75rem' }} />
             <Area type="monotone" dataKey="submissions" stroke="#ff9100" strokeWidth={2} fill="url(#colorSubmissions)" />
           </AreaChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex items-center justify-center h-full text-sm text-gray-500">No data to display</div>
-        )}
+        </ResponsiveContainer>
       </div>
     </motion.div>
   );
