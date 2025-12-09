@@ -57,10 +57,10 @@ const AdminSidebar = ({ isMobileOpen, setMobileOpen, isExpanded, setIsExpanded }
             Problem Statements
           </NavItem>
           <NavItem to="/admin/evaluators" icon={<FiUsers size={20} />} isExpanded={isExpanded}>
-            Evaluators
+            Users
           </NavItem>
           <NavItem to="/admin/spoc-approvals" icon={<FiCheckSquare size={20} />} isExpanded={isExpanded}>
-            SPOC Requests
+           SPOC Requests
           </NavItem>
         </nav>
       </aside>
@@ -85,7 +85,7 @@ const AdminSidebar = ({ isMobileOpen, setMobileOpen, isExpanded, setIsExpanded }
             Problem Statements
           </NavItem>
           <NavItem to="/admin/evaluators" icon={<FiUsers size={20} />} isExpanded={true}>
-            Evaluators
+            Users
           </NavItem>
           <NavItem to="/admin/spoc-approvals" icon={<FiCheckSquare size={20} />} isExpanded={true}>
             SPOC Requests
