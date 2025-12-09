@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import SearchBar from '../components/SearchBar'
 import Student_submitions from '../pages/student/Student_submitions'
 import TeamDetails from '../pages/student/TeamDetails'
 import ProblemStatements from './ProblemStatements'
@@ -55,7 +54,7 @@ const StudentNav = () => {
                   exit="exit"
                   transition={{ duration: 0.3 }}
                 >
-                  <SearchBar />
+                  
                   {/* Put your Problem Statements content here */}
                   <div className="mt-4 p-4 bg-white rounded shadow">
                     <ProblemStatements />

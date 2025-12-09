@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Header from "../components/Header";
+import SearchBar from '../components/SearchBar'
 // import Footer from "../components/Footer";
 import { URL } from "../Utils";
 
@@ -98,6 +99,7 @@ const ProblemStatements = ({ showHeader = true }) => {
       {showHeader && <Header />}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      </div>
         {/* Page Header */}
         <header
           className={`mb-8 sm:mb-10 flex flex-col items-center text-center ${
@@ -154,14 +156,8 @@ const ProblemStatements = ({ showHeader = true }) => {
           {/* Table Section */}
           <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Available Problems
-                </h2>
-                <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                  Click &quot;View&quot; to see full details and submit your
-                  solution.
-                </p>
+              <div className="flex items-center gap-3">
+                <SearchBar />
               </div>
             </div>
 
@@ -187,9 +183,7 @@ const ProblemStatements = ({ showHeader = true }) => {
                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                   />
                 </svg>
-                <div className="mt-3 text-sm text-gray-700">
-                  Loading problems...
-                </div>
+                <div className="mt-3 text-sm text-gray-700">Loading problems...</div>
               </div>
             ) : problems.length === 0 ? (
               <div className="p-8 text-center text-sm text-gray-600">
@@ -250,9 +244,7 @@ const ProblemStatements = ({ showHeader = true }) => {
                           {p.DEPT}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
-                          {p.SUB_DEADLINE
-                            ? p.SUB_DEADLINE.split("T")[0]
-                            : "N/A"}
+                          {p.SUB_DEADLINE ? p.SUB_DEADLINE.split("T")[0] : "N/A"}
                         </td>
                         <td className="px-6 py-4 text-right whitespace-nowrap">
                           <button
@@ -269,10 +261,6 @@ const ProblemStatements = ({ showHeader = true }) => {
               </motion.div>
             )}
           </section>
-        </div>
-      </div>
-
-      {/* MODAL RENDERING */}
       <Modal
         open={isOpen}
         onClose={closeModal}
@@ -337,7 +325,8 @@ const ProblemStatements = ({ showHeader = true }) => {
       {/* <footer>
         <Footer />
       </footer> */}
-    </motion.div>
+    </div>
+  </motion.div>
   );
 };
 
