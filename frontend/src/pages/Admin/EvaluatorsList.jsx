@@ -38,7 +38,9 @@ const Popup = ({ children, visible, onClose }) => (
 );
 
 const EvaluatorList = () => {
+  const [activeView, setActiveView] = useState('evaluators'); // 'evaluators' or 'spoc'
   const [evaluators, setEvaluators] = useState([]);
+  const [spocs, setSpocs] = useState([]);
 
   /* useEffect(() => {
     GetAllEvaluators()
@@ -96,8 +98,40 @@ const EvaluatorList = () => {
       }
     };
 
+    // Fetch SPOC
+    const fetchSpocs = async () => {
+      try {
+        // This route is protected on the backend; include credentials so cookie-based auth is sent
+        const res = await axios.get(`${URL}/get_all_users`, { withCredentials: true });
+        const users = res.data || [];
+        const mappedSpocs = users
+          .filter(user => {
+            const role = (user.ROLE || user.role || '').toString().toUpperCase();
+            return role === 'SPOC';
+          })
+          .map(spoc => ({
+            id: spoc.ID ? String(spoc.ID) : (spoc.id || ''),
+            name: spoc.NAME || spoc.name || 'Unknown',
+            email: spoc.EMAIL || spoc.email || '',
+            dept: spoc.COLLEGE || spoc.dept || 'N/A',
+            college: spoc.COLLEGE || spoc.college || 'N/A',
+            collegeId: spoc.COLLEGE_CODE || spoc.collegeId || 'N/A',
+            dateJoined: spoc.DATE || spoc.dateJoined || new Date().toLocaleDateString(),
+            status: spoc.STATUS || spoc.status || 'Active',
+            problemStatements: [], // SPOC may not have problem statements
+            password: spoc.PASSWORD || "",
+          }));
+        setSpocs(mappedSpocs);
+      } catch (err) {
+        console.error("Failed to fetch SPOC", err);
+        // If the request fails due to auth, ensure spocs is empty rather than leaving stale data
+        setSpocs([]);
+      }
+    };
+
     fetchProblems();
     fetchEvaluators();
+    fetchSpocs();
   }, []);
 
   const GetAllEvaluators = () => {
@@ -159,16 +193,28 @@ const EvaluatorList = () => {
   };
 
   const handleDelete = (id) => {
-    setEvaluators(evaluators.filter((ev) => ev.id !== id));
-    showToast("Evaluator deleted successfully!", "success");
+    if (activeView === 'evaluators') {
+      setEvaluators(evaluators.filter((ev) => ev.id !== id));
+      showToast("Evaluator deleted successfully!", "success");
+    } else {
+      setSpocs(spocs.filter((spoc) => spoc.id !== id));
+      showToast("SPOC deleted successfully!", "success");
+    }
   };
 
-  const handleEditSave = (updatedEval) => {
-    setEvaluators(
-      evaluators.map((ev) => (ev.id === updatedEval.id ? updatedEval : ev))
-    );
+  const handleEditSave = (updatedItem) => {
+    if (activeView === 'evaluators') {
+      setEvaluators(
+        evaluators.map((ev) => (ev.id === updatedItem.id ? updatedItem : ev))
+      );
+      showToast("Evaluator updated successfully!", "success");
+    } else {
+      setSpocs(
+        spocs.map((spoc) => (spoc.id === updatedItem.id ? updatedItem : spoc))
+      );
+      showToast("SPOC updated successfully!", "success");
+    }
     setShowEditPopup(null);
-    showToast("Evaluator updated successfully!", "success");
   };
 
   const handleViewDetails = (evaluator) => {
@@ -202,6 +248,7 @@ const EvaluatorList = () => {
 
   // Stats Calculations using useMemo for efficiency
   const totalEvaluators = evaluators.length;
+  const totalSpocs = spocs.length;
   const uniqueProblemStatements = useMemo(() => {
     const problemMap = new Map();
     evaluators.forEach((ev) => {
@@ -226,11 +273,34 @@ const EvaluatorList = () => {
       <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
           <h1 className="text-3xl font-bold text-[#1A202C] mb-1">
-            Evaluators
+            {activeView === 'evaluators' ? 'Evaluators' : 'SPOC'}
           </h1>
           <p className="text-[#718096] text-sm">
-            Manage evaluator profiles and track problem statements.
+            Manage {activeView === 'evaluators' ? 'evaluator profiles and track problem statements' : 'SPOC profiles'}.
           </p>
+          {/* Pill Switch */}
+          <div className="flex mt-4 space-x-2">
+            <button
+              onClick={() => setActiveView('evaluators')}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                activeView === 'evaluators'
+                  ? 'bg-[#FF9900] text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Evaluators
+            </button>
+            <button
+              onClick={() => setActiveView('spoc')}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                activeView === 'spoc'
+                  ? 'bg-[#FF9900] text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              SPOC
+            </button>
+          </div>
         </div>
         {/* <button
           onClick={() => setShowCreatePopup(true)}
@@ -247,26 +317,28 @@ const EvaluatorList = () => {
             <FiUsers className="text-[#FF9900] text-2xl" />
           </div>
           <div>
-            <p className="text-sm text-[#718096]">Total Evaluators</p>
+            <p className="text-sm text-[#718096]">Total {activeView === 'evaluators' ? 'Evaluators' : 'SPOC'}</p>
             <p className="text-2xl font-bold text-[#1A202C]">
-              {totalEvaluators}
+              {activeView === 'evaluators' ? totalEvaluators : totalSpocs}
             </p>
           </div>
         </div>
-        <div
-          onClick={() => setShowProblemStatementPopup(true)}
-          className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-5 flex items-center gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
-        >
-          <div className="bg-[#E6FFFA] p-4 rounded-xl">
-            <FiClipboard className="text-[#38B2AC] text-2xl" />
+        {activeView === 'evaluators' && (
+          <div
+            onClick={() => setShowProblemStatementPopup(true)}
+            className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-5 flex items-center gap-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+          >
+            <div className="bg-[#E6FFFA] p-4 rounded-xl">
+              <FiClipboard className="text-[#38B2AC] text-2xl" />
+            </div>
+            <div>
+              <p className="text-sm text-[#718096]">Total Problem Statements</p>
+              <p className="text-2xl font-bold text-[#1A202C]">
+                {totalProblemStatements}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-[#718096]">Total Problem Statements</p>
-            <p className="text-2xl font-bold text-[#1A202C]">
-              {totalProblemStatements}
-            </p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Table */}
@@ -274,7 +346,7 @@ const EvaluatorList = () => {
         <table className="min-w-full text-sm">
           <thead className="bg-[#F7F8FC] text-[#718096]">
             <tr>
-              <th className="text-left py-3 px-5 font-semibold">Evaluator ID</th>
+              <th className="text-left py-3 px-5 font-semibold">{activeView === 'evaluators' ? 'Evaluator ID' : 'SPOC ID'}</th>
               <th className="text-left py-3 px-5 font-semibold">Name</th>
               <th className="text-left py-3 px-5 font-semibold">Email</th>
               <th className="text-left py-3 px-5 font-semibold">College</th>
@@ -282,34 +354,34 @@ const EvaluatorList = () => {
             </tr>
           </thead>
           <tbody>
-            {evaluators.map((ev) => (
+            {(activeView === 'evaluators' ? evaluators : spocs).map((item) => (
               <tr
-                key={ev.id}
+                key={item.id}
                 className="hover:bg-gray-50 border-t border-[#E2E8F0] transition-all"
               >
                 <td
-                  onClick={() => handleViewDetails(ev)}
+                  onClick={() => handleViewDetails(item)}
                   className="py-4 px-5 font-medium text-[#1A202C] cursor-pointer hover:text-[#FF9900] transition-colors"
                 >
-                  {ev.id}
+                  {item.id}
                 </td>
                 <td
-                  onClick={() => handleViewDetails(ev)}
+                  onClick={() => handleViewDetails(item)}
                   className="py-4 px-5 cursor-pointer hover:text-[#FF9900] transition-colors"
                 >
-                  {ev.name}
+                  {item.name}
                 </td>
-                <td className="py-4 px-5 text-[#718096]">{ev.email}</td>
-                <td className="py-4 px-5 text-[#718096]">{ev.college || ev.dept}</td>
+                <td className="py-4 px-5 text-[#718096]">{item.email}</td>
+                <td className="py-4 px-5 text-[#718096]">{item.college || item.dept}</td>
                 <td className="py-4 px-5 text-center space-x-4">
                   <button
-                    onClick={() => setShowEditPopup(ev)}
+                    onClick={() => setShowEditPopup(item)}
                     className="text-gray-500 hover:text-[#FF9900] transition-all"
                   >
                     <FiEdit size={18} />
                   </button>
                   <button
-                    onClick={() => handleDelete(ev.id)}
+                    onClick={() => handleDelete(item.id)}
                     className="text-gray-500 hover:text-red-600 transition-all"
                   >
                     <FiTrash2 size={18} />
@@ -330,11 +402,11 @@ const EvaluatorList = () => {
       {showDetailsPopup && (
         <Popup visible={!!showDetailsPopup} onClose={() => setShowDetailsPopup(null)}>
           <h2 className="text-xl font-bold text-[#1A202C] mb-6 border-b pb-3">
-            Evaluator Profile
+            {activeView === 'evaluators' ? 'Evaluator Profile' : 'SPOC Profile'}
           </h2>
           <div className="space-y-4 text-sm text-[#2D3748]">
             <div className="flex">
-              <span className="font-semibold text-[#718096] w-40">Evaluator ID:</span>
+              <span className="font-semibold text-[#718096] w-40">{activeView === 'evaluators' ? 'Evaluator ID:' : 'SPOC ID:'}</span>
               <span className="font-medium text-[#1A202C]">{showDetailsPopup.id}</span>
             </div>
             <div className="flex">
@@ -408,7 +480,7 @@ const EvaluatorList = () => {
       {showEditPopup && (
         <Popup visible={!!showEditPopup} onClose={() => setShowEditPopup(null)}>
           <h2 className="text-xl font-semibold text-[#1A202C] mb-5">
-            Edit Evaluator
+            {activeView === 'evaluators' ? 'Edit Evaluator' : 'Edit SPOC'}
           </h2>
           <form
             onSubmit={(e) => {
@@ -419,7 +491,7 @@ const EvaluatorList = () => {
             <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-3">
               <div>
                 <label className="text-sm text-[#4A5568] font-medium mb-1 block">
-                  Evaluator ID
+                  {activeView === 'evaluators' ? 'Evaluator ID' : 'SPOC ID'}
                 </label>
                 <input
                   type="text"
