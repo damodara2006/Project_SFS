@@ -104,10 +104,10 @@ const ProblemStatements = ({ showHeader = true }) => {
             showHeader ? "pt-24" : "pt-8"
           }`}
         >
-          <p className="text-xl font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2">
+          <p className="font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2">
             Solve for Sakthi
           </p>
-          <h1 className="text-4xl  font-extrabold text-gray-900">
+          <h1 className="text-4xl font-extrabold text-gray-900">
             Problem Statements
           </h1>
           <p className="mt-3 max-w-2xl text-sm sm:text-base text-gray-600">
@@ -155,7 +155,7 @@ const ProblemStatements = ({ showHeader = true }) => {
           <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
               <div>
-                <h2 className="text-3xl  font-bold text-gray-900 ">
+                <h2 className="text-3xl font-bold text-gray-900">
                   Available Problems
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">
@@ -271,6 +271,68 @@ const ProblemStatements = ({ showHeader = true }) => {
           </section>
         </div>
       </div>
+
+      {/* MODAL RENDERING */}
+      <Modal
+        open={isOpen}
+        onClose={closeModal}
+        title={selected ? selected.TITLE : "Problem Details"}
+      >
+        {selected ? (
+          <div className="space-y-3 text-sm text-gray-700">
+            <div>
+              <strong>ID:</strong> {selected.ID}
+            </div>
+            <div>
+              <strong>Date:</strong>{" "}
+              {selected.SUB_DEADLINE
+                ? selected.SUB_DEADLINE.split("T")[0]
+                : "N/A"}
+            </div>
+            <div>
+              <strong>Category:</strong> {selected.CATEGORY || "N/A"}
+            </div>
+            <div>
+              <strong>Theme:</strong> {selected.DEPT}
+            </div>
+            <div>
+              <strong>Description:</strong>
+              <p className="mt-1 leading-relaxed whitespace-pre-line">
+                {selected.DESCRIPTION}
+              </p>
+            </div>
+            {selected.Reference && (
+              <div>
+                <strong>Resources:</strong>{" "}
+                <a
+                  href={selected.Reference}
+                  className="text-blue-600 hover:underline break-all"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {selected.Reference}
+                </a>
+              </div>
+            )}
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={handleSubmit}
+                className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
+              >
+                Submit
+              </button>
+              <button
+                onClick={closeModal}
+                className="rounded px-3 py-1 text-sm font-medium bg-gray-700 text-white hover:bg-gray-800"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p>No details available.</p>
+        )}
+      </Modal>
 
       {/* <footer>
         <Footer />
