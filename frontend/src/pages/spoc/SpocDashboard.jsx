@@ -41,7 +41,9 @@ const SpocDashboard = () => {
     const [activeView, setActiveView] = useState('dashboard');
     const teamsPerPage = 10;
     const navigate = useNavigate();
-    const [data, setData] = useState([]); // expected to be an array of teams
+    const [data, setData] = useState([]);// expected to be an array of teams
+    const [spoc_data, setSpoc_data] = useState([]);
+
 
     const handlelogout = async () => {
         try {
@@ -113,9 +115,11 @@ const SpocDashboard = () => {
     };
 
     const getCollegeName = () => {
+        axios.get(`${URL}/cookie`).then(res => { setSpoc_data(res.data) });
+        console.log(spoc_data);
         // try to infer college from first team if present
-        const first = data[0];
-        return first?.COLLEGE || first?.college || 'KIOT';
+        
+        return spoc_data?.COLLEGE || spoc_data?.college || 'KIOT';
     };
 
     const getTeamName = (team, fallbackIndex) =>
