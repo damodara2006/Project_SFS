@@ -104,10 +104,10 @@ const ProblemStatements = ({ showHeader = true }) => {
             showHeader ? "pt-24" : "pt-8"
           }`}
         >
-          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2">
+          <p className="text-xl font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2">
             Solve for Sakthi
           </p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+          <h1 className="text-4xl  font-extrabold text-gray-900">
             Problem Statements
           </h1>
           <p className="mt-3 max-w-2xl text-sm sm:text-base text-gray-600">
@@ -155,7 +155,7 @@ const ProblemStatements = ({ showHeader = true }) => {
           <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
               <div>
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                <h2 className="text-3xl  font-bold text-gray-900 ">
                   Available Problems
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">
