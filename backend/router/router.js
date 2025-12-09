@@ -2,7 +2,7 @@ import { Router } from "express";
 
 // Controller Imports
 import { Add_Team_Members, Update_team } from "../controllers/Team_members.js";
-import { Fetch_Teams, Fetch_Team_Members, Delete_team } from "../controllers/Spoc_Teams.js";
+import { Fetch_Teams, Fetch_Team_Members, Delete_team, Fetch_Team_For_Students, fetch_team_id_email } from "../controllers/Spoc_Teams.js";
 import { login, logout, signup, GetAllUsers, GetAllEvaluators, verifyEmail, UpdateUser } from "../controllers/User_details.js";
 import { Verify_OTP } from "../controllers/Verify_OTP.js";
 // import Verify_OTP_Check from "../controllers/Verify_OTP_Check.js";
@@ -43,6 +43,9 @@ router.route("/add_members/:id").post(Add_Team_Members);
 router.route("/update_team").post(Update_team);
 router.route("/delete_team").post(Delete_team);
 router.route("/send_mail_to_spoc").post(sendMailToSpoc);
+router.route("/fetch_team_for_students").post(Fetch_Team_For_Students); 
+router.route("/fetch_team_id_email").post(fetch_team_id_email);
+
 
 
 // --- Student Routes ---

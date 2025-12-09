@@ -32,4 +32,18 @@ const Delete_team = AsyncHandler(async (req, res) => {
     res.send(result)
 })
 
-export { Fetch_Teams, Fetch_Team_Members, Delete_team }
+const Fetch_Team_For_Students = AsyncHandler(async (req, res) => {
+    const { id } = req.body;
+    const [data, extra] = await connection.query(`SELECT * FROM Team_List WHERE ID=${id}`)
+    res.send(data)
+})
+
+const fetch_team_id_email = AsyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const [data, extra] = await connection.query(`SELECT ID FROM Team_List WHERE LEAD_EMAIL='${email}'`)
+    console.log(data);
+    
+    res.send(data)
+})
+
+export { Fetch_Teams, Fetch_Team_Members, Delete_team, Fetch_Team_For_Students, fetch_team_id_email }
