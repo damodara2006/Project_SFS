@@ -9,7 +9,7 @@ import { URL } from '../../Utils';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+// import Footer from '../../components/Footer';
 
 const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: FaUsers },
@@ -145,7 +145,7 @@ const SpocDashboard = () => {
                         </ul>
                     </nav>
 
-                    <div className="absolute bottom-16 left-6 right-6">
+                    {/* <div className="absolute bottom-16 left-6 right-6">
                         <p className="text-sm mb-2 truncate">{getCollegeName()}</p>
                         <button
                             onClick={handlelogout}
@@ -153,7 +153,7 @@ const SpocDashboard = () => {
                         >
                             LOGOUT
                         </button>
-                    </div>
+                    </div> */}
                 </aside>
 
                 {/* Main Content */}
@@ -263,7 +263,7 @@ const SpocDashboard = () => {
                     {activeView === 'profile' && <SPOCProfile />}
                 </main>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     </>
 );
