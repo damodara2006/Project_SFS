@@ -106,8 +106,8 @@ const ProblemStatements = ({ showHeader = true }) => {
           {[
             { label: "Total Problems", value: problems.length },
             // { label: "Latest Date", value: problems[problems.length - 1]?.date || "N/A" },
-            { label: "Themes", value: [...new Set(problems.map((p) => p.DEPT))].length },
-            { label: "Categories", value: [...new Set(problems.map((p) => p.CATEGORY))].length },
+            { label: "Categories", value: 2 },
+            { label: "Departments", value: [...new Set(problems.map((p) => p.DEPT))].length },
             // { label: "Status", value: error ? "Offline Mode" : "Online" },
           ].map((item) => (
             <div
@@ -162,7 +162,7 @@ const ProblemStatements = ({ showHeader = true }) => {
                     Title
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Category
+                    Department
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Deadline
