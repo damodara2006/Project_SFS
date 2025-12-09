@@ -1,48 +1,18 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { URL } from "../Utils"
 
-const sampleProblems = [
-  {
-    id: "P-001",
-    title: "Smart Waste Management System Using IoT and AI",
-    date: "2025-09-01",
-    description:
-      "Develop an IoT-based system integrated with AI algorithms to monitor, classify, and optimize waste collection in urban and rural areas.",
-    category: "Smart City / IoT / AI",
-    theme: "Smart Automation for Sustainable Cities",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-  {
-    id: "P-002",
-    title: "Predictive Healthcare System for Early Disease Detection",
-    date: "2025-09-05",
-    description:
-      "Design a healthcare analytics platform that leverages ML to predict potential health issues from wearable and patient data.",
-    category: "Healthcare / Machine Learning",
-    theme: "AI-Powered Health Solutions",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-  {
-    id: "P-003",
-    title: "Blockchain-Based Student Credential Verification System",
-    date: "2025-09-10",
-    description:
-      "Create a blockchain-driven platform for educational institutions to issue and verify student certificates securely.",
-    category: "Blockchain / Education",
-    theme: "Digital Transformation in Education",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-];
 
 const fetchProblems = async () => {
   const response = await axios.get(`${URL}/get_problems`, { timeout: 8000 });
   return response.data.problems;
 };
+
+
 
 const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
@@ -100,16 +70,19 @@ const ProblemStatements = ({ showHeader = true }) => {
       setError(false);
       try {
         const data = await fetchProblems();
-        setProblems(Array.isArray(data) && data.length > 0 ? data : sampleProblems);
+        setProblems(Array.isArray(data) && data.length > 0 ? data : "Failed to load problems.");
       } catch {
         setError(true);
-        setProblems(sampleProblems);
+        setProblems("Loading failed. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
     load();
   }, []);
+
+  console.log(problems);
+  
 
 
 
@@ -211,7 +184,7 @@ const ProblemStatements = ({ showHeader = true }) => {
                   >
                     <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700">{p.DEPT}</td>
                     <td className="px-6 py-4 text-sm text-gray-700">{p.SUB_DEADLINE ? p.SUB_DEADLINE.split("T")[0] : 'N/A'}</td>
                     <td className="px-6 py-4 text-right">
                       <button
