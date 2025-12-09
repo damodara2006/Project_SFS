@@ -48,9 +48,25 @@ const AdminDashboard = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await fetch(`${URL}/submissions`);
-      const result = await response.json();
-      setData(prevData => ({ ...prevData, submissions: result }));
+      let allSubmissions = [];
+      let page = 1;
+      let totalPages = 1;
+
+      do {
+        const response = await fetch(`${URL}/submissions?page=${page}`);
+        const result = await response.json();
+        
+        if (result && result.submissions) {
+          allSubmissions = [...allSubmissions, ...result.submissions];
+          totalPages = result.totalPages;
+          page++;
+        } else {
+          // Stop if the response is not as expected
+          break;
+        }
+      } while (page <= totalPages);
+
+      setData(prevData => ({ ...prevData, submissions: allSubmissions }));
 
     }
     catch (error) {
@@ -163,7 +179,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Second row: Submissions Graph */}
-        <SubmissionsChart />
+        <SubmissionsChart submissions={data.submissions} />
 
         {/* Third row: Recent Problems Table */}
         <RecentProblemsTable problems={data.problems} />

@@ -8,31 +8,20 @@ import React, { useState, useEffect } from 'react';
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, Tooltip, Area } from 'recharts';
 import { motion } from 'framer-motion';
 
-// Mock data spanning several months for realistic filtering
-const allSubmissionsData = Array.from({ length: 120 }, (_, i) => {
-  const date = new Date();
-  date.setDate(date.getDate() - i);
-  return {
-    date,
-    submissions: Math.floor(Math.random() * (15 - 2 + 1)) + 2,
-  };
-}).reverse();
-
-/**
- * A reusable button for selecting a time range.
- */
 const TimeRangeButton = ({ range, activeRange, setRange }) => (
   <button
     onClick={() => setRange(range)}
     className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-      activeRange === range ? 'bg-gray-200 text-black' : 'text-gray-600 hover:bg-gray-200'
+      activeRange === range
+        ? 'bg-orange-500 text-white'
+        : 'text-gray-600 hover:bg-gray-200'
     }`}
   >
     {range}
   </button>
 );
 
-const SubmissionsChart = () => {
+const SubmissionsChart = ({ submissions: allSubmissionsData = [] }) => {
   const [timeRange, setTimeRange] = useState('30 Days');
   const [chartData, setChartData] = useState([]);
 
@@ -40,22 +29,41 @@ const SubmissionsChart = () => {
     const now = new Date();
     let filteredData;
 
+    // Ensure allSubmissionsData is an array and has data
+    if (!Array.isArray(allSubmissionsData) || allSubmissionsData.length === 0) {
+      setChartData([]);
+      return;
+    }
+
+    const processedSubmissions = allSubmissionsData.map(sub => ({
+      ...sub,
+      date: new Date(sub.SUB_DATE || sub.sub_date),
+    })).sort((a, b) => a.date - b.date);
+
     if (timeRange === 'Monthly') {
-      const monthlyAgg = allSubmissionsData.reduce((acc, { date, submissions }) => {
+      const monthlyAgg = processedSubmissions.reduce((acc, { date }) => {
         const month = date.toLocaleDateString('en-US', { year: '2-digit', month: 'short' });
-        acc[month] = (acc[month] || 0) + submissions;
+        acc[month] = (acc[month] || 0) + 1; // Counting each submission
         return acc;
       }, {});
       filteredData = Object.keys(monthlyAgg).map(month => ({ date: month, submissions: monthlyAgg[month] }));
     } else {
       const days = timeRange === '7 Days' ? 7 : 30;
-      const cutoff = new Date(now.setDate(now.getDate() - days));
-      filteredData = allSubmissionsData
+      const cutoff = new Date();
+      cutoff.setDate(now.getDate() - days);
+      
+      const dailyAgg = processedSubmissions
         .filter(d => d.date > cutoff)
-        .map(d => ({ ...d, date: d.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) }));
+        .reduce((acc, { date }) => {
+          const day = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          acc[day] = (acc[day] || 0) + 1; // Counting each submission
+          return acc;
+        }, {});
+      
+      filteredData = Object.keys(dailyAgg).map(day => ({ date: day, submissions: dailyAgg[day] }));
     }
     setChartData(filteredData);
-  }, [timeRange]);
+  }, [timeRange, allSubmissionsData]);
 
   return (
     <motion.div

@@ -47,7 +47,7 @@ const EvaluationChart = ({ totalSubmissions, evaluatedCount }) => {
 
       {/* --- Center Section: Donut Chart --- */}
       <div className="relative w-64 h-64 flex items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={250}>
           <PieChart>
             <Pie
               data={chartData}

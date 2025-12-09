@@ -30,7 +30,9 @@ const Get_solution = AsyncHandler(async (req, res) => {
 });
 
 const Get_all_submissions = AsyncHandler(async (req, res) => {
-    const { problemId } = req.query;
+    const { problemId, page = 1, limit = 10 } = req.query; // Default to page 1, 10 items per page
+    const offset = (page - 1) * limit;
+
     let query = `
         SELECT s.*, t.SPOC_ID, u.COLLEGE as collegeName 
         FROM submissions s
@@ -38,13 +40,30 @@ const Get_all_submissions = AsyncHandler(async (req, res) => {
         LEFT JOIN Users u ON t.SPOC_ID = u.ID
     `;
     const params = [];
+
     if (problemId) {
         query += ` WHERE s.PROBLEM_ID = ?`;
         params.push(problemId);
     }
-    query += ` ORDER BY s.SUB_DATE DESC`;
+
+    // Get total count for pagination
+    const countQuery = `SELECT COUNT(*) as total FROM (${query}) as subquery`;
+    const [totalResult] = await connection.query(countQuery, params);
+    const total = totalResult[0].total;
+
+    // Add pagination to the main query
+    query += ` ORDER BY s.SUB_DATE DESC LIMIT ? OFFSET ?`;
+    params.push(parseInt(limit), parseInt(offset));
+
     const [result] = await connection.query(query, params);
-    res.status(200).json(result);
+
+    res.status(200).json({
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(total / limit),
+        submissions: result
+    });
 });
 
 const Get_submission_by_id = AsyncHandler(async (req, res) => {
