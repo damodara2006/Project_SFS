@@ -155,7 +155,7 @@ const SPOCProfile = () => {
               aria-label="Upload profile photo (JPEG only)"
             />
             <p className="text-xs text-gray-400 mt-2 text-center">
-              JPEG only • Recommended 400x400px
+              JPEG only • Recommended 400x400px (max 1MB)
             </p>
           </motion.div>
 
