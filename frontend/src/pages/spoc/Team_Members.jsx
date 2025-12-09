@@ -109,6 +109,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { URL } from "../../Utils";
 import { HiArrowLeft } from "react-icons/hi";
+import Header from "../../components/Header";
 
 function Team_Members() {
   const params = useParams();
@@ -147,8 +148,9 @@ function Team_Members() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+                <Header />
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100">
