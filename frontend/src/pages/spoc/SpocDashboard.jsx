@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaClipboardList, FaUser } from 'react-icons/fa';
+import { AiOutlineTeam } from "react-icons/ai";
+import { RiTeamFill } from "react-icons/ri";
 import ProblemStatements from "../../components/ProblemStatements";
 import SPOCProfile from './SPOCProfile';
 import TeamList from './TeamList';
@@ -14,7 +16,7 @@ import Header from '../../components/Header';
 const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: FaUsers },
     { id: 'problems', label: 'Problems', icon: FaClipboardList },
-    { id: 'teamdetails', label: 'Team Details', icon: FaUser },
+    { id: 'teamdetails', label: 'Team Details', icon: RiTeamFill },
     { id: 'profile', label: 'Profile', icon: FaUser },
 ];
 
