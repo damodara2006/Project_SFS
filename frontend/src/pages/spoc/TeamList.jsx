@@ -18,7 +18,8 @@ function TeamList() {
     const [fetched, setfetched] = useState(false)
     const [fetch_team_members, setfetch_team_members] = useState([])
     const [fetched_s, setfetched_s] = useState(true)
-    const [team_id, setteam_id] = useState()
+    const [team_id, setteam_id] = useState() 
+    const [spoc_data,setSpoc_data] = useState()
     
     const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ function TeamList() {
         ],
     });
     axios.defaults.withCredentials = true
-    axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
+    axios.get(`${URL}/cookie`).then(res => { setspoc_id(res.data.ID); setSpoc_data(res.data)} );
 
     const[mentorName , setMentorName] = useState("");
     const[mentorEmail , setMentorEmail] = useState("");
@@ -47,6 +48,9 @@ function TeamList() {
         }
 
     }
+
+    // console.log(teamFormData.members[0].email);
+    
     // console.log(mentorName,mentorEmail);
     
 
@@ -90,6 +94,8 @@ function TeamList() {
         // console.log(teamFormData);
 
     };
+    // console.log(spoc_data);
+    
 
     const handleEditMembers = (e) => {
         // console.log(e);
@@ -117,7 +123,7 @@ function TeamList() {
         setfetched_s(false)
     }
 
-    // console.log(team_id);
+    // console.log(new Date().toString().split(" ").slice(0,4).join(" "));
 
 
     const handleCreateTeam = (e) => {
@@ -148,25 +154,33 @@ function TeamList() {
 
             }, 2000);
             axios
-                .post(`${URL}/add_members/${spoc_id}`, { Teamdata: teamFormData, mentorEmail: mentorEmail, mentorName:mentorName })
-                .then((res) => {
-                    if (res.status === 200) {
-                        // Dismiss loading toast and show success toast
-                        toast.dismiss(mailToast)
-                        toast.success('Mail sent successfully!', {
-                            duration: 3000,
-                            position: 'top-right',
-                            style: {
-                                backgroundColor: "green",
-                                color: "white"
-                            }
-                        });
-                        toast.success('Team created successfully!', {
-                            duration: 3000,
-                            position: 'top-right',
-                        });
-
+            .post(`${URL}/add_members/${spoc_id}`, { Teamdata: teamFormData, mentorEmail: mentorEmail, mentorName:mentorName })
+            .then( (res) => {
+                console.log(res);
+                axios.post(`${URL}/register`, { email: teamFormData.members[0].email, password: spoc_data.COLLEGE_CODE+res.data, role: 'STUDENT', college: spoc_data.COLLEGE, college_code: res.data, name: teamFormData.members[0].name, date: new Date().toString().split(" ").slice(0, 4).join(" ") })
+                
+                if (res.status === 200) {
+                    // Dismiss loading toast and show success toast
+                    toast.dismiss(mailToast)
+                    toast.success('Mail sent successfully!', {
+                        duration: 3000,
+                        position: 'top-right',
+                        style: {
+                            backgroundColor: "green",
+                            color: "white"
+                        }
+                    });
+                    toast.success('Team created successfully!', {
+                        duration: 3000,
+                        position: 'top-right',
+                    });
+                    
+                   
                         setShowCreateTeamModal(false);
+
+                       
+                        console.log("Hello");
+                        
                         setTeamFormData({
                             teamName: "",
                             members: [

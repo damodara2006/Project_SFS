@@ -2,15 +2,15 @@ import connection from "../database/mysql.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 import nodemailer from "nodemailer"
 import dotenv from "dotenv"
+import { signup } from "./User_details.js";
 dotenv.config()
 
 const Add_Team_Members = AsyncHandler(async (req, res) => {
   const { Teamdata, mentorEmail, mentorName } = req.body;
   const { id } = req.params;
   console.log(id);
-
   console.log(Teamdata, mentorEmail, mentorName);
-  
+  // return;
   
   
     // console.log(data.members)
@@ -87,10 +87,12 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
         await email()
         // console.log(dev)
     }
-    // console.log(data.members[0])
+  
+    // signup()
+  
 
 
-    res.status(200).send(`Team id : ${result.insertId}`)
+    res.status(200).send(result.insertId)
     
 })
 

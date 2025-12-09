@@ -6,25 +6,105 @@ import cookie from "cookie-parser"
 import jwt from "jsonwebtoken"
 
 const signup = AsyncHandler(async (req, res) => {
+    console.log(req.body);
     const { email, password, role, college, college_code, name, date } = req.body;
-    console.log("Error Message");
-
     // basic presence check
     if ([email, password, role, college_code, name].some((data) => !data || String(data).trim() === "")) {
         return res.status(400).send("All fields required");
     }
+    console.log(password);
+    
     let bcryptpass = hashSync(password, 10);
     // console.log(await compare('111', bcryptpass))
     // console.log(bcryptpass)
-
     // avoid logging potentially sensitive values like dates or params
-
     try {
         if (role == "spoc") {
             const query = `INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE, NAME, DATE) VALUES (?, ?, ?, ?, ?, ?, ?)`;
             const params = [email, bcryptpass, role.toUpperCase(), college, college_code, name, date];
             const [result] = await connection.query(query, params);
             res.status(200).json(result);
+
+        }
+        else if (role == "STUDENT") {
+            const query = `INSERT INTO Users(EMAIL,PASSWORD, ROLE, COLLEGE, COLLEGE_CODE, NAME, DATE, STATUS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+            const params = [email, bcryptpass, role.toUpperCase(), college, college_code, name, date, 'ACTIVE'];
+            const [result] = await connection.query(query, params);
+            res.status(200).json(result);
+
+            const transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
+                auth: {
+                    user: "damodara2006@gmail.com",
+                    pass: process.env.DAMO_GMAIL_PASS,
+                },
+            });
+
+          
+  
+         
+                    const info = await transporter.sendMail({
+                        from: '"Sakthi Auto Register" <damodara2006@gmail.com>',
+                        to: email,
+                        subject: "🚀Your Team Created for Solve For Sakthi!",
+                        html: `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solve For Sakthi - Team Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .info {
+            font-size: 15px;
+            margin: 6px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="title">Your Team Created for Solve For Sakthi!</div>
+
+        <div class="info"><strong>Email:</strong> ${email}</div>
+        <div class="info"><strong>Password:</strong> ${password}</div>
+    </div>
+
+</body>
+</html>
+
+`
+                    });
+
+                    console.log("Message sent:", info.messageId);
+           
+
+              
+
+
+      
 
         }
         else {
