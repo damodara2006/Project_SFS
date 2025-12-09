@@ -145,20 +145,17 @@ const ProblemStatements = ({ showHeader = true }) => {
               </div>
             ))}
           </section>
-
-          {/* Error Banner */}
-          {error && (
-            <div className="rounded-md border border-[#fc9300] bg-white px-4 py-3 text-sm text-gray-700 flex items-center justify-between">
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Table Section */}
+         
           <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
-              <div className="flex items-center gap-3">
-                <SearchBar />
+              <div className="flex items-center gap-3 w-full">
+                <SearchBar className="w-full" />
               </div>
+              {error && (
+                <div className="rounded-md border border-[#fc9300] bg-white px-4 py-3 text-sm text-gray-700 flex items-center justify-between w-full">
+                  <span>{error}</span>
+                </div>
+              )}
             </div>
 
             {loading ? (
@@ -191,12 +188,12 @@ const ProblemStatements = ({ showHeader = true }) => {
               </div>
             ) : (
               <motion.div
-                className="overflow-x-auto"
+                className="overflow-x-auto w-full"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <table className="min-w-full bg-white">
+                <table className="min-w-full bg-white w-full">
                   <thead className="bg-gray-100 border-b border-gray-200">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -261,70 +258,66 @@ const ProblemStatements = ({ showHeader = true }) => {
               </motion.div>
             )}
           </section>
-      <Modal
-        open={isOpen}
-        onClose={closeModal}
-        title={selected ? selected.TITLE : "Problem Details"}
-      >
-        {selected ? (
-          <div className="space-y-3 text-sm text-gray-700">
-            <div>
-              <strong>ID:</strong> {selected.ID}
-            </div>
-            <div>
-              <strong>Date:</strong>{" "}
-              {selected.SUB_DEADLINE
-                ? selected.SUB_DEADLINE.split("T")[0]
-                : "N/A"}
-            </div>
-            <div>
-              <strong>Category:</strong> {selected.CATEGORY || "N/A"}
-            </div>
-            <div>
-              <strong>Theme:</strong> {selected.DEPT}
-            </div>
-            <div>
-              <strong>Description:</strong>
-              <p className="mt-1 leading-relaxed whitespace-pre-line">
-                {selected.DESCRIPTION}
-              </p>
-            </div>
-            {selected.Reference && (
-              <div>
-                <strong>Resources:</strong>{" "}
-                <a
-                  href={selected.Reference}
-                  className="text-blue-600 hover:underline break-all"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {selected.Reference}
-                </a>
+          <Modal
+            open={isOpen}
+            onClose={closeModal}
+            title={selected ? selected.TITLE : "Problem Details"}
+          >
+            {selected ? (
+              <div className="space-y-3 text-sm text-gray-700">
+                <div>
+                  <strong>ID:</strong> {selected.ID}
+                </div>
+                <div>
+                  <strong>Date:</strong>{" "}
+                  {selected.SUB_DEADLINE
+                    ? selected.SUB_DEADLINE.split("T")[0]
+                    : "N/A"}
+                </div>
+                <div>
+                  <strong>Category:</strong> {selected.CATEGORY || "N/A"}
+                </div>
+                <div>
+                  <strong>Theme:</strong> {selected.DEPT}
+                </div>
+                <div>
+                  <strong>Description:</strong>
+                  <p className="mt-1 leading-relaxed whitespace-pre-line">
+                    {selected.DESCRIPTION}
+                  </p>
+                </div>
+                {selected.Reference && (
+                  <div>
+                    <strong>Resources:</strong>{" "}
+                    <a
+                      href={selected.Reference}
+                      className="text-blue-600 hover:underline break-all"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {selected.Reference}
+                    </a>
+                  </div>
+                )}
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    onClick={handleSubmit}
+                    className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    onClick={closeModal}
+                    className="rounded px-3 py-1 text-sm font-medium bg-gray-700 text-white hover:bg-gray-800"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
+            ) : (
+              <p>No details available.</p>
             )}
-            <div className="flex justify-end gap-3 mt-4">
-              <button
-                onClick={handleSubmit}
-                className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
-              >
-                Submit
-              </button>
-              <button
-                onClick={closeModal}
-                className="rounded px-3 py-1 text-sm font-medium bg-gray-700 text-white hover:bg-gray-800"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        ) : (
-          <p>No details available.</p>
-        )}
-      </Modal>
-
-      {/* <footer>
-        <Footer />
-      </footer> */}
+          </Modal>
     </div>
   </motion.div>
   );
