@@ -94,30 +94,30 @@ const HeroSection = () => (
     {/* subtle pattern background */}
     <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAnIGhlaWdodD0nMTAnIHZpZXdCb3g9JzAgMCAxMCAxMCc+CiAgPGcgb3BhY2l0eT0nMC41JyBmaWxsPScjNjM2MzYzJz4KICAgIDxyZWN0IHdpZHRoPScxMCcgaGVpZHRoPScxMCcgeD0nMCcgeT0nMCcgLz4KICAgIDxwYXRoIGQ9J00xMCAwTDAgMTVWMTBaJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMC4zNScgLz4KICA8L2c+Cjwvc3ZnPg==')]" />
 
-    <div className="relative max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-20 lg:pt-32 lg:pb-24">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <div className="relative max-w-8xl mx-auto px-6 lg:px-25 pt-28 pb-20 lg:pt-32 lg:pb-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-26 items-center lg:mt-6">
         {/* Left: Text */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           variants={fadeInUp}
           viewport={{ once: true }}
-          className="space-y-6"
+          className="space-y-4 sm:space-y-6 text-center lg:text-left"
         >
-          <p className="inline-flex items-center px-4 py-1 rounded-full border border-amber-200 bg-amber-50 text-xs font-semibold tracking-[0.2em] uppercase text-[#FF9800]">
+          <p className="inline-flex items-center px-3 sm:px-4 py-1 rounded-full border border-amber-200 bg-amber-50 text-xs font-semibold tracking-[0.2em] uppercase text-[#FF9800]">
             Solve for Sakthi
           </p>
 
           <h1
-            className={`text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-tight ${TEXT_COLOR}`}
+            className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-tight ${TEXT_COLOR}`}
           >
-            Driving the Future of{" "}
+            Driving the Future of
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">
               Academia-Industry Collaboration
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed max-w-xl">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 text-justify lg:text-left mx-auto lg:mx-0 leading-relaxed max-w-xl">
             <span className="font-semibold text-[#FF9800]">Solve for Sakthi</span> is the
             strategic nexus that transforms{" "}
             <span className="font-semibold">
@@ -126,18 +126,18 @@ const HeroSection = () => (
             challenges into high-impact learning and innovation opportunities.
           </p>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col items-center justify-center lg:justify-start gap-4">
             <motion.a
               href="/problemstatements"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              className={`inline-flex items-center justify-center px-7 py-2.5 text-sm sm:text-base font-semibold rounded-full ${ACCENT_BG} text-white shadow-lg hover:shadow-xl transition`}
+              className={`inline-flex items-center justify-center px-6 sm:px-7 py-2.5 text-sm sm:text-base font-semibold rounded-full ${ACCENT_BG} text-white shadow-lg hover:shadow-xl transition`}
             >
               Explore Our Challenges
             </motion.a>
 
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500 text-center lg:text-left">
               Start solving real-world problems with industry-aligned projects.
             </p>
           </div>
@@ -149,30 +149,30 @@ const HeroSection = () => (
           whileInView="visible"
           variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.15 } } }}
           viewport={{ once: true }}
-          className="relative"
+          className="relative transform hover:scale-[1.02] transition duration-500"
         >
           <div className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-amber-200/70 via-transparent to-orange-100/70 blur-xl" />
-          <div className="relative bg-white border border-gray-100 rounded-3xl shadow-2xl px-7 py-6 sm:px-9 sm:py-8 space-y-6">
-            <h3 className={`text-lg sm:text-xl font-bold ${TEXT_COLOR}`}>
+          <div className="relative bg-white border border-gray-100 rounded-3xl shadow-2xl px-6 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-8 space-y-4 sm:space-y-6">
+            <h3 className={`text-base sm:text-lg lg:text-xl font-bold ${TEXT_COLOR}`}>
               Why Solve for Sakthi?
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+            <p className="text-xs sm:text-sm lg:text-base text-gray-600 text-justify leading-relaxed">
               A cohesive platform where{" "}
               <span className="font-semibold">academia</span> meets{" "}
               <span className="font-semibold">industry</span>, enabling students to solve
               practical problems while industries gain relevant, scalable solutions.
             </p>
 
-            <div className="grid grid-cols-3 gap-4 text-center text-xs sm:text-sm">
-              <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center text-xs sm:text-sm">
+              <div className="p-2 sm:p-3 rounded-xl bg-gray-50 border border-gray-100">
                 <p className={`font-bold ${ACCENT_COLOR}`}>100+</p>
                 <p className="mt-1 text-gray-600">Problem Statements</p>
               </div>
-              <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
+              <div className="p-2 sm:p-3 rounded-xl bg-gray-50 border border-gray-100">
                 <p className={`font-bold ${ACCENT_COLOR}`}>20+</p>
                 <p className="mt-1 text-gray-600">Partner Industries</p>
               </div>
-              <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
+              <div className="p-2 sm:p-3 rounded-xl bg-gray-50 border border-gray-100">
                 <p className={`font-bold ${ACCENT_COLOR}`}>500+</p>
                 <p className="mt-1 text-gray-600">Students Engaged</p>
               </div>
@@ -185,8 +185,8 @@ const HeroSection = () => (
 );
 
 const MissionSection = () => (
-  <section className={`py-20 sm:py-24 px-6 lg:px-10 ${LIGHT_BG}`}>
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+  <section className={`py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-10 ${LIGHT_BG}`}>
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 items-start">
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -194,14 +194,14 @@ const MissionSection = () => (
         viewport={{ once: true }}
         className="lg:col-span-2"
       >
-        <h2 className={`text-3xl sm:text-4xl font-bold mb-4 ${ACCENT_COLOR}`}>
+        <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 ${ACCENT_COLOR}`}>
           Our Mission
         </h2>
-        <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-6">
+        <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 sm:mb-6">
           Building the bridge between classrooms and factories
         </p>
 
-        <div className="space-y-5 text-base sm:text-lg text-gray-700 leading-8 text-justify">
+        <div className="space-y-4 sm:space-y-5 text-sm sm:text-base md:text-lg text-gray-700 leading-7 sm:leading-8 text-justify">
           <p>
             Our core mission is to{" "}
             <span className="font-semibold">build a dynamic ecosystem</span> where innovation
@@ -230,13 +230,13 @@ const MissionSection = () => (
         whileInView="visible"
         variants={{ ...fadeInUp, visible: { ...fadeInUp.visible, transition: { duration: 0.7, delay: 0.2 } } }}
         viewport={{ once: true }}
-        className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 lg:p-9 transform hover:scale-[1.02] transition duration-500 border-t-4 border-[#FF9800]"
+        className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 lg:p-9 transform hover:scale-[1.02] transition duration-500 border-t-4"
       >
-        <h3 className={`text-2xl font-bold mb-6 ${TEXT_COLOR}`}>Core Values</h3>
-        <ul className="space-y-5 text-gray-700 text-base">
+        <h3 className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 ${TEXT_COLOR}`}>Core Values</h3>
+        <ul className="space-y-4 sm:space-y-5 text-gray-700 text-sm sm:text-base">
           <li className="flex items-start">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 border border-amber-100 mr-3 flex-shrink-0">
-              <FaLightbulb className={`${ACCENT_COLOR} text-xl`} />
+            <span className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-amber-50 border border-amber-100 mr-3 flex-shrink-0">
+              <FaLightbulb className={`${ACCENT_COLOR} text-lg sm:text-xl`} />
             </span>
             <p>
               <b>Continuous Innovation</b>: Encouraging creative and boundary-pushing
@@ -244,8 +244,8 @@ const MissionSection = () => (
             </p>
           </li>
           <li className="flex items-start">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 border border-amber-100 mr-3 flex-shrink-0">
-              <FaTools className={`${ACCENT_COLOR} text-xl`} />
+            <span className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-amber-50 border border-amber-100 mr-3 flex-shrink-0">
+              <FaTools className={`${ACCENT_COLOR} text-lg sm:text-xl`} />
             </span>
             <p>
               <b>Sustainable Growth</b>: Building solutions that are robust, responsible,
@@ -253,8 +253,8 @@ const MissionSection = () => (
             </p>
           </li>
           <li className="flex items-start">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 border border-amber-100 mr-3 flex-shrink-0">
-              <FaGraduationCap className={`${ACCENT_COLOR} text-xl`} />
+            <span className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-amber-50 border border-amber-100 mr-3 flex-shrink-0">
+              <FaGraduationCap className={`${ACCENT_COLOR} text-lg sm:text-xl`} />
             </span>
             <p>
               <b>Excellence & Mentorship</b>: Delivering consistent quality and fostering
@@ -268,14 +268,14 @@ const MissionSection = () => (
 );
 
 const VisionSection = () => (
-  <section className="py-20 sm:py-24 px-6 lg:px-10 bg-[#212529] text-white">
+  <section className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-10 bg-[#212529] text-white">
     <div className="max-w-7xl mx-auto text-center">
       <motion.h2
         initial="hidden"
         whileInView="visible"
         variants={fadeInUp}
         viewport={{ once: true }}
-        className="text-3xl sm:text-4xl font-bold mb-4"
+        className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4"
       >
         Our Strategic Vision
       </motion.h2>
@@ -290,14 +290,14 @@ const VisionSection = () => (
           },
         }}
         viewport={{ once: true }}
-        className="text-base sm:text-xl leading-relaxed mb-14 text-gray-300 max-w-4xl mx-auto"
+        className="text-sm sm:text-base md:text-xl leading-relaxed mb-10 sm:mb-14 text-gray-300 max-w-4xl mx-auto"
       >
         To establish ourselves as a premier, world-class innovation hub dedicated to empowering
         both industries and educational institutions to co-create high-impact, technologically
         advanced, and sustainable solutions globally.
       </motion.p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
         {visionData.map(({ icon: Icon, title, desc }, i) => (
           <motion.div
             key={i}
@@ -305,14 +305,14 @@ const VisionSection = () => (
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="p-7 md:p-8 bg-white text-[#212529] rounded-2xl shadow-xl border border-gray-100 border-b-4 border-b-transparent hover:border-b-[#FF9800] transition duration-300 transform hover:translate-y-[-4px]"
+            className="p-6 sm:p-7 md:p-8 bg-white text-[#212529] rounded-2xl shadow-xl border border-gray-100 border-b-4 border-b-transparent hover:border-b-[#FF9800] transition duration-300 transform hover:translate-y-[-4px]"
           >
             <div className="flex items-center justify-center mb-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 border border-amber-100">
-                <Icon className={`${ACCENT_COLOR} text-2xl`} />
+              <span className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-amber-50 border border-amber-100">
+                <Icon className={`${ACCENT_COLOR} text-xl sm:text-2xl`} />
               </span>
             </div>
-            <h3 className={`text-lg sm:text-xl font-bold mb-3 ${TEXT_COLOR}`}>{title}</h3>
+            <h3 className={`text-base sm:text-lg md:text-xl font-bold mb-3 ${TEXT_COLOR}`}>{title}</h3>
             <p className="text-gray-600 text-sm sm:text-base">{desc}</p>
           </motion.div>
         ))}
@@ -322,14 +322,14 @@ const VisionSection = () => (
 );
 
 const ImpactSection = () => (
-  <section className="py-20 sm:py-24 px-6 lg:px-10 bg-white">
+  <section className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-10 bg-white">
     <div className="max-w-7xl mx-auto text-center">
       <motion.h2
         initial="hidden"
         whileInView="visible"
         variants={fadeInUp}
         viewport={{ once: true }}
-        className={`text-3xl sm:text-4xl font-bold mb-4 ${TEXT_COLOR}`}
+        className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 ${TEXT_COLOR}`}
       >
         Our Impact in Action
       </motion.h2>
@@ -344,13 +344,13 @@ const ImpactSection = () => (
           },
         }}
         viewport={{ once: true }}
-        className="text-base sm:text-xl leading-relaxed mb-14 text-gray-600 max-w-4xl mx-auto"
+        className="text-sm sm:text-base md:text-xl leading-relaxed mb-10 sm:mb-14 text-gray-600 max-w-4xl mx-auto"
       >
         We measure our success by the real-world value we generate, delivering tangible results
         across the entire manufacturing and technology value chain.
       </motion.p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
         {impactData.map(({ icon: Icon, title, stat, desc }, i) => (
           <motion.div
             key={i}
@@ -358,15 +358,15 @@ const ImpactSection = () => (
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="p-8 bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-2xl transition duration-300"
+            className="p-6 sm:p-8 bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-2xl transition duration-300"
           >
-            <div className="flex items-center justify-center mb-5">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 border border-amber-100">
-                <Icon className={`${ACCENT_COLOR} text-3xl`} />
+            <div className="flex items-center justify-center mb-4 sm:mb-5">
+              <span className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-amber-50 border border-amber-100">
+                <Icon className={`${ACCENT_COLOR} text-2xl sm:text-3xl`} />
               </span>
             </div>
-            <h3 className={`text-xl font-bold mb-1 ${TEXT_COLOR}`}>{title}</h3>
-            <p className={`text-3xl sm:text-4xl font-extrabold mb-3 ${ACCENT_COLOR}`}>{stat}</p>
+            <h3 className={`text-lg sm:text-xl font-bold mb-1 ${TEXT_COLOR}`}>{title}</h3>
+            <p className={`text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3 ${ACCENT_COLOR}`}>{stat}</p>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{desc}</p>
           </motion.div>
         ))}
@@ -376,14 +376,14 @@ const ImpactSection = () => (
 );
 
 const TeamSection = () => (
-  <section className={`py-20 sm:py-24 px-6 lg:px-10 ${LIGHT_BG}`}>
+  <section className={`py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-10 ${LIGHT_BG}`}>
     <div className="max-w-7xl mx-auto text-center">
       <motion.h2
         initial="hidden"
         whileInView="visible"
         variants={fadeInUp}
         viewport={{ once: true }}
-        className={`text-3xl sm:text-4xl font-bold mb-4 ${TEXT_COLOR}`}
+        className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 ${TEXT_COLOR}`}
       >
         The Ecosystem & Our Contributors
       </motion.h2>
@@ -398,13 +398,13 @@ const TeamSection = () => (
           },
         }}
         viewport={{ once: true }}
-        className="text-base sm:text-lg leading-relaxed mb-14 text-gray-600 max-w-3xl mx-auto"
+        className="text-sm sm:text-base md:text-lg leading-relaxed mb-10 sm:mb-14 text-gray-600 max-w-3xl mx-auto"
       >
         A collaborative network of administrators, mentors, SPOCs, and student teams aligned
         towards building impactful, sustainable solutions.
       </motion.p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
         {teamData.map(({ icon: Icon, title, desc }, i) => (
           <motion.div
             key={i}
@@ -412,14 +412,14 @@ const TeamSection = () => (
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="bg-white p-8 rounded-2xl border border-gray-200 shadow-md transition duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-md transition duration-300 hover:shadow-xl hover:-translate-y-1"
           >
             <div className="flex items-center justify-center mb-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 border border-amber-100">
-                <Icon className={`${ACCENT_COLOR} text-2xl`} />
+              <span className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-amber-50 border border-amber-100">
+                <Icon className={`${ACCENT_COLOR} text-xl sm:text-2xl`} />
               </span>
             </div>
-            <h3 className={`text-lg sm:text-xl font-bold mb-3 ${TEXT_COLOR}`}>{title}</h3>
+            <h3 className={`text-base sm:text-lg md:text-xl font-bold mb-3 ${TEXT_COLOR}`}>{title}</h3>
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{desc}</p>
           </motion.div>
         ))}
