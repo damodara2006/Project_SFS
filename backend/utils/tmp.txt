@@ -1,1 +1,3 @@
-Temp
+db username = admin
+db password = sfsadmin123
+port number = 1433

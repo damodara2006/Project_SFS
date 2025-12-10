@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 
 import { URL } from "../Utils";
@@ -104,22 +103,17 @@ const ProblemStatements = ({ showHeader = true }) => {
 
       {/* MAIN CONTAINER WITH 2rem SIDE GAP */}
       <div className="max-w-7xl mx-auto px-8 pb-12">
-        <header
-          className={`mb-8 sm:mb-10 flex flex-col items-center text-center ${
-            showHeader ? "pt-24" : "pt-8"
-          }`}
-        >
+       
           <p className="font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2">
             Solve for Sakthi
           </p>
           <h1 className="text-4xl font-extrabold text-gray-900">
             Problem Statements
           </h1>
-          <p className="mt-3 max-w-2xl text-sm sm:text-base text-gray-600">
+          <p className="mt-3 max-w-2xl text-sm sm:text-base text-gray-600 mb-2">
             Browse through the latest problem statements and pick the one that
             aligns with your skills and interests.
           </p>
-        </header>
 
         <div className="space-y-8">
           <section className="grid grid-cols-1 sm:grid-cols-3 gap-6">
