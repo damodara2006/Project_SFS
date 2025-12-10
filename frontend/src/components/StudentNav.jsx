@@ -1,102 +1,147 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Student_submitions from '../pages/student/Student_submitions'
-import TeamDetails from '../pages/student/TeamDetails'
-import ProblemStatements from './ProblemStatements'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Student_submitions from "../pages/student/Student_submitions";
+import TeamDetails from "../pages/student/TeamDetails";
+import ProblemStatements from "./ProblemStatements";
 
 const StudentNav = () => {
-  const [active, setActive] = useState('Problem Statements')
+  const [active, setActive] = useState("Problem Statements");
 
-  const tabs = ['Problem Statements', 'My Submission', 'Team Details']
+  const tabs = ["Problem Statements", "My Submission", "Team Details"];
 
-  const variants = {
-    initial: { opacity: 0, y: 20 },
+  const pageVariants = {
+    initial: { opacity: 0, y: 16 },
     animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-  }
+    exit: { opacity: 0, y: -16 },
+  };
 
   return (
-    <div className="min-h-screen flex pt-20">
-      <main className="flex-1 p-6">
-        <div className="max-w-5xl mx-auto">
-          {/* Tabs bar */}
-          <div className="bg-gray-100 rounded-md p-3 mb-4 flex justify-center">
-            <div className="flex gap-2 relative">
-              {tabs.map((t) => (
+    <div className="min-h-screen pt-20 bg-white/50 flex mt-4">
+      {/* Center the whole workspace */}
+      <main className="w-full max-w-6xl mx-auto px-6 md:px-8 pb-12">
+        {/* Page header */}
+        <motion.div
+          className="mb-8 text-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="inline-flex items-center rounded-full border border-[#fc9300]/40 bg-[#fff7ec] px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-[#fc9300] mb-3">
+            Student Workspace
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+            Manage your journey at one place
+          </h1>
+          <p className="text-sm text-gray-600 mt-2 max-w-2xl mx-auto">
+            Browse problem statements, track submissions, and view your team
+            details in a single, focused interface.
+          </p>
+        </motion.div>
+
+        {/* Tabs bar */}
+        <div className="mb-8 flex justify-center">
+          <div className="inline-flex bg-gray-100 border border-gray-200 rounded-full p-1 shadow-sm">
+            {tabs.map((t) => {
+              const isActive = active === t;
+              return (
                 <button
                   key={t}
                   onClick={() => setActive(t)}
-                  className={`px-6 py-2 rounded-md font-medium transition relative`}
+                  className="relative px-5 sm:px-6 py-2 text-sm font-medium rounded-full transition-colors"
                 >
-                  {active === t && (
+                  {isActive && (
                     <motion.div
                       layoutId="active-pill"
-                      className="absolute inset-0 bg-white rounded-md shadow"
-                      style={{ borderRadius: 20 }}
-                      transition={{ duration: 0.5 }}
+                      className="absolute inset-0 rounded-full bg-[#fc9300] shadow-md"
+                      transition={{
+                        type: "spring",
+                        stiffness: 340,
+                        damping: 28,
+                      }}
                     />
                   )}
-                  <span className="relative z-10 text-[#4a4a4a]">{t}</span>
+                  <span
+                    className={`relative z-10 ${
+                      isActive ? "text-white" : "text-gray-700"
+                    }`}
+                  >
+                    {t}
+                  </span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Content area */}
-          <div className="mb-6">
-            <AnimatePresence mode="wait">
-              {active === 'Problem Statements' && (
-                <motion.div
-                  key="problem-statements"
-                  variants={variants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.3 }}
-                >
-                  
-                  {/* Put your Problem Statements content here */}
-                  <div className="mt-4 p-4 bg-white rounded shadow">
-                    <ProblemStatements />
-                  </div>
-                </motion.div>
-              )}
+        {/* Content area */}
+        <div className="mt-2">
+          <AnimatePresence mode="wait">
+            {active === "Problem Statements" && (
+              <motion.div
+                key="problem-statements"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                {/* ProblemStatements handles its own layout; header hidden here */}
+                <ProblemStatements showHeader={false} />
+              </motion.div>
+            )}
 
-              {active === 'My Submission' && (
-                <motion.div
-                  key="my-submission"
-                  variants={variants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="mt-4">
-                    <Student_submitions />
+            {active === "My Submission" && (
+              <motion.div
+                key="my-submission"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-6 max-w-4xl mx-auto">
+                  <div className="flex flex-col gap-1 mb-4 text-center sm:text-left">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      My Submissions
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      Review the solutions you have submitted for various
+                      problem statements.
+                    </p>
                   </div>
-                </motion.div>
-              )}
+                  <Student_submitions />
+                </div>
+              </motion.div>
+            )}
 
-              {active === 'Team Details' && (
-                <motion.div
-                  key="team-details"
-                  variants={variants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="mt-4">
-                    <TeamDetails />
+            {active === "Team Details" && (
+              <motion.div
+                key="team-details"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.25 }}
+              >
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-6 max-w-4xl mx-auto">
+                  <div className="flex flex-col gap-1 mb-4 text-center sm:text-left">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      Team Details
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      View your team members, their roles, and key information
+                      for this submission.
+                    </p>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                  <TeamDetails />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default StudentNav
+export default StudentNav;
