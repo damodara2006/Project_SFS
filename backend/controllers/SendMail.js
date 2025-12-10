@@ -1,6 +1,7 @@
 import connection from "../database/mysql.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 import nodemailer from "nodemailer"
+
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
