@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Header from "../components/Header";
-import SearchBar from '../components/SearchBar'
-// import Footer from "../components/Footer";
+import SearchBar from '../components/SearchBar';
+
 import { URL } from "../Utils";
 
 const fetchProblems = async () => {
@@ -40,6 +40,7 @@ const Modal = ({ open, onClose, title, children }) => {
 
 const ProblemStatements = ({ showHeader = true }) => {
   const [problems, setProblems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [selected, setSelected] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -89,6 +90,11 @@ const ProblemStatements = ({ showHeader = true }) => {
   const totalProblems = problems.length;
   const uniqueDepartments = [...new Set(problems.map((p) => p.DEPT))].length;
 
+  // Filter problems based on the search query
+  const filteredProblems = problems.filter((problem) =>
+    problem.TITLE?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <motion.div
       className="min-h-screen bg-white/50"
@@ -100,7 +106,6 @@ const ProblemStatements = ({ showHeader = true }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       </div>
-        {/* Page Header */}
         <header
           className={`mb-8 sm:mb-10 flex flex-col items-center text-center ${
             showHeader ? "pt-24" : "pt-8"
@@ -118,9 +123,7 @@ const ProblemStatements = ({ showHeader = true }) => {
           </p>
         </header>
 
-        {/* Stats + Table Container */}
         <div className="space-y-8">
-          {/* Stats Cards */}
           <section className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               { label: "Total Problems", value: totalProblems },
@@ -149,7 +152,11 @@ const ProblemStatements = ({ showHeader = true }) => {
           <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
               <div className="flex items-center gap-3 w-full">
-                <SearchBar className="w-full" />
+                <SearchBar
+                  className="w-full"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)} // Correctly updates searchQuery
+                />
               </div>
               {error && (
                 <div className="rounded-md border border-[#fc9300] bg-white px-4 py-3 text-sm text-gray-700 flex items-center justify-between w-full">
@@ -182,9 +189,9 @@ const ProblemStatements = ({ showHeader = true }) => {
                 </svg>
                 <div className="mt-3 text-sm text-gray-700">Loading problems...</div>
               </div>
-            ) : problems.length === 0 ? (
+            ) : filteredProblems.length === 0 ? (
               <div className="p-8 text-center text-sm text-gray-600">
-                No problems available right now. Please check back later.
+                No problems match your search. Please try again.
               </div>
             ) : (
               <motion.div
@@ -214,7 +221,7 @@ const ProblemStatements = ({ showHeader = true }) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {problems.map((p, index) => (
+                    {filteredProblems.map((p, index) => (
                       <motion.tr
                         key={p.id || p.ID || index}
                         initial={{ opacity: 0, y: 20 }}
