@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Header from "../components/Header";
-import SearchBar from '../components/SearchBar';
+import SearchBar from "../components/SearchBar";
 
 import { URL } from "../Utils";
 
@@ -40,7 +40,7 @@ const Modal = ({ open, onClose, title, children }) => {
 
 const ProblemStatements = ({ showHeader = true }) => {
   const [problems, setProblems] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchQuery, setSearchQuery] = useState("");
   const [selected, setSelected] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -90,7 +90,6 @@ const ProblemStatements = ({ showHeader = true }) => {
   const totalProblems = problems.length;
   const uniqueDepartments = [...new Set(problems.map((p) => p.DEPT))].length;
 
-  // Filter problems based on the search query
   const filteredProblems = problems.filter((problem) =>
     problem.TITLE?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -104,8 +103,8 @@ const ProblemStatements = ({ showHeader = true }) => {
     >
       {showHeader && <Header />}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      </div>
+      {/* MAIN CONTAINER WITH 2rem SIDE GAP */}
+      <div className="max-w-7xl mx-auto px-8 pb-12">
         <header
           className={`mb-8 sm:mb-10 flex flex-col items-center text-center ${
             showHeader ? "pt-24" : "pt-8"
@@ -148,14 +147,14 @@ const ProblemStatements = ({ showHeader = true }) => {
               </div>
             ))}
           </section>
-         
+
           <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
               <div className="flex items-center gap-3 w-full">
                 <SearchBar
                   className="w-full"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)} // Correctly updates searchQuery
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               {error && (
@@ -187,7 +186,9 @@ const ProblemStatements = ({ showHeader = true }) => {
                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                   />
                 </svg>
-                <div className="mt-3 text-sm text-gray-700">Loading problems...</div>
+                <div className="mt-3 text-sm text-gray-700">
+                  Loading problems...
+                </div>
               </div>
             ) : filteredProblems.length === 0 ? (
               <div className="p-8 text-center text-sm text-gray-600">
@@ -265,6 +266,7 @@ const ProblemStatements = ({ showHeader = true }) => {
               </motion.div>
             )}
           </section>
+
           <Modal
             open={isOpen}
             onClose={closeModal}
@@ -325,8 +327,9 @@ const ProblemStatements = ({ showHeader = true }) => {
               <p>No details available.</p>
             )}
           </Modal>
-    </div>
-  </motion.div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
