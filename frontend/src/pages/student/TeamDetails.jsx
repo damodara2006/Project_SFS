@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { auth, URL } from "../../Utils";
+import  { useEffect, useState } from "react";
+import { URL } from "../../Utils";
 
 const TeamIcon = () => (
   <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
