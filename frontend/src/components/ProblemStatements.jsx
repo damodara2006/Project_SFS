@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import SearchBar from "../components/SearchBar";
+import Header from "./Header";
 
 import { URL } from "../Utils";
 
@@ -103,14 +104,15 @@ const ProblemStatements = ({ showHeader = true }) => {
 
       {/* MAIN CONTAINER WITH 2rem SIDE GAP */}
       <div className="max-w-7xl mx-auto px-8 pb-12">
-       
-          <p className="font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2">
+             <Header />
+
+          <p className="font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2 mt-28 text-center">
             Solve for Sakthi
           </p>
-          <h1 className="text-4xl font-extrabold text-gray-900">
+          <h1 className="text-4xl font-extrabold text-gray-900 text-center">
             Problem Statements
           </h1>
-          <p className="mt-3 max-w-2xl text-sm sm:text-base text-gray-600 mb-2">
+          <p className="  text-sm sm:text-base text-gray-600  text-center  my-8">
             Browse through the latest problem statements and pick the one that
             aligns with your skills and interests.
           </p>
@@ -277,7 +279,7 @@ const ProblemStatements = ({ showHeader = true }) => {
                     : "N/A"}
                 </div>
                 <div>
-                  <strong>Category:</strong> {selected.CATEGORY || "N/A"}
+                  <strong>Category:</strong> {selected.CATEGORY || "Software"}
                 </div>
                 <div>
                   <strong>Theme:</strong> {selected.DEPT}
