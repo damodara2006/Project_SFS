@@ -118,12 +118,6 @@ const TeamDetails = () => {
   return (
     <div className="min-h-screen bg-white/50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-
-        <header className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">Team Details</h1>
-          <p className="text-gray-600 mt-2">Meet our team and explore their strengths.</p>
-        </header>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
           <section className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
@@ -149,10 +143,10 @@ const TeamDetails = () => {
               ))}
             </div>
           </section>
-          <section>
+          <section className="bg-white rounded-xl shadow-lg p-6 sm:p-8 mt-1">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Member Overview</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
               {members.map((m) => (
                 <div
                   key={m.ID}
