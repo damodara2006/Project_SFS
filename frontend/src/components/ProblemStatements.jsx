@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 
 import { URL } from "../Utils";
