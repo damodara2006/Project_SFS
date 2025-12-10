@@ -101,7 +101,6 @@ const ProblemStatements = ({ showHeader = true }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      {showHeader && <Header />}
 
       {/* MAIN CONTAINER WITH 2rem SIDE GAP */}
       <div className="max-w-7xl mx-auto px-8 pb-12">
