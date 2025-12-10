@@ -23,7 +23,7 @@ const SearchBar = ({ value, onChange, className }) => {
             type="text"
             value={value}
             onChange={onChange}
-            placeholder="Search for Problems"
+            placeholder="Search for Problem Title"
             aria-label="Search"
             className="w-full bg-transparent placeholder-gray-500 placeholder-font-semibold text-gray-900 focus:outline-none text-sm"
           />
