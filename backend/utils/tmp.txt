@@ -1,1 +1,2 @@
-Temp
+db username = admin
+db password = sfsadmin123
