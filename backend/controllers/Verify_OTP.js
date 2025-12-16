@@ -4,7 +4,7 @@ const Verify_OTP = (req, res) => {
     const { email } = req.params;
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
-        port: 465,
+        port: process.env.SMTP_PORT,
         secure: true,
         auth: {
             user: "damodara2006@gmail.com",

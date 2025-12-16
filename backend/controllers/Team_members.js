@@ -31,7 +31,7 @@ const Add_Team_Members = AsyncHandler(async (req, res) => {
 
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 465,
+          port: process.env.SMTP_PORT,
             secure: true, 
             auth: {
                 user: "damodara2006@gmail.com",

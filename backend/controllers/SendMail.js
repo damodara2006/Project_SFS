@@ -1,10 +1,10 @@
 import connection from "../database/mysql.js";
 import AsyncHandler from "../utils/AsyncHandler.js";
 import nodemailer from "nodemailer"
-
+import dotenv from "dotenv"
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
+  port: process.env.SMTP_PORT,
     secure: true,
     auth: {
         user: "damodara2006@gmail.com",
