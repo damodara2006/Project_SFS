@@ -53,7 +53,7 @@ const ProblemStatementsList = () => {
       setError(null);
       try {
         const base = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${base}/get_problems`, {credentials:"include"});
+        const res = await fetch(`${URL}/get_problems`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         console.log("Fetched Problems:", json);
@@ -93,7 +93,7 @@ const ProblemStatementsList = () => {
     const fetchSubmissions = async () => {
       try {
         const base = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${base}/submissions`, {credentials:"include"});
+        const res = await fetch(`${URL}/submissions`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         const mapped = (json || []).map(s => ({

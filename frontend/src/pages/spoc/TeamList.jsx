@@ -586,21 +586,19 @@ function TeamList() {
     }
   };
 
-    function allteams() {
-        console.log(spoc_id);
-        axios.defaults.withCredentials = true;
-        axios
-            .post(`${URL}/fetch_teams/${spoc_id}`)
-            .then((res) => {
-                setFullTeam(res.data), console.log(res), setfetched(true);
-            })
-            .catch((err) => console.error("Error fetching teams:", err));
-    }
-    console.log(FullTeam);
-    // Navigate to selected team
-    function SelectedTeam(team) {
-        navigate(`/spoc/team_details`, { state: { id: team.ID } });
-    }
+  function allteams() {
+    axios
+      .post(`${URL}/fetch_teams/${spoc_id}`)
+      .then((res) => {
+        setFullTeam(res.data);
+        setfetched(true);
+      })
+      .catch((err) => console.error("Error fetching teams:", err));
+  }
+
+  function SelectedTeam(team) {
+    navigate(`/spoc/team_details`, { state: { id: team.ID } });
+  }
 
   useEffect(() => {
     if (spoc_id) {
@@ -617,76 +615,110 @@ function TeamList() {
     }));
   };
 
-    const handleEditMembers = (e) => {
-        console.log(e);
-        // console.log(FullTeam[e]);
-        axios.defaults.withCredentials = true;
-        axios.post(`${URL}/fetch_team_members`, { id: e.ID }).then(res => {
-            setteam_id(e.ID)
-            setfetch_team_members(res.data)
-            setTeamFormData({
-                teamName: e.NAME,
-                members: [
-                    { role: "Team Lead", name: res.data[0].NAME, email: res.data[0].EMAIL, phone: res.data[0].PHONE, gender: res.data[0].GENDER },
-                    { role: "Member 1", name: res.data[1].NAME, email: res.data[1].EMAIL, phone: res.data[1].PHONE, gender: res.data[1].GENDER },
-                    { role: "Member 2", name: res.data[2].NAME, email: res.data[2].EMAIL, phone: res.data[2].PHONE, gender: res.data[2].GENDER },
-                    { role: "Member 3", name: res.data[3].NAME, email: res.data[3].EMAIL, phone: res.data[3].PHONE, gender: res.data[3].GENDER }
-                ]
-            })
-        })
-        setShowCreateTeamModal(true)
-        setfetched_s(false)
-    }
-
-    console.log(team_id);
-
+  const handleEditMembers = (e) => {
+    axios.post(`${URL}/fetch_team_members`, { id: e.ID }).then((res) => {
+      setteam_id(e.ID);
+      setfetch_team_members(res.data);
+      setTeamFormData({
+        teamName: e.NAME,
+        members: [
+          {
+            role: "Team Lead",
+            name: res.data.result[0].NAME,
+            email: res.data.result[0].EMAIL,
+            phone: res.data.result[0].PHONE,
+            gender: res.data.result[0].GENDER,
+          },
+          {
+            role: "Member 1",
+            name: res.data.result[1].NAME,
+            email: res.data.result[1].EMAIL,
+            phone: res.data.result[1].PHONE,
+            gender: res.data.result[1].GENDER,
+          },
+          {
+            role: "Member 2",
+            name: res.data.result[2].NAME,
+            email: res.data.result[2].EMAIL,
+            phone: res.data.result[2].PHONE,
+            gender: res.data.result[2].GENDER,
+          },
+          {
+            role: "Member 3",
+            name: res.data.result[3].NAME,
+            email: res.data.result[3].EMAIL,
+            phone: res.data.result[3].PHONE,
+            gender: res.data.result[3].GENDER,
+          },
+        ],
+      });
+      setMentorEmail(res.data.mentor[0].MENTOR_EMAIL);
+      setMentorName(res.data.mentor[0].MENTOR_NAME);
+    });
+    setShowCreateTeamModal(true);
+    setfetched_s(false);
+  };
 
   const handleCreateTeam = (e) => {
     e.preventDefault();
 
-        if (e.target[18].innerText == "Update team") {
-            let load = toast.loading("Updating team...")
-            console.log(teamFormData);
-            axios.defaults.withCredentials = true;
-            axios.post(`${URL}/update_team`, { team: teamFormData, id: team_id })
-                .then(res => {
-                    if (res.data == "Updated") {
-                        toast.dismiss(load);
-                        toast.success("Updated !");
-                        setShowCreateTeamModal(false);
-                        allteams();
-                    }
-                })
-        }
-        else {
+    if (e.target[20].innerText == "Update team") {
+      let load = toast.loading("Updating team...");
+      axios
+        .post(`${URL}/update_team`, {
+          team: teamFormData,
+          id: team_id,
+          mentorEmail: mentorEmail,
+          mentorName: mentorName,
+        })
+        .then((res) => {
+          if (res.data == "Updated") {
+            toast.dismiss(load);
+            toast.success("Updated!");
+            setShowCreateTeamModal(false);
+            allteams();
+          }
+        });
+    } else {
+      const loadingToast = toast.loading("Creating team...");
+      let mailToast;
 
-            // Show loading toast
-            const loadingToast = toast.loading('Creating team...');
-            let mailToast;
-            setTimeout(() => {
-                toast.dismiss(loadingToast);
-                mailToast = toast.loading('Sending mails...');
+      setTimeout(() => {
+        toast.dismiss(loadingToast);
+        mailToast = toast.loading("Sending mails...");
+      }, 2000);
 
-            }, 2000);
-            axios.defaults.withCredentials = true;
-            axios
-                .post(`${URL}/add_members/${spoc_id}`, teamFormData)
-                .then((res) => {
-                    if (res.status === 200) {
-                        // Dismiss loading toast and show success toast
-                        toast.dismiss(mailToast)
-                        toast.success('Mail sent successfully!', {
-                            duration: 3000,
-                            position: 'top-right',
-                            style: {
-                                backgroundColor: "green",
-                                color: "white"
-                            }
-                        });
-                        toast.success('Team created successfully!', {
-                            duration: 3000,
-                            position: 'top-right',
-                        });
+      axios
+        .post(`${URL}/add_members/${spoc_id}`, {
+          Teamdata: teamFormData,
+          mentorEmail: mentorEmail,
+          mentorName: mentorName,
+        })
+        .then((res) => {
+          axios.post(`${URL}/register`, {
+            email: teamFormData.members[0].email,
+            password: spoc_data.COLLEGE_CODE + res.data,
+            role: "STUDENT",
+            college: spoc_data.COLLEGE,
+            college_code: res.data,
+            name: teamFormData.members[0].name,
+            date: new Date().toString().split(" ").slice(0, 4).join(" "),
+          });
+
+          if (res.status === 200) {
+            toast.dismiss(mailToast);
+            toast.success("Mail sent successfully!", {
+              duration: 3000,
+              position: "top-right",
+              style: {
+                backgroundColor: "green",
+                color: "white",
+              },
+            });
+            toast.success("Team created successfully!", {
+              duration: 3000,
+              position: "top-right",
+            });
 
             setShowCreateTeamModal(false);
             setTeamFormData({
@@ -717,23 +749,20 @@ function TeamList() {
     visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
   };
 
-    const deleteteam = (team) => {
-        if (window.confirm("Confirm delete ?")) {
-            // console.log("hee");
-            const del = toast.loading("Deleting team")
-            axios.defaults.withCredentials = true;
-            axios.post(`${URL}/delete_team`, { id: team.ID })
-                .then(res => {
-                    console.log(res);
-                    allteams();
-                    toast.dismiss(del)
-                    toast.success("Team deleted")
-                })
-                .catch(error => {
-                    console.error("Error deleting team:", error);
-                    toast.error('Failed to delete team');
-                });
-        }
+  const deleteteam = (team) => {
+    if (window.confirm("Confirm delete ?")) {
+      const del = toast.loading("Deleting team...");
+      axios
+        .post(`${URL}/delete_team`, { id: team.ID })
+        .then((res) => {
+          allteams();
+          toast.dismiss(del);
+          toast.success("Team deleted");
+        })
+        .catch((error) => {
+          console.error("Error deleting team:", error);
+          toast.error("Failed to delete team");
+        });
     }
   };
 

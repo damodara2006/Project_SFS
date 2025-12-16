@@ -2,45 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import SearchBar from "../components/SearchBar";
+import Header from "./Header";
+
 import { URL } from "../Utils";
 
-const sampleProblems = [
-  {
-    id: "P-001",
-    title: "Smart Waste Management System Using IoT and AI",
-    date: "2025-09-01",
-    description:
-      "Develop an IoT-based system integrated with AI algorithms to monitor, classify, and optimize waste collection in urban and rural areas.",
-    category: "Smart City / IoT / AI",
-    theme: "Smart Automation for Sustainable Cities",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-  {
-    id: "P-002",
-    title: "Predictive Healthcare System for Early Disease Detection",
-    date: "2025-09-05",
-    description:
-      "Design a healthcare analytics platform that leverages ML to predict potential health issues from wearable and patient data.",
-    category: "Healthcare / Machine Learning",
-    theme: "AI-Powered Health Solutions",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-  {
-    id: "P-003",
-    title: "Blockchain-Based Student Credential Verification System",
-    date: "2025-09-10",
-    description:
-      "Create a blockchain-driven platform for educational institutions to issue and verify student certificates securely.",
-    category: "Blockchain / Education",
-    theme: "Digital Transformation in Education",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-];
-
 const fetchProblems = async () => {
-  axios.defaults.withCredentials = true
   const response = await axios.get(`${URL}/get_problems`, { timeout: 8000 });
   return response.data.problems;
 };
