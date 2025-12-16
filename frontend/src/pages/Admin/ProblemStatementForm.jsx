@@ -77,25 +77,14 @@ const ProblemStatementForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Combine links into description for storage if schema is strict
-      let finalDescription = description;
-      if (youtubeLink) finalDescription += `\n\nYouTube Link: ${youtubeLink}`;
-      if (datasetLink) finalDescription += `\n\nDataset Link: ${datasetLink}`;
-      
-      const payload = {
-        title,
-        description: finalDescription,
-        dept: category,
-        sub_date: deadline.split('T')[0], // Format date to YYYY-MM-DD
-        reference: youtubeLink,
-        evaluators: currentUserId // Auto-assign if Evaluator
-      };
-      // console.log(payload);
-      
-      const response = await axios.post(`${URL}/addproblems`, payload, { withCredentials: true });
-
-      await axios.post(`${URL}/send_mail_to_spoc`, { Problem: payload.title })
-      navigate(-1)
+      axios.defaults.withCredentials = true;
+      const response = await axios.post(`${URL}/addproblems`, {
+        title: title,
+        description: description,
+        sub_date: subDate,
+        dept: dept,
+        reference: reference,
+      });
 
       // Save created item (fallback to posted payload if response data missing)
       const created = {

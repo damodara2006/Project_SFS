@@ -15,9 +15,9 @@ const AddProblemStatement = () => {
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
-      console.log(title, description, dept, reference, subDate);
-      
-        try{
+        // console.log(title,description,dept,reference,subDate);
+      try {
+        axios.defaults.withCredentials = true;
            const response = await axios.post(`${URL}/addproblems`,{
             title:title,
             description:description,

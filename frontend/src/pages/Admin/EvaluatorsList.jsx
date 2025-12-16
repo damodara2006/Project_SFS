@@ -135,12 +135,17 @@ const EvaluatorList = () => {
   }, []);
 
   const GetAllEvaluators = () => {
-    // Legacy function kept if needed, but logic moved to useEffect
+    axios.defaults.withCredentials = true;
+    axios.get(`${URL}/evaluators`)
+      .then((res) => {
+        setEvaluators(res.data)
+      
+    })
   }
 
 
 
-  /* useEffect(() => {
+  useEffect(() => {
     GetAllEvaluators()
   }, []) */
 

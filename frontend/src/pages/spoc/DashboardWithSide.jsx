@@ -25,8 +25,9 @@ const DashboardWithSide = () => {
   });
   function allteams() {
     // console.log("he")
-    axios.get(`${URL}/fetch_teams`).then(res => { setFullTeam(res.data), console.log(res.data) })
-
+    axios.defaults.withCredentials = true;
+    axios.get(`${URL}/fetch_teams`).then(res =>{ setFullTeam(res.data), console.log(res.data)})
+ 
   }
 
   function SelectedTeam(team) {
@@ -114,6 +115,7 @@ const DashboardWithSide = () => {
   const handleCreateTeam = (e) => {
     e.preventDefault();
     console.log('Creating team:', teamFormData);
+    axios.defaults.withCredentials = true;
     axios.post(`${URL}/add_members`, teamFormData)
       .then((res) => {
         console.log(res)

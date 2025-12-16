@@ -2,15 +2,17 @@
 
 import axios from "axios";
 
-const URL = import.meta.env.VITE_API_URL
+const URL = "https://project-sfs-backend.onrender.com"
 const auth = async () => {
-
     try {
-        const res = await axios.get(`${URL}/cookie`, { withCredentials: true });
-        // console.log(res.data.ROLE);
-        return { role: res.data.ROLE, name: res.data.NAME };
-    } catch (error) {
-        console.error("Error during auth:", error);
+        const res = await axios.get(`${URL}/cookie`, {
+            withCredentials: true
+        });
+
+        return res.data.ROLE || null;
+
+    } catch (err) {
+        console.error(err);
         return null;
     }
 };

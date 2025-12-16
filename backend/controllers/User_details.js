@@ -152,18 +152,13 @@ const login = async (req, res) => {
 
     let rs = user.STATUS
     if (rs === "ACTIVE" && response) {
-        // successful login: clear any recorded attempts
-        loginAttempts.delete(clientKey);
-
-        const token = jwt.sign(result[0], process.env.JWT_SCERET);
-        const isProd = process.env.NODE_ENV === 'production';
-        res.cookie("login_creditionals", token, {
-            maxAge: 86400000,
-            secure: true,
-            // httpOnly:
-            sameSite: "none",
-            path: "/"
-        })
+        
+        console.log(process.env.JWT_SCERET)
+    
+        const data = jwt.sign(result[0], process.env.JWT_SCERET)
+        // console.log(await jwt.verify(data, process.env.JWT_SCERET))
+        // console.log(data)
+        await res.cookie("login_creditionals", data, { maxAge: 1200000, sameSite: 'none', secure:true })
         console.log("done");
 
 

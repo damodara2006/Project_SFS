@@ -171,68 +171,100 @@ const SubmissionList = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setIsProblemDropdownOpen(!isProblemDropdownOpen);
+                onClick("In Review");
+                setIsMenuOpen(false);
               }}
-              className="flex items-center justify-between w-full bg-white border border-gray-200 hover:border-[#FF9900] rounded-xl px-5 py-3 shadow-sm hover:shadow-md transition-all text-left"
+              className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
             >
-              <div>
-                {selectedProblem ? (
-                  <div>
-                    <span className="text-[#FF9900] font-bold mr-2">SFS_{selectedProblem.ID}:</span>
-                    <span className="font-semibold text-gray-800">{selectedProblem.TITLE}</span>
-                  </div>
-                ) : (
-                  <span className="font-semibold text-gray-800">All Problems</span>
-                )}
-              </div>
-              <FiChevronDown className={`ml-4 text-gray-400 transition-transform duration-300 ${isProblemDropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
+              In Review
+            </li>
+            <li
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick("Evaluated");
+                setIsMenuOpen(false);
+              }}
+              className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+            >
+              Evaluated
+            </li>
+          </ul>
+        </motion.div>
+      )}
+    </div>
+  );
+};
 
-            {isProblemDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 max-h-[400px] overflow-y-auto w-full">
-                <button
-                  onClick={() => {
-                    navigate(`?problemId=`);
-                    setIsProblemDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-5 py-3 hover:bg-orange-50 transition-colors border-b border-gray-50 flex items-center group ${!problemId ? 'bg-orange-50/50' : ''}`}
-                >
-                  <span className={`font-bold mr-3 ${!problemId ? 'text-[#FF9900]' : 'text-gray-400 group-hover:text-[#FF9900]'}`}>
-                    ALL
-                  </span>
-                  <span className={`font-medium ${!problemId ? 'text-gray-900' : 'text-gray-600'}`}>
-                    All Problems
-                  </span>
-                </button>
-                {assignedProblems.length > 0 ? (
-                  assignedProblems.map(p => (
-                    <button
-                      key={p.ID}
-                      onClick={() => {
-                        navigate(`?problemId=${p.ID}`);
-                        setIsProblemDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-5 py-3 hover:bg-orange-50 transition-colors border-b border-gray-50 last:border-0 flex items-center group ${String(p.ID) === String(problemId) ? 'bg-orange-50/50' : ''}`}
-                    >
-                      <span className={`font-bold mr-3 ${String(p.ID) === String(problemId) ? 'text-[#FF9900]' : 'text-gray-400 group-hover:text-[#FF9900]'}`}>
-                        SFS_{p.ID}
-                      </span>
-                      <span className={`font-medium ${String(p.ID) === String(problemId) ? 'text-gray-900' : 'text-gray-600'}`}>
-                        {p.TITLE}
-                      </span>
-                    </button>
-                  ))
-                ) : (
-                  <div className="px-5 py-4 text-gray-400 text-center text-sm">No assigned problems found.</div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+const SubmissionList = () => {
+  const [submissions, setSubmissions] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [previewPdf, setPreviewPdf] = useState(null); // <-- preview state
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-        {/* Filter */}
-        <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-[#E2E8F0] shadow-sm">
-          <FiFilter className="text-gray-400 ml-2" />
+  const handleStatusChange = (teamId, newStatus) => {
+    setSubmissions((prevSubmissions) =>
+      prevSubmissions.map((sub) =>
+        sub.teamId === teamId ? { ...sub, status: newStatus } : sub
+      )
+    );
+  };
+
+  // fetch submissions from backend
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    axios.defaults.withCredentials = true;
+    axios
+      .get(`${URL}/submissions`)
+      .then((res) => {
+        if (!mounted) return;
+        const rows = res.data || [];
+        const mapped = rows.map((r) => ({
+          problemId: r.PROBLEM_ID || r.problemId,
+          teamId: r.TEAM_ID || r.teamId,
+          title: r.SOL_TITLE || r.title || "Untitled",
+          submittedAt: r.SUB_DATE || r.submittedAt || new Date().toISOString(),
+          status: r.STATUS || r.status || "PENDING",
+          pdfLink: r.SOL_LINK || r.pdfLink || samplePdf,
+          liveLink: r.LIVE_LINK || r.liveLink || null,
+        }));
+        setSubmissions(mapped);
+      })
+      .catch((err) => {
+        console.error("Failed to load submissions:", err);
+        if (mounted) setError(err?.message || "Failed to load");
+      })
+      .finally(() => mounted && setLoading(false));
+    return () => (mounted = false);
+  }, []);
+
+  // Filter logic
+  const filteredSubmissions =
+    filterStatus === "All"
+      ? submissions
+      : submissions.filter((sub) => sub.status === filterStatus);
+
+  return (
+    <div className="min-h-screen bg-[#ffffff] py-10 px-6 mt-14">
+      {/* Header Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-center mb-10"
+      >
+        <h1 className="text-4xl font-bold text-[#4a4a4a]">
+          Submissions for Eco-Friendly Product Recommendation System
+        </h1>
+        <p className="text-lg text-gray-600 mt-2">Problem ID: SFS_15</p>
+      </motion.div>
+
+      {/* Filter Dropdown */}
+      <div className="flex justify-end mb-4 max-w-6xl mx-auto">
+        <div className="flex items-center space-x-3">
+          <label className="text-gray-700 font-medium">Filter by Status:</label>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}

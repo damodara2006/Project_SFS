@@ -33,41 +33,29 @@ const timeAgo = (dateParam) => {
 const AdminDashboard = () => {
 
   const [data, setData] = useState({ problems: [], submissions: [], spocs: [], evaluators: [] });
-  const [recentActivities, setRecentActivities] = useState([]);
 
-  const fetchProblems = async () => {
-    try {
-      const response = await fetch(`${URL}/get_problems`);
-      const result = await response.json();
-      setData(prevData => ({ ...prevData, problems: result.problems }));
+  
+  const fetchProblems = async()=>{
+    try{
+      const base = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${base}/get_problems`, {
+        credentials:"include"
+      });
+       const result = await response.json();
+       setData(prevData => ({ ...prevData, problems: result.problems }));
     }
     catch (error) {
       console.error('Error fetching problems:', error);
     }
   }
 
-  const fetchSubmissions = async () => {
-    try {
-      let allSubmissions = [];
-      let page = 1;
-      let totalPages = 1;
-
-      do {
-        const response = await fetch(`${URL}/submissions?page=${page}`);
-        const result = await response.json();
-        
-        if (result && result.submissions) {
-          allSubmissions = [...allSubmissions, ...result.submissions];
-          totalPages = result.totalPages;
-          page++;
-        } else {
-          // Stop if the response is not as expected
-          break;
-        }
-      } while (page <= totalPages);
-
-      setData(prevData => ({ ...prevData, submissions: allSubmissions }));
-
+  const fetchSubmissions = async()=>{
+    try{
+      const base = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${base}/submissions`, {credentials:"include"});
+      const result = await response.json();
+      setData(prevData => ({ ...prevData, submissions: result }));
+      
     }
     catch (error) {
       console.log("Error fetching Submissions:", error);
@@ -76,12 +64,8 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${URL}/get_all_users`, { credentials: 'include' });
-      if (response.status === 401) {
-        // not authenticated or unauthorized: clear user lists and stop
-        setData(prevData => ({ ...prevData, spocs: [], evaluators: [] }));
-        return;
-      }
+      const base = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${base}/get_all_users`, {credentials:"include"});
       const result = await response.json();
       // normalize backend response to an array
       const usersArray = Array.isArray(result) ? result : (result.users || result.data || []);

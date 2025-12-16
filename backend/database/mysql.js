@@ -8,8 +8,9 @@ const connection = await createPool({
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "Damo@999428",
     waitForConnections: true,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0
+    connectionLimit: parseInt(process.env.DB_CONN_LIMIT || '10', 10),
+    queueLimit: parseInt(process.env.DB_QUEUE_LIMIT || '10', 10),
+    connectTimeout: parseInt(process.env.DB_CONNECT_TIMEOUT || '28800', 10)
 })
 
 try {

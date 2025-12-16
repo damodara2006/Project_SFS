@@ -38,78 +38,45 @@ const ProblemStatementDetail = () => {
 
     const fetchData = async () => {
       try {
-        setLoading(true);
-
-        // Fetch Problem
-        try {
-          const res = await fetch(`${URL}/problems/${id}`);
-          if (res.ok) {
-            const json = await res.json();
-            const p = (json.problems && json.problems[0]) || json.problem || null;
-            if (p && mounted) {
-              const rawDesc = p.DESCRIPTION || p.description || '';
-              // Attempt to extract dataset link from description if explicit field is missing
-              let datasetVal = p.DATASET || p.dataset || '';
-              if (!datasetVal) {
-                const match = rawDesc.match(/Dataset Link:\s*(https?:\/\/[^\s]+)/);
-                if (match) datasetVal = match[1];
-              }
-
-              // Check all possible casing variants including Reference (capitalized as per DB schema often)
-              let youtubeVal = p.YOUTUBE || p.youtube || p.youtube_link || p.Reference || p.reference || '';
-              if (!youtubeVal) {
-                const match = rawDesc.match(/YouTube Link:\s*(https?:\/\/[^\s]+)/);
-                if (match) youtubeVal = match[1];
-              }
-
-              // Clean description for display (remove appended links)
-              const cleanDesc = rawDesc
-                .replace(/YouTube Link:\s*https?:\/\/[^\s]+(\s|$)/gi, '')
-                .replace(/Dataset Link:\s*https?:\/\/[^\s]+(\s|$)/gi, '')
-                .trim();
-
-              setProblem({
-                id: p.ID ? String(p.ID) : (p.id || ''),
-                title: p.TITLE || p.title || 'Untitled',
-                category: p.DEPT || p.dept || p.category || 'N/A',
-                description: cleanDesc,
-                youtube: youtubeVal,
-                dataset: datasetVal,
-                created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
-                assignedEvaluators: p.assignedEvaluators || [],
-                submissionsCount: p.submissionsCount || 0,
-              });
-            }
-          }
-        } catch (err) {
-          console.error("Error fetching problem:", err);
+        const res = await fetch(`${base}/problems/${id}`, {credentials:"include"});
+        if (!res.ok) throw new Error('no problem');
+        const json = await res.json();
+        const p = (json.problems && json.problems[0]) || json.problem || null;
+        if (p && mounted) {
+          setProblem({
+            id: p.ID ? String(p.ID) : (p.id || ''),
+            title: p.TITLE || p.title || 'Untitled',
+            description: p.DESCRIPTION || p.description || '',
+            youtube: p.YOUTUBE || p.youtube || p.youtube_link || '',
+            dataset: p.DATASET || p.dataset || '',
+            created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
+            assignedEvaluators: p.assignedEvaluators || [],
+            submissionsCount: p.submissionsCount || 0,
+          });
         }
+      } catch (err) {
+        // keep mock fallback
+      }
+    };
 
-        // Fetch Submissions
-        try {
-          const res = await fetch(`${URL}/submissions?problemId=${id}`);
-          if (res.ok) {
-            const json = await res.json();
-            if (Array.isArray(json) && mounted) {
-              const mapped = json.map(s => ({
-                id: s.ID ? String(s.ID) : (s.id || ''),
-                problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
-                teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
-                status: String(s.STATUS ?? s.SUB_STATUS ?? s.status ?? '').trim(),
-                spocId: s.SPOC_ID ?? s.SPOCId ?? s.spocId ?? s.spoc_id ?? s.spocId ?? '',
-                title: s.SOL_TITLE ?? s.title ?? s.SOL_TITLE ?? '',
-              }));
-              setSubmissions(mapped);
-            }
-          }
-        } catch (err) {
-          console.error("Error fetching submissions:", err);
+    const fetchSubmissions = async () => {
+      try {
+        const res = await fetch(`${base}/submissions?problemId=${id}`, {credentials:"include"});
+        if (!res.ok) throw new Error('no submissions');
+        const json = await res.json();
+        if (Array.isArray(json) && mounted) {
+          const mapped = json.map(s => ({
+            id: s.ID ? String(s.ID) : (s.id || ''),
+            problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
+            teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
+            status: String(s.STATUS ?? s.SUB_STATUS ?? s.status ?? '').trim(),
+            spocId: s.SPOC_ID ?? s.SPOCId ?? s.spocId ?? s.spoc_id ?? s.spocId ?? '',
+            title: s.SOL_TITLE ?? s.title ?? s.SOL_TITLE ?? '',
+          }));
+          setSubmissions(mapped);
         }
-
-      } catch (error) {
-        console.error("Error in fetchData:", error);
-      } finally {
-        if (mounted) setLoading(false);
+      } catch (err) {
+        // keep mock fallback
       }
     };
 

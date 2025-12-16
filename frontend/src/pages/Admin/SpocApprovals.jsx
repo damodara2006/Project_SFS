@@ -16,6 +16,7 @@ const SpocApprovals = () => {
   // console.log(SpocData)
 
   let fetchspoc = () => {
+    axios.defaults.withCredentials = true;
     axios.get(`${URL}/spoc_users`)
       .then(res => {
         setSpocData(res.data)
@@ -28,6 +29,7 @@ const SpocApprovals = () => {
 
   // console.log(SpocData);
   const handleApprove = (id, approve) => {
+    axios.defaults.withCredentials = true;
     axios.post(`${URL}/handlespoc`, { id: id, approve: approve })
       .then(res => {
 

@@ -19,9 +19,9 @@
 //     axios.get(`${URL}/cookie`).then(res => setspoc_id(res.data.ID));
 //     console.log(ID);
     
-    
-//     axios.post(`${URL}/fetch_team_members`, { id: ID }).then(res => { setFullTeam(res.data.result); console.log(res);
-//     })
+    axios.defaults.withCredentials = true;
+    axios.post(`${URL}/fetch_team_members`, { id: ID }).then(res => { setFullTeam(res.data); console.log(res);
+    })
 
 //     // console.log(FullTeam)
 //   return (
