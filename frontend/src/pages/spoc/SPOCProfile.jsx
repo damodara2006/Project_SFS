@@ -155,7 +155,7 @@ const SPOCProfile = () => {
               aria-label="Upload profile photo (JPEG only)"
             />
             <p className="text-xs text-gray-400 mt-2 text-center">
-              JPEG only • Recommended 400x400px
+              JPEG only • Recommended 400x400px (max 1MB)
             </p>
           </motion.div>
 
@@ -173,8 +173,8 @@ const SPOCProfile = () => {
                   type="text"
                   name="name"
                   value={ data.NAME ? data.NAME : ""}
-                  onChange={handleChange}
-                  placeholder="Enter your name"
+                  // onChange={handleChange}
+                  placeholder="Enter Your Name"
                   className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
                 />
               </div>
@@ -184,9 +184,8 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="phone"
-                  value={data.PHONE ? data.PHONE : ""}
                   onChange={handleChange}
-                  placeholder="Enter your phone number"
+                  placeholder="Enter Your phone number"
                   className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
                 />
               </div>
@@ -197,9 +196,8 @@ const SPOCProfile = () => {
               <input
                 type="text"
                 name="designation"
-                value={data.COLLEGE ? data.COLLEGE : ""}
                 onChange={handleChange}
-                placeholder="Enter your designation"
+                placeholder="Enter Your Designation"
                 className="mt-1 w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#ffd0a0]"
               />
             </div>
@@ -210,7 +208,7 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="college"
-                  value={data.EMAIL ? data.EMAIL : ""}
+                  value={data.COLLEGE ? data.COLLEGE : ""}
                   
                   className="mt-1 w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm "
                 />
@@ -221,7 +219,7 @@ const SPOCProfile = () => {
                 <input
                   type="text"
                   name="email"
-                  value={data.COLLEGE_CODE ? data.COLLEGE_CODE : ""}
+                  value={data.EMAIL ? data.EMAIL : ""}
                   className="mt-1 w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm "
 
                 />

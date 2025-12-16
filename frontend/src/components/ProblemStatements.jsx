@@ -1,341 +1,11 @@
-// import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { motion } from "framer-motion"; // 👈 Added motion for animation
-// import axios from "axios";
-
-// /* Hardcoded problem data (used as fallback) */
-// const sampleProblems = [
-//     {
-//         id: "P-001",
-//         title: "Smart Waste Management System Using IoT and AI",
-//         date: "2025-09-01",
-//         description:
-//             "Develop an IoT-based system integrated with AI algorithms to monitor, classify, and optimize waste collection in urban and rural areas. The system should help local authorities plan efficient routes and reduce environmental pollution.",
-//         category: "Smart City / IoT / AI",
-//         theme: "Smart Automation for Sustainable Cities",
-//         resources: "https://www.sih.gov.in/problem-statements",
-//     },
-//     {
-//         id: "P-002",
-//         title: "Predictive Healthcare System for Early Disease Detection",
-//         date: "2025-09-05",
-//         description:
-//             "Design a healthcare analytics platform that leverages machine learning to predict potential health issues based on patient records, wearable data, and environmental factors. The system should provide early warnings and connect users to nearby medical facilities.",
-//         category: "Healthcare / Machine Learning",
-//         theme: "AI-Powered Health Solutions",
-//         resources: "https://www.sih.gov.in/problem-statements",
-//     },
-//     {
-//         id: "P-003",
-//         title: "Blockchain-Based Student Credential Verification System",
-//         date: "2025-09-10",
-//         description:
-//             "Create a blockchain-driven platform for educational institutions to issue, verify, and share student certificates securely. The system should prevent fraud and ensure transparency during recruitment or higher education admission processes.",
-//         category: "Blockchain / Education",
-//         theme: "Digital Transformation in Education",
-//         resources: "https://www.sih.gov.in/problem-statements",
-//     },
-// ];
-
-// const fetchProblems = async () => {
-//     // Let errors propagate so caller can show loading/error UI
-//     const response = await axios.get("http://localhost:8000/get_problems", {
-//         timeout: 8000,
-//     });
-//     // assume response.data.problems (backend)
-//     return response.data.problems;
-// };
-
-// const Modal = ({ open, onClose, title, children }) => {
-//     if (!open) return null;
-//     return (
-//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-//             <motion.div
-//                 className="w-full max-w-xl rounded shadow-lg bg-[#ffffff]"
-//                 initial={{ opacity: 0, y: 30 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 exit={{ opacity: 0, y: -30 }}
-//                 transition={{ duration: 0.3 }}
-//             >
-//                 <div className="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
-//                     <h3 className="text-lg text-[#4a4a4a] font-bold">{title}</h3>
-//                     <button
-//                         onClick={onClose}
-//                         className="rounded px-2 py-1 text-sm font-medium hover:bg-gray-100 text-[#4a4a4a]"
-//                         aria-label="Close"
-//                     >
-//                         ✕
-//                     </button>
-//                 </div>
-//                 <div className="p-4">{children}</div>
-//             </motion.div>
-//         </div>
-//     );
-// };
-
-// const ProblemStatements = () => {
-//     const [problems, setProblems] = useState([]);
-//     const [selected, setSelected] = useState(null);
-//     const [isOpen, setIsOpen] = useState(false);
-//     const [loading, setLoading] = useState(false);
-//     const [error, setError] = useState(false);
-
-//     const navigate = useNavigate();
-
-//     const openModal = (problem) => {
-//         setSelected(problem);
-//         setIsOpen(true);
-//     };
-
-//     const closeModal = () => {
-//         setIsOpen(false);
-//         setSelected(null);
-//     };
-
-//     const handleSubmit = () => {
-//         if (!selected) return;
-//         const params = new URLSearchParams({ problemId: selected.id || selected.ID });
-//         navigate(`/student/submit-solution?${params.toString()}`);
-//     };
-
-//     // ✨ Animation Variants (matching dashboard style)
-//     const pageVariants = {
-//         hidden: { opacity: 0, y: 50 },
-//         visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-//     };
-
-//     const tableVariants = {
-//         hidden: { opacity: 0, x: -50 },
-//         visible: { opacity: 1, x: 0, transition: { duration: 0.5, delay: 0.2 } },
-//     };
-
-//     const loadProblems = async () => {
-//         setLoading(true);
-//         setError(false);
-//         try {
-//             const data = await fetchProblems();
-//             if (Array.isArray(data) && data.length > 0) {
-//                 setProblems(data);
-//             } else {
-//                 // fallback to sampleProblems if backend returns empty
-//                 setProblems(sampleProblems);
-//             }
-//         } catch (err) {
-//             console.error("Error fetching problems:", err);
-//             setError(true);
-//             // use fallback sample data so UI is still functional
-//             setProblems(sampleProblems);
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     useEffect(() => {
-//         loadProblems();
-//     }, []);
-
-//     return (
-//         <motion.div
-//             className="p-4 min-h-screen"
-//             variants={pageVariants}
-//             initial="hidden"
-//             animate="visible"
-//         >
-//             <h2 className="text-3xl  mb-4 text-[#4a4a4a] mt-30 font-bold text-center">Problem Statements</h2>
-
-//             <div className="w-full flex justify-center">
-//                 <div className="bg-[#4a4a4a] my-12 p-4 rounded text-center text-white font-bold text-2xl w-60 h-50 justify-center flex flex-col items-center ">
-//                     <h1>Total Problem Statements</h1>
-//                     <br />
-//                     <h1 className="text-3xl"> {problems.length}</h1>
-//                 </div>
-//             </div>
-
-//             {/* Error banner */}
-//             {error && (
-//                 <div className="mb-4 flex items-center justify-between rounded border mt-10 border-red-200 bg-red-50 p-3 text-sm text-red-700">
-//                     <div>Unable to reach backend. Showing cached/sample problems.</div>
-//                     <div className="flex gap-2">
-//                         <button
-//                             onClick={loadProblems}
-//                             className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
-//                         >
-//                             Retry
-//                         </button>
-//                     </div>
-//                 </div>
-//             )}
-
-//             {/* Loading state */}
-//             {loading ? (
-//                 <div className="rounded border bg-white shadow-sm p-8 text-center">
-//                     <svg
-//                         className="mx-auto h-8 w-8 animate-spin text-[#0f62fe]"
-//                         xmlns="http://www.w3.org/2000/svg"
-//                         fill="none"
-//                         viewBox="0 0 24 24"
-//                     >
-//                         <circle
-//                             className="opacity-25"
-//                             cx="12"
-//                             cy="12"
-//                             r="10"
-//                             stroke="currentColor"
-//                             strokeWidth="4"
-//                         />
-//                         <path
-//                             className="opacity-75"
-//                             fill="currentColor"
-//                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-//                         />
-//                     </svg>
-//                     <div className="mt-3 text-sm text-[#4a4a4a]">Loading problems...</div>
-//                 </div>
-//             ) : (
-//                 <motion.div
-//                     className="overflow-x-auto rounded border bg-white shadow-sm"
-//                     variants={tableVariants}
-//                     initial="hidden"
-//                     animate="visible"
-//                 >
-//                     <table className="min-w-full divide-y ">
-//                         <thead className="bg-[#4a4a4a] text-[#ffffff]">
-//                             <tr>
-//                                 <th className="px-4 py-2 text-left text-sm font-medium">ID</th>
-//                                 <th className="px-4 py-2 text-left text-sm font-medium">Title</th>
-//                                 <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
-//                                 <th className="px-4 py-2 text-right text-sm font-medium">Actions</th>
-//                             </tr>
-//                         </thead>
-//                         <tbody className="divide-y bg-white">
-//                             {problems.map((p, index) => {
-//                                 // support both backend shape (uppercase) and fallback (lowercase)
-//                                 const id = p.ID || p.id;
-//                                 const title = p.TITLE || p.title;
-//                                 const date = p.SUB_DATE || p.date;
-//                                 return (
-//                                     <motion.tr
-//                                         key={id || index}
-//                                         initial={{ opacity: 0, y: 20 }}
-//                                         animate={{ opacity: 1, y: 0 }}
-//                                         transition={{ delay: index * 0.05 }}
-//                                     >
-//                                         <td className="px-4 py-3 text-sm text-[#4a4a4a]">{id}</td>
-//                                         <td className="px-4 py-3 text-sm text-[#4a4a4a]">{title}</td>
-//                                         <td className="px-4 py-3 text-sm text-[#4a4a4a]">{date}</td>
-//                                         <td className="px-4 py-3 text-right">
-//                                             <button
-//                                                 onClick={() => openModal(p)}
-//                                                 className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-[#ffffff] hover:bg-[#e57f00]"
-//                                             >
-//                                                 View
-//                                             </button>
-//                                         </td>
-//                                     </motion.tr>
-//                                 );
-//                             })}
-//                         </tbody>
-//                     </table>
-//                 </motion.div>
-//             )}
-
-//             <Modal open={isOpen} onClose={closeModal} title={selected ? (selected.TITLE || selected.title) : "Problem"}>
-//                 {selected ? (
-//                     <motion.div
-//                         initial={{ opacity: 0, y: 20 }}
-//                         animate={{ opacity: 1, y: 0 }}
-//                         transition={{ duration: 0.3 }}
-//                     >
-//                         <div className="mb-3 text-sm text-[#4a4a4a]">
-//                             <strong>ID:</strong> {selected.ID || selected.id}
-//                         </div>
-//                         <div className="mb-3 text-sm text-[#4a4a4a]">
-//                             <strong>Date:</strong> {selected.SUB_DATE || selected.date}
-//                         </div>
-//                         <div className="mt-4 text-sm text-[#4a4a4a]">
-//                             <strong>Description:</strong> {selected.DESCRIPTION || selected.description}
-//                         </div>
-//                         <div className="mt-4 text-sm text-[#4a4a4a]">
-//                             <strong>Category:</strong> {selected.CATEGORY || selected.category}
-//                         </div>
-//                         <div className="mt-4 text-sm text-[#4a4a4a]">
-//                             <strong>Department:</strong> {selected.DEPT || selected.dept || "-"}
-//                         </div>
-//                         <div className="mt-4 text-sm text-[#4a4a4a]">
-//                             <strong>Resources:</strong>{" "}
-//                             <a
-//                                 className="hover:underline text-blue-600"
-//                                 href={selected.Links || selected.resources}
-//                                 target="_blank"
-//                                 rel="noreferrer"
-//                             >
-//                                 {selected.Links || selected.resources}
-//                             </a>
-//                         </div>
-//                         <div className="mt-6 flex justify-end gap-3">
-//                             <button
-//                                 onClick={handleSubmit}
-//                                 className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
-//                             >
-//                                 Submit
-//                             </button>
-//                             <button
-//                                 onClick={closeModal}
-//                                 className="rounded px-3 py-1 text-sm font-medium bg-[#4a4a4a] text-[#ffffff] hover:bg-[#333333]"
-//                             >
-//                                 Close
-//                             </button>
-//                         </div>
-//                     </motion.div>
-//                 ) : (
-//                     <div className="text-sm text-[#4a4a4a]">No problem selected.</div>
-//                 )}
-//             </Modal>
-//         </motion.div>
-//     );
-// };
-
-// export default ProblemStatements;
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import {URL} from "../Utils"
+import SearchBar from "../components/SearchBar";
+import Header from "./Header";
 
-const sampleProblems = [
-  {
-    id: "P-001",
-    title: "Smart Waste Management System Using IoT and AI",
-    date: "2025-09-01",
-    description:
-      "Develop an IoT-based system integrated with AI algorithms to monitor, classify, and optimize waste collection in urban and rural areas.",
-    category: "Smart City / IoT / AI",
-    theme: "Smart Automation for Sustainable Cities",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-  {
-    id: "P-002",
-    title: "Predictive Healthcare System for Early Disease Detection",
-    date: "2025-09-05",
-    description:
-      "Design a healthcare analytics platform that leverages ML to predict potential health issues from wearable and patient data.",
-    category: "Healthcare / Machine Learning",
-    theme: "AI-Powered Health Solutions",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-  {
-    id: "P-003",
-    title: "Blockchain-Based Student Credential Verification System",
-    date: "2025-09-10",
-    description:
-      "Create a blockchain-driven platform for educational institutions to issue and verify student certificates securely.",
-    category: "Blockchain / Education",
-    theme: "Digital Transformation in Education",
-    resources: "https://www.sih.gov.in/problem-statements",
-  },
-];
+import { URL } from "../Utils";
 
 const fetchProblems = async () => {
   const response = await axios.get(`${URL}/get_problems`, { timeout: 8000 });
@@ -362,18 +32,19 @@ const Modal = ({ open, onClose, title, children }) => {
             ✕
           </button>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="p-4 max-h-[70vh] overflow-y-auto">{children}</div>
       </motion.div>
     </div>
   );
 };
 
-const ProblemStatements = () => {
+const ProblemStatements = ({ showHeader = true }) => {
   const [problems, setProblems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selected, setSelected] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const openModal = (problem) => {
@@ -388,22 +59,27 @@ const ProblemStatements = () => {
 
   const handleSubmit = () => {
     if (!selected) return;
-    const params = new URLSearchParams({ problemId: selected.id || selected.ID });
+    const params = new URLSearchParams({
+      problemId: selected.id || selected.ID,
+    });
     navigate(`/student/submit-solution?${params.toString()}`);
   };
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      setError(false);
+      setError("");
       try {
         const data = await fetchProblems();
-        console.log(data);
-        
-        setProblems(Array.isArray(data) && data.length > 0 ? data : sampleProblems);
+        if (Array.isArray(data)) {
+          setProblems(data);
+        } else {
+          setProblems([]);
+          setError("Failed to load problems. Please try again later.");
+        }
       } catch {
-        setError(true);
-        setProblems(sampleProblems);
+        setProblems([]);
+        setError("Loading failed. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -411,181 +87,243 @@ const ProblemStatements = () => {
     load();
   }, []);
 
-  
+  const totalProblems = problems.length;
+  const uniqueDepartments = [...new Set(problems.map((p) => p.DEPT))].length;
+
+  const filteredProblems = problems.filter((problem) =>
+    problem.TITLE?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <motion.div
-      className="min-h-screen bg-white/50 "
+      className="min-h-screen bg-white/50"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <Header/>
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-10">
-          <h1 className="text-center text-3xl font-extrabold text-gray-900 mt-20">
+
+      {/* MAIN CONTAINER WITH 2rem SIDE GAP */}
+      <div className="max-w-7xl mx-auto px-8 pb-12">
+             <Header />
+
+          <p className="font-semibold tracking-[0.2em] uppercase text-gray-500 mb-2 mt-28 text-center">
+            Solve for Sakthi
+          </p>
+          <h1 className="text-4xl font-extrabold text-gray-900 text-center">
             Problem Statements
           </h1>
-        </header>
+          <p className="  text-sm sm:text-base text-gray-600  text-center  my-8">
+            Browse through the latest problem statements and pick the one that
+            aligns with your skills and interests.
+          </p>
 
-        {/* Cards Section (like TeamDetails) */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 mb-10 ">
-          {[
-            { label: "Total Problems", value: problems.length },
-            // { label: "Latest Date", value: problems[problems.length - 1]?.date || "N/A" },
-            { label: "Themes", value: [...new Set(problems.map((p) => p.DEPT))].length },
-            { label: "Categories", value: [...new Set(problems.map((p) => p.CATEGORY))].length },
-            // { label: "Status", value: error ? "Offline Mode" : "Online" },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="flex flex-col justify-center border border-gray-200 rounded-lg p-4 bg-white shadow-[4px_4px_8px_#fc9300]/20 hover:shadow-[6px_6px_10px_#fc9300]/60 transition-transform transform hover:-translate-y-1 duration-300"
-            >
-              <span className="text-sm font-medium text-gray-500 uppercase">{item.label}</span>
-              <span className="mt-2 text-lg font-semibold text-gray-800">{item.value}</span>
+        <div className="space-y-8">
+          <section className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              { label: "Total Problems", value: totalProblems },
+              { label: "Categories", value: 2 },
+              { label: "Departments", value: uniqueDepartments },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="flex flex-col justify-between border border-gray-200 rounded-lg p-4 sm:p-5 bg-white shadow-[4px_4px_8px_#fc9300]/20 hover:shadow-[6px_6px_10px_#fc9300]/60 transition-transform transform hover:-translate-y-1 duration-300"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    {item.label}
+                  </span>
+                  <span className="text-xl font-bold text-gray-800">
+                    {item.value}
+                  </span>
+                </div>
+                <div className="mt-3 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                  <div className="h-full w-2/3 rounded-full bg-[#fc9300]" />
+                </div>
+              </div>
+            ))}
+          </section>
+
+          <section className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
+              <div className="flex items-center gap-3 w-full">
+                <SearchBar
+                  className="w-full"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              {error && (
+                <div className="rounded-md border border-[#fc9300] bg-white px-4 py-3 text-sm text-gray-700 flex items-center justify-between w-full">
+                  <span>{error}</span>
+                </div>
+              )}
             </div>
-          ))}
-        </section>
 
-        {/* Table Section (TeamDetails style) */}
-        {loading ? (
-          <div className="rounded border bg-white shadow-sm p-8 text-center">
-            <svg
-              className="mx-auto h-8 w-8 animate-spin text-[#fc9300]"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              />
-            </svg>
-            <div className="mt-3 text-sm text-gray-700">Loading problems...</div>
-          </div>
-        ) : (
-          <motion.div
-            className="overflow-x-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-              <thead className="bg-gray-100 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Deadline
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Actions
-                    </th>
-                    
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {problems.map((p, index) => (
-                  <motion.tr
-                    key={p.id || index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="hover:bg-gray-50 transition"
-                  >
-                    <td className="px-6 py-4 text-sm text-gray-700">SFS_{p.ID}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.TITLE}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.CATEGORY}</td>
-                    <td className="px-6 py-4 text-sm text-gray-700">{p.SU B_DEADLINE.split("T")[0]}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => openModal(p)}
-                        className="rounded px-3 py-1 text-sm font-medium bg-[#fc8f00] text-white hover:bg-[#e57f00]"
+            {loading ? (
+              <div className="p-8 flex flex-col items-center justify-center">
+                <svg
+                  className="mx-auto h-8 w-8 animate-spin text-[#fc9300]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                <div className="mt-3 text-sm text-gray-700">
+                  Loading problems...
+                </div>
+              </div>
+            ) : filteredProblems.length === 0 ? (
+              <div className="p-8 text-center text-sm text-gray-600">
+                No problems match your search. Please try again.
+              </div>
+            ) : (
+              <motion.div
+                className="overflow-x-auto w-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <table className="min-w-full bg-white w-full">
+                  <thead className="bg-gray-100 border-b border-gray-200">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        ID
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Title
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Department
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Deadline
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {filteredProblems.map((p, index) => (
+                      <motion.tr
+                        key={p.id || p.ID || index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        className="hover:bg-gray-50 transition"
                       >
-                        View
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
-        )}
+                        <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                          <span className="font-semibold">SFS_{p.ID}</span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-900 line-clamp-2">
+                              {p.TITLE}
+                            </span>
+                            {p.CATEGORY && (
+                              <span className="mt-1 inline-flex items-center rounded-full border border-[#fc9300] px-2 py-0.5 text-[11px] font-medium text-gray-700">
+                                {p.CATEGORY}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                          {p.DEPT}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                          {p.SUB_DEADLINE ? p.SUB_DEADLINE.split("T")[0] : "N/A"}
+                        </td>
+                        <td className="px-6 py-4 text-right whitespace-nowrap">
+                          <button
+                            onClick={() => openModal(p)}
+                            className="rounded px-3 py-1.5 text-xs sm:text-sm font-medium bg-[#fc8f00] text-white hover:bg-[#e57f00] transition-colors"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </motion.div>
+            )}
+          </section>
 
-        {/* Modal */}
-        <Modal
-          open={isOpen}
-          onClose={closeModal}
-          title={selected ? selected.TITLE : "Problem Details"}
-        >
-          {selected ? (
-            <div className="space-y-3 text-sm text-gray-700">
-              <div>
-                <strong>ID:</strong> {selected.ID}
+          <Modal
+            open={isOpen}
+            onClose={closeModal}
+            title={selected ? selected.TITLE : "Problem Details"}
+          >
+            {selected ? (
+              <div className="space-y-3 text-sm text-gray-700">
+                <div>
+                  <strong>ID:</strong> {selected.ID}
+                </div>
+                <div>
+                  <strong>Date:</strong>{" "}
+                  {selected.SUB_DEADLINE
+                    ? selected.SUB_DEADLINE.split("T")[0]
+                    : "N/A"}
+                </div>
+                <div>
+                  <strong>Category:</strong> {selected.CATEGORY || "Software"}
+                </div>
+                <div>
+                  <strong>Theme:</strong> {selected.DEPT}
+                </div>
+                <div>
+                  <strong>Description:</strong>
+                  <p className="mt-1 leading-relaxed whitespace-pre-line">
+                    {selected.DESCRIPTION}
+                  </p>
+                </div>
+                {selected.Reference && (
+                  <div>
+                    <strong>Resources:</strong>{" "}
+                    <a
+                      href={selected.Reference}
+                      className="text-blue-600 hover:underline break-all"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {selected.Reference}
+                    </a>
+                  </div>
+                )}
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    onClick={handleSubmit}
+                    className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    onClick={closeModal}
+                    className="rounded px-3 py-1 text-sm font-medium bg-gray-700 text-white hover:bg-gray-800"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
-              <div>
-                <strong>Date:</strong> {selected.SUB_DEADLINE.split("T")[0]}
-              </div>
-              <div>
-                <strong>Category:</strong> {selected.CATEGORY}
-              </div>
-              <div>
-                <strong>Theme:</strong> {selected.DEPT}
-              </div>
-              <div>
-                <strong>Description:</strong> {selected.DESCRIPTION}
-              </div>
-              <div>
-                <strong>Resources:</strong>{" "}
-                <a
-                  href={selected.Reference}
-                  className="text-blue-600 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {selected.Reference}
-                </a>
-              </div>
-              <div className="flex justify-end gap-3 mt-4">
-                <button
-                  onClick={handleSubmit}
-                  className="rounded px-3 py-1 text-sm font-medium bg-[#0f62fe] text-white hover:bg-[#0053d8]"
-                >
-                  Submit
-                </button>
-                <button
-                  onClick={closeModal}
-                  className="rounded px-3 py-1 text-sm font-medium bg-gray-700 text-white hover:bg-gray-800"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          ) : (
-            <p>No details available.</p>
-          )}
-        </Modal>
+            ) : (
+              <p>No details available.</p>
+            )}
+          </Modal>
+        </div>
       </div>
-      {/* <footer>
-         <Footer />
-       </footer> */}
-      
     </motion.div>
   );
 };

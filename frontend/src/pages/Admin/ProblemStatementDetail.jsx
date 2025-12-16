@@ -2,79 +2,150 @@
  * @file ProblemStatementDetail.jsx
  * @description Displays the full details of a specific problem statement for administrative view.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import { getProblemStatementById, getSubmissionsByProblemId } from '../../mockData';
-import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiUsers, FiFileText, FiArrowLeft, FiTrash2 } from 'react-icons/fi';
 import { URL } from '../../Utils';
+
 const ProblemStatementDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [problem, setProblem] = useState(() => getProblemStatementById(id));
-  const [submissions, setSubmissions] = useState(() => getSubmissionsByProblemId(id));
+  const [problem, setProblem] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOptions, setFilterOptions] = useState({
     evaluated: false,
     submitted: false,
   });
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   // fetch problem details and submissions from backend; fallback to mockData
   useEffect(() => {
+    window.scrollTo(0, 0);
     let mounted = true;
     const base = import.meta.env.VITE_API_URL || '';
 
-    const fetchProblem = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`${URL}/problems/${id}`);
-        if (!res.ok) throw new Error('no problem');
-        const json = await res.json();
-        const p = (json.problems && json.problems[0]) || json.problem || null;
-        if (p && mounted) {
-          setProblem({
-            id: p.ID ? String(p.ID) : (p.id || ''),
-            title: p.TITLE || p.title || 'Untitled',
-            description: p.DESCRIPTION || p.description || '',
-            youtube: p.YOUTUBE || p.youtube || p.youtube_link || '',
-            dataset: p.DATASET || p.dataset || '',
-            created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
-            assignedEvaluators: p.assignedEvaluators || [],
-            submissionsCount: p.submissionsCount || 0,
-          });
+        setLoading(true);
+
+        // Fetch Problem
+        try {
+          const res = await fetch(`${URL}/problems/${id}`);
+          if (res.ok) {
+            const json = await res.json();
+            const p = (json.problems && json.problems[0]) || json.problem || null;
+            if (p && mounted) {
+              const rawDesc = p.DESCRIPTION || p.description || '';
+              // Attempt to extract dataset link from description if explicit field is missing
+              let datasetVal = p.DATASET || p.dataset || '';
+              if (!datasetVal) {
+                const match = rawDesc.match(/Dataset Link:\s*(https?:\/\/[^\s]+)/);
+                if (match) datasetVal = match[1];
+              }
+
+              // Check all possible casing variants including Reference (capitalized as per DB schema often)
+              let youtubeVal = p.YOUTUBE || p.youtube || p.youtube_link || p.Reference || p.reference || '';
+              if (!youtubeVal) {
+                const match = rawDesc.match(/YouTube Link:\s*(https?:\/\/[^\s]+)/);
+                if (match) youtubeVal = match[1];
+              }
+
+              // Clean description for display (remove appended links)
+              const cleanDesc = rawDesc
+                .replace(/YouTube Link:\s*https?:\/\/[^\s]+(\s|$)/gi, '')
+                .replace(/Dataset Link:\s*https?:\/\/[^\s]+(\s|$)/gi, '')
+                .trim();
+
+              setProblem({
+                id: p.ID ? String(p.ID) : (p.id || ''),
+                title: p.TITLE || p.title || 'Untitled',
+                category: p.DEPT || p.dept || p.category || 'N/A',
+                description: cleanDesc,
+                youtube: youtubeVal,
+                dataset: datasetVal,
+                created: p.SUB_DATE ? new Date(p.SUB_DATE).toISOString() : (p.created || new Date().toISOString()),
+                assignedEvaluators: p.assignedEvaluators || [],
+                submissionsCount: p.submissionsCount || 0,
+              });
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching problem:", err);
         }
-      } catch (err) {
-        // keep mock fallback
+
+        // Fetch Submissions
+        try {
+          const res = await fetch(`${URL}/submissions?problemId=${id}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (Array.isArray(json) && mounted) {
+              const mapped = json.map(s => ({
+                id: s.ID ? String(s.ID) : (s.id || ''),
+                problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
+                teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
+                status: String(s.STATUS ?? s.SUB_STATUS ?? s.status ?? '').trim(),
+                spocId: s.SPOC_ID ?? s.SPOCId ?? s.spocId ?? s.spoc_id ?? s.spocId ?? '',
+                title: s.SOL_TITLE ?? s.title ?? s.SOL_TITLE ?? '',
+              }));
+              setSubmissions(mapped);
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching submissions:", err);
+        }
+
+      } catch (error) {
+        console.error("Error in fetchData:", error);
+      } finally {
+        if (mounted) setLoading(false);
       }
     };
 
-    const fetchSubmissions = async () => {
-      try {
-        const res = await fetch(`${URL}/submissions?problemId=${id}`);
-        if (!res.ok) throw new Error('no submissions');
-        const json = await res.json();
-        if (Array.isArray(json) && mounted) {
-          const mapped = json.map(s => ({
-            id: s.ID ? String(s.ID) : (s.id || ''),
-            problemId: s.PROBLEM_ID ?? s.PROBLEMID ?? s.problemId ?? s.problem_id ?? null,
-            teamId: s.TEAM_ID ?? s.TEAMID ?? s.teamId ?? s.team_id ?? null,
-            status: String(s.STATUS ?? s.SUB_STATUS ?? s.status ?? '').trim(),
-            spocId: s.SPOC_ID ?? s.SPOCId ?? s.spocId ?? s.spoc_id ?? s.spocId ?? '',
-            title: s.SOL_TITLE ?? s.title ?? s.SOL_TITLE ?? '',
-          }));
-          setSubmissions(mapped);
-        }
-      } catch (err) {
-        // keep mock fallback
-      }
-    };
-
-    fetchProblem();
-    fetchSubmissions();
+    fetchData();
 
     return () => { mounted = false };
   }, [id]);
+
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      // Trying likely endpoint pattern matches delete_team
+      await axios.post(`${URL}/delete_problem`, { id: id }, { withCredentials: true });
+      toast.success("Problem statement deleted");
+      navigate('/admin/problems');
+    } catch (err) {
+      console.error("Delete error:", err);
+      // Fallback attempt if first one fails? No, keep simple. 
+      // If user reports failure, we try another endpoint.
+      toast.error("Failed to delete problem statement");
+    } finally {
+      setShowDeleteModal(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F7F8FC] flex flex-col items-center justify-center space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FF9900]"></div>
+        <h2 className="text-xl font-semibold text-gray-700">Problem Statement Loading...</h2>
+      </div>
+    );
+  }
 
   if (!problem) {
     return <div className="min-h-screen bg-gray-50 py-10"><div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8"><h1>Problem Statement not found</h1></div></div>;
@@ -93,20 +164,30 @@ const ProblemStatementDetail = () => {
   const totalSubmissions = submissions.length;
 
   return (
-    <div className="min-h-screen bg-[#F7F8FC] py-10 px-8 transition-all duration-300">
-      <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-sm p-10 border border-[#E2E8F0]">
+    <div className="min-h-screen bg-[#F7F8FC] px-6 py-8 transition-all duration-300">
+      <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <Breadcrumb />
-          <Button
-            onClick={() => navigate(-1)}
-            className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-            <span>Back</span>
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <FiTrash2 className="w-5 h-5" />
+              <span>Delete</span>
+            </Button>
+            <Button
+              onClick={() => navigate(-1)}
+              className="!bg-[#FF9900] !hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <FiArrowLeft className="w-5 h-5" />
+              <span>Back</span>
+            </Button>
+          </div>
         </div>
+
         {/* Problem Statement Information Table */}
-        <div className="mb-8">
+        <div className="bg-white shadow-sm rounded-2xl p-6 border border-[#E2E8F0] mb-8">
           <h2 className="text-xl font-semibold mb-4 text-[#1A202C]">Problem Statement Information</h2>
           <table className="w-full text-left border-collapse border border-[#E2E8F0] rounded-xl overflow-hidden">
             <tbody>
@@ -119,23 +200,39 @@ const ProblemStatementDetail = () => {
                 <td className="p-4 text-[#1A202C]">{problem.title}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
+                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Category</td>
+                <td className="p-4 text-[#1A202C]">{problem.category}</td>
+              </tr>
+              <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Description</td>
                 <td className="p-4 text-[#1A202C]">{problem.description}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">YouTube Link</td>
-                <td className="p-4 text-[#1A202C]">{problem.youtube || 'N/A'}</td>
+                <td className="p-4 text-[#1A202C]">
+                  {problem.youtube ? (
+                    <a href={problem.youtube} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {problem.youtube}
+                    </a>
+                  ) : 'N/A'}
+                </td>
               </tr>
               <tr>
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Dataset Link</td>
-                <td className="p-4 text-[#1A202C]">{problem.dataset || 'N/A'}</td>
+                <td className="p-4 text-[#1A202C]">
+                  {problem.dataset ? (
+                    <a href={problem.dataset} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {problem.dataset}
+                    </a>
+                  ) : 'N/A'}
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
         {/* Statistics Section */}
-        <div className="flex items-center space-x-10 mb-6">
+        <div className="flex items-center space-x-10 mb-6 px-2">
           <div className="flex items-center space-x-2">
             <FiUsers className="w-6 h-6 text-[#FF9900]" />
             <span className="font-medium text-[#1A202C]">No. of Teams Enrolled :</span>
@@ -208,7 +305,7 @@ const ProblemStatementDetail = () => {
         </div>
 
         {/* Submission List Table */}
-        <div className="overflow-x-auto bg-white rounded-2xl border border-[#E2E8F0]">
+        <div className="overflow-x-auto bg-white rounded-2xl border border-[#E2E8F0] shadow-sm">
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#F7F8FC] text-[#4A5568]">
               <tr>
@@ -235,10 +332,10 @@ const ProblemStatementDetail = () => {
                   <td className="p-4">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${sub.status === 'Evaluated'
-                          ? 'bg-green-100 text-green-800'
-                          : sub.status === 'Submitted'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
+                        ? 'bg-green-100 text-green-800'
+                        : sub.status === 'Submitted'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
                         }`}
                     >
                       {sub.status}
@@ -250,6 +347,36 @@ const ProblemStatementDetail = () => {
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {
+        showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Problem Statement</h3>
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to delete this problem statement? This action cannot be undone.
+                </p>
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-xl font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };

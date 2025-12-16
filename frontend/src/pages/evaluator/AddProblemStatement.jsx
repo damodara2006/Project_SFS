@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState,useEffect } from "react";
-import { URL } from "../../Utils";
+import { auth, URL } from "../../Utils";
 import {toast,Toaster} from 'react-hot-toast';
 const AddProblemStatement = () => {
 
@@ -11,10 +11,12 @@ const AddProblemStatement = () => {
     const[subDate,setSubDate]=useState("");
 
     const[reference,setReference]=useState("");
+    console.log( auth());
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
-        // console.log(title,description,dept,reference,subDate);
+      console.log(title, description, dept, reference, subDate);
+      
         try{
            const response = await axios.post(`${URL}/addproblems`,{
             title:title,
@@ -23,8 +25,19 @@ const AddProblemStatement = () => {
             dept:dept,
             reference:reference
             
-           });
-            toast.success("Problem Statement Added Successfully",{position:"top-center"});
+           }, { withCredentials: true }).then(res => {
+             console.log(res);
+             
+             if (res.status == 200) {
+               setTitle("");
+               setDescription("");
+               setDept("");
+               setSubDate("");
+               setReference("")
+             }
+           })
+           toast.success("Problem Statement Added Successfully",{position:"top-center"});
+          await axios.post(`${URL}/send_mail_to_spoc`,{Problem:title})
           //  console.log("Problem Statement Added:",response.data);
         }
         catch(error){
@@ -73,14 +86,15 @@ const AddProblemStatement = () => {
             {/* Department */}
              <div>
               <label className="block text-sm font-medium text-gray-700">
-                Department
+                Hardware or Software
               </label>
-              <input
-                type="text"
-                placeholder="Enter Department"
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
-                onChange={(e)=>setDept(e.target.value)}
-              />
+
+              <select name="hw/sw" id="" onChange={(e) => setDept(e.target.value)} className="mt-1 w-full border border-gray-300  rounded-md p-2  outline-0">
+                <option value="">-- choose one --</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+              </select>
+             
             </div>
 
 

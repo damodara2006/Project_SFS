@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import Button from '../../components/common/button';
 import Breadcrumb from '../../components/common/Breadcrumb';
-import { getSubmissionById, mockSubmissions } from '../../mockData';
 import { FiEdit, FiSave, FiArrowLeft, FiChevronLeft, FiChevronRight, FiDownload } from 'react-icons/fi';
-import sample from '../../assets/sample.pdf';
+import axios from 'axios';
+import { URL } from '../../Utils';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -15,24 +16,68 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const SubmissionDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const submission = getSubmissionById(id);
-  const [marks, setMarks] = useState(submission?.marks || '');
-  const [comments, setComments] = useState(submission?.comments || '');
+  const [submission, setSubmission] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [marks, setMarks] = useState('');
+  const [comments, setComments] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
 
-  if (!submission) {
+  useEffect(() => {
+    const fetchSubmission = async () => {
+      try {
+        const response = await axios.get(`${URL}/submissions/${id}`);
+        setSubmission(response.data);
+        if (response.data.marks) setMarks(response.data.marks); // Assuming backend has marks
+        if (response.data.comments) setComments(response.data.comments);
+      } catch (err) {
+        console.error("Error fetching submission:", err);
+        setError("Failed to load submission details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSubmission();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-10 flex justify-center items-center">
+        <div className="text-xl text-gray-600">Loading submission details...</div>
+      </div>
+    );
+  }
+
+  if (error || !submission) {
     return (
       <div className="min-h-screen bg-gray-50 py-10">
         <div className="max-w-4xl mx-auto bg-white shadow rounded-lg p-8">
-          <h1>Submission not found</h1>
+          <h1>{error || "Submission not found"}</h1>
+          <Button onClick={() => navigate(-1)} className="mt-4 bg-[#FF9900] text-white px-4 py-2 rounded">
+            Go Back
+          </Button>
         </div>
       </div>
     );
   }
 
-  const displayStatus = submission.marks ? 'Evaluated' : 'Submitted';
+  // Map backend fields to UI if needed, or use directly
+  // Backend columns: ID, SOL_TITLE, SOL_DESCRIPTION, SOL_LINK, SUB_DATE, STATUS (or SUB_STATUS), teamName, spocId, problemTitle
+  const submissionId = submission.ID || submission.id;
+  const solTitle = submission.SOL_TITLE || submission.sol_title || 'N/A';
+  const problemTitle = submission.problemTitle || submission.PROBLEM_TITLE || 'N/A';
+  const solDescription = submission.SOL_DESCRIPTION || submission.sol_description || 'N/A';
+  const teamName = submission.teamName || submission.TEAM_NAME || submission.TEAM_ID || 'N/A';
+  const spocId = submission.spocId || submission.SPOC_ID || 'N/A';
+  const rawStatus = submission.STATUS || submission.status || submission.SUB_STATUS || submission.sub_status;
+  const displayStatus = rawStatus ? rawStatus.toUpperCase() : 'PENDING';
+
+  const rawDate = submission.SUB_DATE || submission.sub_date;
+  const displayDate = rawDate ? new Date(rawDate).toLocaleDateString() : 'N/A';
+
+  const pdfUrl = submission.SOL_LINK || submission.sol_link;
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -53,7 +98,7 @@ const SubmissionDetail = () => {
           <Breadcrumb />
           <Button
             onClick={() => navigate(-1)}
-            className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+            className="!bg-[#FF9900] !hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
           >
             <FiArrowLeft className="w-5 h-5" />
             <span>Back</span>
@@ -67,30 +112,34 @@ const SubmissionDetail = () => {
             <tbody>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 w-1/3 text-[#1A202C]">Submission ID</td>
-                <td className="p-4 text-[#1A202C]">{submission.id}</td>
+                <td className="p-4 text-[#1A202C]">{submissionId}</td>
+              </tr>
+              <tr className="border-b border-[#E2E8F0]">
+                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Problem Title</td>
+                <td className="p-4 text-[#1A202C]">{problemTitle}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Submission Title</td>
-                <td className="p-4 text-[#1A202C]">{submission.title}</td>
+                <td className="p-4 text-[#1A202C]">{solTitle}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Description</td>
-                <td className="p-4 text-[#1A202C]">{submission.description}</td>
+                <td className="p-4 text-[#1A202C]">{solDescription}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Team Name</td>
-                <td className="p-4 text-[#1A202C]">{submission.teamName}</td>
+                <td className="p-4 text-[#1A202C]">{teamName}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">SPOC ID</td>
-                <td className="p-4 text-[#1A202C]">{submission.spocId}</td>
+                <td className="p-4 text-[#1A202C]">{spocId}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
                 <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Submitted Date</td>
-                <td className="p-4 text-[#1A202C]">{new Date(submission.submittedDate).toLocaleDateString()}</td>
+                <td className="p-4 text-[#1A202C]">{displayDate}</td>
               </tr>
               <tr className="border-b border-[#E2E8F0]">
-                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Approval Status</td>
+                <td className="p-4 font-medium bg-[#FF9900]/5 text-[#1A202C]">Status</td>
                 <td className="p-4 flex justify-between items-center text-[#1A202C]">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${displayStatus === 'Evaluated' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                     {displayStatus}
@@ -107,14 +156,9 @@ const SubmissionDetail = () => {
                     ) : (
                       <Button
                         onClick={() => {
-                          const submissionIndex = mockSubmissions.findIndex(s => s.id === id);
-                          if (submissionIndex !== -1) {
-                            mockSubmissions[submissionIndex].marks = marks ? parseInt(marks) : null;
-                            mockSubmissions[submissionIndex].comments = comments;
-                            mockSubmissions[submissionIndex].status = 'Evaluated';
-                            setIsEditing(false);
-                            alert('Changes saved successfully!');
-                          }
+                          // Implement save logic later or mock it for now
+                          setIsEditing(false);
+                          alert('Save functionality not implemented yet.');
                         }}
                         className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-xl text-sm flex items-center space-x-1 shadow-md transition-all"
                       >
@@ -139,7 +183,7 @@ const SubmissionDetail = () => {
                       placeholder="Marks"
                     />
                   ) : (
-                    submission.marks ? `${submission.marks}/100` : 'Not evaluated'
+                    marks ? `${marks}/100` : 'Not evaluated'
                   )}
                 </td>
               </tr>
@@ -155,7 +199,7 @@ const SubmissionDetail = () => {
                       placeholder="Comments"
                     />
                   ) : (
-                    submission.comments || 'No comments'
+                    comments || 'No comments'
                   )}
                 </td>
               </tr>
@@ -168,23 +212,28 @@ const SubmissionDetail = () => {
           <h2 className="text-xl font-semibold mb-4 text-[#1A202C]">PDF Preview</h2>
           <div className="border border-[#E2E8F0] rounded-xl overflow-hidden bg-[#F7F8FC]">
             <div className="flex justify-center items-center p-4">
-              <Document
-                file={submission.pdfUrl || '/sample.pdf'}
-                onLoadSuccess={onDocumentLoadSuccess}
-                onLoadError={(error) => console.error('Error loading PDF:', error)}
-                loading={
-                  <div className="flex items-center justify-center h-96">
-                    <div className="text-[#1A202C]">Loading PDF...</div>
-                  </div>
-                }
-              >
-                <Page
-                  pageNumber={pageNumber}
-                  renderTextLayer={true}
-                  renderAnnotationLayer={true}
-                  className="shadow-lg"
-                />
-              </Document>
+              {pdfUrl ? (
+                <Document
+                  file={pdfUrl}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                  onLoadError={(error) => console.error('Error loading PDF:', error)}
+                  loading={
+                    <div className="flex items-center justify-center h-96">
+                      <div className="text-[#1A202C]">Loading PDF...</div>
+                    </div>
+                  }
+                >
+                  <Page
+                    pageNumber={pageNumber}
+                    renderTextLayer={true}
+                    renderAnnotationLayer={true}
+                    className="shadow-lg"
+                  />
+                </Document>
+              ) : (
+                <div className="p-10 text-gray-500">No PDF Link Available</div>
+              )}
+
             </div>
 
             {/* PDF Navigation Controls */}
@@ -194,8 +243,8 @@ const SubmissionDetail = () => {
                   onClick={goToPrevPage}
                   disabled={pageNumber <= 1}
                   className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${pageNumber <= 1
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
                     }`}
                 >
                   <FiChevronLeft className="w-5 h-5" />
@@ -210,8 +259,8 @@ const SubmissionDetail = () => {
                   onClick={goToNextPage}
                   disabled={pageNumber >= numPages}
                   className={`flex items-center space-x-1 px-4 py-2 rounded-xl transition-all ${pageNumber >= numPages
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-[#FF9900] hover:bg-[#e68900] text-white shadow-md'
                     }`}
                 >
                   <span>Next</span>
@@ -221,16 +270,18 @@ const SubmissionDetail = () => {
             )}
 
             {/* Download Button */}
-            <div className="flex justify-center bg-white px-6 py-3 border-t border-[#E2E8F0]">
-              <a
-                href={submission.pdfUrl || '/sample.pdf'}
-                download
-                className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                <FiDownload className="w-5 h-5" />
-                <span>Download PDF</span>
-              </a>
-            </div>
+            {pdfUrl && (
+              <div className="flex justify-center bg-white px-6 py-3 border-t border-[#E2E8F0]">
+                <a
+                  href={pdfUrl}
+                  download
+                  className="bg-[#FF9900] hover:bg-[#e68900] text-white px-4 py-2 rounded-xl flex items-center space-x-2 font-medium shadow-sm hover:shadow-md transition-all duration-200"
+                >
+                  <FiDownload className="w-5 h-5" />
+                  <span>Download PDF</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

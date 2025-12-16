@@ -17,11 +17,12 @@ import FAQ from "./pages/FAQ";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProblemStatements from "./components/ProblemStatements.jsx";
+import ScrollToTop from "./components/common/ScrollToTop.jsx";
 
 // Student
 import SdDashboard from "./pages/student/SdDashboard";
 import Upload from "./pages/student/Upload";
-                                                    
+
 // SPOC Imports
 import SpocDashboard from "./pages/spoc/SpocDashboard";
 import SPOCProfile from "./pages/spoc/SPOCProfile";
@@ -34,6 +35,8 @@ import AssignedProblem from "./pages/evaluator/AssignedProblem.jsx";
 import SubmissionList from "./pages/evaluator/SubmissionList.jsx";
 import SubmissionDetail from "./pages/evaluator/SubmissionDetail.jsx";
 import AddProblemStatement from "./pages/evaluator/AddProblemStatement.jsx";
+import EvaluatorProblemDetail from "./pages/evaluator/EvaluatorProblemDetail.jsx";
+import EvaluatorProfile from "./pages/evaluator/EvaluatorProfile.jsx";
 
 // Admin
 import AdminLayout from "./components/admin/AdminLayout.jsx";
@@ -89,10 +92,10 @@ function App() {
       const fetchAuth = async () => {
         try {
           const res = await auth();
-          if (!res) {
+          if (!res || !res.role) {
             showToast("Please login to your account");
           } else {
-            setRole(res);
+            setRole(res.role);
           }
         } catch (err) {
           console.error(err);
@@ -117,6 +120,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       {/* The Header and Footer are now REMOVED from here */}
       <Routes>
         {/* Public Routes */}
@@ -198,9 +202,10 @@ function App() {
         >
           <Route index element={<AssignedProblem />} />
           <Route path="submissions" element={<SubmissionList />} />
-          <Route path="submission/:teamId" element={<SubmissionDetail />} />
-                    <Route path="AddProblemStatement" element={<AddProblemStatement />}></Route>
-
+          <Route path="submission/:id" element={<SubmissionDetail />} />
+          <Route path="AddProblemStatement" element={<ProblemStatementCreate />} />
+          <Route path="problem/:id" element={<EvaluatorProblemDetail />} />
+          <Route path="profile" element={<EvaluatorProfile />} />
         </Route>
 
         {/* Admin Routes */}

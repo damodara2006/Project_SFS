@@ -7,11 +7,13 @@ const SdDashboard = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
-            {/* <Header /> */}
-            <StudentNav />
-            {/* <footer className="w-full ">
-       
-            </footer> */}
+            <Header />
+  <StudentNav />
+
+ 
+            <footer className="w-full ">
+                <Footer />
+            </footer>
         </div>
     );
 };
