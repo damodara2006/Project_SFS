@@ -50,6 +50,8 @@ export default function Student_submitions({ submission: propSubmission }) {
       try {
         setLoading(true);
         setError(null);
+        axios.defaults.withCredentials = true;
+        
         let api = `${URL}/submissions`;
         if (submissionId) api += `?submissionId=${submissionId}`;
         else if (teamId) api += `?teamId=${teamId}`;

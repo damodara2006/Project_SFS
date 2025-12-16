@@ -4,9 +4,12 @@ import router from "../router/router.js"
 import cookieParser from "cookie-parser"
 // import app from ""
 const app = express()
+// when deployed behind a proxy (like Render), enable trust proxy so
+// Express knows the connection is secure (useful for cookies and req.protocol)
+app.set('trust proxy', 1)
 app.use(cors({
-    origin:["http://localhost:5173", "http://localhost:5174"],
-    credentials:true
+    origin: ["http://localhost:5173", "http://localhost:5174", "https://project-sfs.onrender.com"],
+    credentials: true
 }))
 app.use(cookieParser())
 app.use(express.json())
